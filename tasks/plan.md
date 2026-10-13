@@ -41,7 +41,7 @@ T10 needs only T3 (sections to observe). The 3D track (T10–T13) can run in par
 ## Task List
 
 ### Phase 1 — Walking skeleton
-- [ ] T1: Scaffold Astro + TypeScript + Vitest
+- [x] T1: Scaffold Astro + TypeScript + Vitest
 - [ ] T2: Deploy pipeline to GitHub Pages
 
 ### Checkpoint 1

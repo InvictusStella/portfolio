@@ -17,12 +17,12 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 **Description:** Create the Astro project (strict TypeScript) with a single "Hello" page, Vitest wired up with one trivial test, a `.gitattributes` to normalise line endings, and npm scripts for check/test/build.
 
 **Acceptance criteria:**
-- [ ] `npm run dev` serves a "Hello" page locally
-- [ ] `npm run check`, `npm test`, `npm run build` all pass
-- [ ] `.gitattributes` sets `* text=auto eol=lf`; no CRLF warnings on commit
+- [x] `npm run dev` serves a "Hello" page locally
+- [x] `npm run check`, `npm test`, `npm run build` all pass
+- [x] `.gitattributes` sets `* text=auto eol=lf`; no CRLF warnings on commit
 
 **Verification:**
-- [ ] Run all three commands; open `http://localhost:4321`
+- [x] Run all three commands; open `http://localhost:4321`
 
 **Dependencies:** None
 **Files likely touched:** `package.json`, `astro.config.mjs`, `tsconfig.json`, `vitest.config.ts`, `src/pages/index.astro`, `.gitattributes`
