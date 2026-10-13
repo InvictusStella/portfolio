@@ -81,7 +81,7 @@ The sun must feel **alive — churning and flaring**, not a static ball. The CSS
 2. Limb darkening (edges darker/redder).
 3. Corona (slightly larger rim-glow shell, slowly shifting).
 4. Sunspots (a few slow dark patches).
-5. **Prominences and flares** — glowing plasma arcs looping off the limb, plus occasional brighter flare bursts. **Required** (its own task).
+5. **Prominences and flares** — glowing plasma arcs looping off the limb, plus occasional brighter flare bursts. **Required** (its own task). They never appear within 25° of horizontal, where the name and tagline cross the sun.
 
 Build order: plain glowing sphere first (T10), then 1–4 (T11), then 5 (its own task).
 

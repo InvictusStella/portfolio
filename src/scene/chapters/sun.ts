@@ -1,8 +1,10 @@
 import * as THREE from 'three';
+import { FLARE_COUNT, flareState } from '../activity';
 import { simplexNoise3D } from '../shaders/noise';
+import { createProminences } from './prominences';
 
 // The sun: a churning surface (granulation, convection, sunspots, limb darkening),
-// a flickering corona hugging its edge, and a soft glow. Flares come in T11b.
+// a flickering corona hugging its edge, prominences and flares, and a soft glow.
 
 export const SUN_RADIUS = 1;
 
@@ -22,6 +24,8 @@ const surfaceVertex = /* glsl */ `
 
 const surfaceFragment = /* glsl */ `
 	uniform float uTime;
+	uniform float uFlareAngle[${FLARE_COUNT}];    // where on the edge (radians, 0 = right, π/2 = top)
+	uniform float uFlareStrength[${FLARE_COUNT}]; // 0..1
 	varying vec3 vNormal;
 	varying vec3 vViewDir;
 	varying vec3 vPosition;
@@ -65,6 +69,17 @@ const surfaceFragment = /* glsl */ `
 		color = mix(color, color * vec3(0.6, 0.38, 0.24), penumbra * 0.55);
 		color = mix(color, vec3(0.32, 0.1, 0.04), spot * 0.7);
 
+		// Flares: a brief white-hot flash near the edge. vNormal is in view space, so its
+		// x/y point the same way as the screen; the target sits just inside the edge.
+		vec3 n = normalize(vNormal);
+		for (int i = 0; i < ${FLARE_COUNT}; i++) {
+			vec3 target = normalize(vec3(cos(uFlareAngle[i]) * 0.92, sin(uFlareAngle[i]) * 0.92, 0.39));
+			float d = distance(n, target);
+			float ragged = 0.75 + 0.25 * snoise(n * 12.0 + uTime * 0.8);
+			float flash = uFlareStrength[i] * exp(-d * d / 0.012) * ragged;
+			color += vec3(1.0, 0.92, 0.75) * flash;
+		}
+
 		gl_FragColor = vec4(color, 1.0);
 	}
 `;
@@ -80,6 +95,8 @@ const coronaVertex = /* glsl */ `
 
 const coronaFragment = /* glsl */ `
 	uniform float uTime;
+	uniform float uFlareAngle[${FLARE_COUNT}];
+	uniform float uFlareStrength[${FLARE_COUNT}];
 	varying vec2 vPoint;
 
 	${simplexNoise3D}
@@ -96,7 +113,16 @@ const coronaFragment = /* glsl */ `
 		float streaks = snoise(vec3(dir * 8.0, r * 1.2 - uTime * 0.12));
 		float shimmer = 0.72 + 0.28 * streaks;
 
-		float intensity = falloff * shimmer;
+		// A flare also lights up the corona above it, reaching further out than usual.
+		float angle = atan(vPoint.y, vPoint.x);
+		float burst = 0.0;
+		for (int i = 0; i < ${FLARE_COUNT}; i++) {
+			float diff = atan(sin(angle - uFlareAngle[i]), cos(angle - uFlareAngle[i]));
+			burst += uFlareStrength[i] * exp(-diff * diff / 0.03) * exp(-(r - 1.0) * 2.5);
+		}
+		burst *= smoothstep(0.98, 1.02, r);
+
+		float intensity = falloff * shimmer + burst * (0.7 + 0.3 * streaks);
 		vec3 color = mix(vec3(1.0, 0.45, 0.12), vec3(1.0, 0.75, 0.4), falloff);
 		gl_FragColor = vec4(color * intensity, intensity);
 	}
@@ -123,6 +149,9 @@ function glowTexture(): THREE.CanvasTexture {
 export function createSun() {
 	const group = new THREE.Group();
 	const time = { value: 0 };
+	// Shared by the surface and corona shaders; updated from the activity schedule.
+	const flareAngle = { value: new Array<number>(FLARE_COUNT).fill(0) };
+	const flareStrength = { value: new Array<number>(FLARE_COUNT).fill(0) };
 
 	const glow = new THREE.Sprite(
 		new THREE.SpriteMaterial({
@@ -140,7 +169,7 @@ export function createSun() {
 		new THREE.ShaderMaterial({
 			vertexShader: surfaceVertex,
 			fragmentShader: surfaceFragment,
-			uniforms: { uTime: time },
+			uniforms: { uTime: time, uFlareAngle: flareAngle, uFlareStrength: flareStrength },
 		}),
 	);
 	group.add(surface);
@@ -152,13 +181,16 @@ export function createSun() {
 		new THREE.ShaderMaterial({
 			vertexShader: coronaVertex,
 			fragmentShader: coronaFragment,
-			uniforms: { uTime: time },
+			uniforms: { uTime: time, uFlareAngle: flareAngle, uFlareStrength: flareStrength },
 			transparent: true,
 			blending: THREE.AdditiveBlending,
 			depthWrite: false,
 		}),
 	);
 	group.add(corona);
+
+	const prominences = createProminences(time);
+	group.add(prominences.object);
 
 	return {
 		object: group,
@@ -167,6 +199,12 @@ export function createSun() {
 			time.value = seconds;
 			// A slow turn, so features drift across the face.
 			surface.rotation.y = seconds * 0.01;
+			prominences.update(seconds);
+			for (let i = 0; i < FLARE_COUNT; i++) {
+				const flare = flareState(i, seconds);
+				flareAngle.value[i] = flare.angle;
+				flareStrength.value[i] = flare.strength;
+			}
 		},
 	};
 }

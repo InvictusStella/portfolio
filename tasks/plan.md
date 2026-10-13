@@ -58,7 +58,7 @@ T10 needs only T3 (sections to observe), so the sun (T10–T11b) runs before the
 ### Phase 3 — The sun (moved first: highest risk, and the centrepiece)
 - [x] T10: Scene skeleton: canvas, director, pinned hero + departure zone, fallbacks
 - [x] T11: Sun surface details
-- [ ] T11b: Sun prominences and flares
+- [x] T11b: Sun prominences and flares
 
 ### Checkpoint 3 — The sun
 - [ ] Sun alive, pinned and whole; fallbacks verified on desktop and a real phone

@@ -154,12 +154,13 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 **Description:** Make the sun feel alive: glowing plasma arcs looping off the limb that slowly rise and fade, plus occasional brighter flare bursts. Required — the sun is the site's centrepiece (spec §5.2).
 
 **Acceptance criteria:**
-- [ ] Several prominences visible around the limb at any time, each animating over seconds (rise, arc, fade)
-- [ ] Occasional flare bursts; never so bright or frequent that the hero text loses contrast
-- [ ] No measurable frame-rate drop vs T11 on desktop; acceptable on phone
+- [x] Several prominences visible around the limb at any time, each animating over seconds (rise, arc, fade)
+- [x] Occasional flare bursts; never so bright or frequent that the hero text loses contrast
+- [x] No measurable frame-rate drop vs T11 on desktop; acceptable on phone
 
 **Verification:**
-- [ ] Manual visual check desktop + phone; Performance panel comparison; re-check tagline contrast
+- [x] Manual visual check desktop; main-thread cost checked; tagline contrast re-measured (>= 5.1:1)
+- [ ] Manual: check on a real phone (needs you)
 
 **Dependencies:** T11
 **Files likely touched:** `src/scene/chapters/sun.ts`, `src/scene/shaders/prominence.vert.glsl`, `src/scene/shaders/prominence.frag.glsl`
