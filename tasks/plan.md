@@ -64,7 +64,7 @@ T10 needs only T3 (sections to observe), so the sun (T10–T11b) runs before the
 - [ ] Sun alive, pinned and whole; fallbacks verified on desktop and a real phone
 
 ### Phase 4 — Projects from GitHub
-- [ ] T6: Fetch tagged repos at build time → plain project list; daily cron
+- [x] T6: Fetch tagged repos at build time → plain project list; daily cron
 - [ ] T7: Journey constellation with star links and cards
 - [ ] T8: Turkish project description overrides
 - [ ] T9: Playwright smoke test in CI
@@ -86,6 +86,10 @@ T10 needs only T3 (sections to observe), so the sun (T10–T11b) runs before the
 
 ### Checkpoint 6 — Complete
 - [ ] All spec success criteria met; Lighthouse checked; ready to share
+
+## Polish direction (decided 2026-10-13, discuss after all tasks)
+
+The owner wants to **drop performance restrictions in favour of realism** for space and the sun — through more shader work, or pre-made animation/photos if that looks better. Revisit T16 (adaptive quality) in that light: it currently plans to *lower* detail on weak devices.
 
 ## Risks and Mitigations
 

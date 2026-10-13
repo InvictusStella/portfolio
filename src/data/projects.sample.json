@@ -1,0 +1,57 @@
+[
+  {
+    "name": "sample-cpu-emulator",
+    "description": "Sample data for local development: an 8-bit CPU emulator.",
+    "language": "Java",
+    "stargazers_count": 1,
+    "created_at": "2024-03-27T10:00:00Z",
+    "homepage": null,
+    "html_url": "https://github.com/InvictusStella",
+    "topics": ["portfolio"],
+    "fork": false
+  },
+  {
+    "name": "SampleWebProject",
+    "description": null,
+    "language": "CSS",
+    "stargazers_count": 0,
+    "created_at": "2024-05-13T10:00:00Z",
+    "homepage": "https://invictusstella.github.io/portfolio/",
+    "html_url": "https://github.com/InvictusStella",
+    "topics": ["portfolio"],
+    "fork": false
+  },
+  {
+    "name": "sample_iot_platform",
+    "description": "Sample data: a backend for real-time sensor monitoring.",
+    "language": "Go",
+    "stargazers_count": 4,
+    "created_at": "2025-11-02T10:00:00Z",
+    "homepage": null,
+    "html_url": "https://github.com/InvictusStella",
+    "topics": ["portfolio", "iot"],
+    "fork": false
+  },
+  {
+    "name": "SampleSignLanguageAI",
+    "description": "Sample data: real-time gesture recognition with a CNN.",
+    "language": "Python",
+    "stargazers_count": 7,
+    "created_at": "2026-04-21T10:00:00Z",
+    "homepage": null,
+    "html_url": "https://github.com/InvictusStella",
+    "topics": ["portfolio", "ml"],
+    "fork": false
+  },
+  {
+    "name": "sample-not-tagged",
+    "description": "Not tagged, so it must not appear.",
+    "language": "C++",
+    "stargazers_count": 0,
+    "created_at": "2026-05-01T10:00:00Z",
+    "homepage": null,
+    "html_url": "https://github.com/InvictusStella",
+    "topics": [],
+    "fork": false
+  }
+]

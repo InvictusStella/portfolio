@@ -179,12 +179,13 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 **Description:** Implement `fetchProjects()` (GitHub REST, public repos with topic `portfolio`, optional `GITHUB_TOKEN`) and pure `toProject()` (map + sort by `created_at`). Render a simple project list in a Star chart section, which T7 replaces. Dev-only fallback to `projects.sample.json`; CI failure fails the build; warn when > 15. Add the daily cron to the workflow and pass `GITHUB_TOKEN`.
 
 **Acceptance criteria:**
-- [ ] Unit tests cover mapping, sorting, missing description/homepage
-- [ ] Offline `npm run dev` uses sample data; in CI a fetch failure fails the build
-- [ ] Tagging a repo and pressing "Run workflow" adds it to the live list
+- [x] Unit tests cover mapping, sorting, missing description/homepage
+- [x] Offline `npm run dev` uses sample data; in CI a fetch failure fails the build
+- [ ] Tagging a repo and pressing "Run workflow" adds it to the live list (needs you to tag a repo)
 
 **Verification:**
-- [ ] `npm test && npm run build`; manual tag/untag on GitHub + workflow run
+- [x] `npm test && npm run build`
+- [ ] Manual tag/untag on GitHub + workflow run (needs you)
 
 **Dependencies:** T3 (section), T2 (workflow)
 **Files likely touched:** `src/lib/github.ts`, `src/lib/github.test.ts`, `src/data/projects.sample.json`, `src/components/ProjectList.astro`, `.github/workflows/deploy.yml`

@@ -5,8 +5,10 @@ import CvButton from './CvButton.astro';
 import Footer from './Footer.astro';
 import Hero from './Hero.astro';
 import LangToggle from './LangToggle.astro';
+import ProjectList from './ProjectList.astro';
 import SceneCanvas from './SceneCanvas.astro';
 import type { Profile } from '../content/profile';
+import type { Project } from '../lib/github';
 
 // A small fixture, so these tests don't break whenever the real bio changes.
 const profile: Profile = {
@@ -171,6 +173,41 @@ describe('Scene canvas', () => {
   it('renders a decorative canvas hidden from screen readers', async () => {
     const html = await container.renderToString(SceneCanvas);
     expect(html).toMatch(/<canvas[^>]*class="[^"]*scene-canvas[^"]*"[^>]*aria-hidden="true"|<canvas[^>]*aria-hidden="true"[^>]*class="[^"]*scene-canvas/);
+  });
+});
+
+describe('Project list', () => {
+  const projects: Project[] = [
+    { repo: 'first', title: 'First', description: 'The first one', language: 'Go', stars: 2, createdAt: '2024-01-01', url: 'https://github.com/x/first' },
+    { repo: 'second', title: 'Second', stars: 0, createdAt: '2025-01-01', url: 'https://github.com/x/second', homepage: 'https://second.example.com' },
+  ];
+
+  it('shows every project in order, linking to its repo', async () => {
+    const html = await container.renderToString(ProjectList, { props: { projects, lang: 'en' } });
+    expect(html.indexOf('First')).toBeLessThan(html.indexOf('Second'));
+    expect(html).toContain('href="https://github.com/x/first"');
+  });
+
+  it('shows description and language when present', async () => {
+    const html = await container.renderToString(ProjectList, { props: { projects, lang: 'en' } });
+    expect(html).toContain('The first one');
+    expect(html).toContain('Go');
+  });
+
+  it('links to the live site only when there is one', async () => {
+    const html = await container.renderToString(ProjectList, { props: { projects, lang: 'en' } });
+    expect(html).toContain('href="https://second.example.com"');
+    expect(html.match(/Live site/g)).toHaveLength(1);
+  });
+
+  it('says a first project is coming when nothing is tagged yet', async () => {
+    const html = await container.renderToString(ProjectList, { props: { projects: [], lang: 'en' } });
+    expect(html).toContain('First project coming soon');
+  });
+
+  it('uses Turkish labels on the Turkish page', async () => {
+    const html = await container.renderToString(ProjectList, { props: { projects: [], lang: 'tr' } });
+    expect(html).toContain('Projeler');
   });
 });
 

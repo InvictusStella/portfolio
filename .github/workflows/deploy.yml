@@ -7,6 +7,10 @@ on:
     branches: [main]
   # Adds a "Run workflow" button on the Actions tab.
   workflow_dispatch:
+  # Rebuild daily so repos you tag/untag "portfolio" on GitHub show up without a push.
+  # (Cron times are UTC. An odd minute avoids the busy top of the hour.)
+  schedule:
+    - cron: '17 3 * * *'
 
 # The minimum access this workflow needs: read the code, publish to Pages.
 permissions:
@@ -43,6 +47,10 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          # The token every workflow run gets automatically: lets the build read your
+          # public repos with a higher rate limit. Nothing to set up.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload the built site
         uses: actions/upload-pages-artifact@v5
