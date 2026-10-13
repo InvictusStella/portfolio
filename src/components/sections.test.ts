@@ -5,6 +5,7 @@ import CvButton from './CvButton.astro';
 import Footer from './Footer.astro';
 import Hero from './Hero.astro';
 import LangToggle from './LangToggle.astro';
+import SceneCanvas from './SceneCanvas.astro';
 import type { Profile } from '../content/profile';
 
 // A small fixture, so these tests don't break whenever the real bio changes.
@@ -56,6 +57,11 @@ describe('Hero', () => {
   it('hides the decorative sun from screen readers', async () => {
     const html = await container.renderToString(Hero, { props: { profile, lang: 'en' } });
     expect(html).toMatch(/class="[^"]*hero__sun[^"]*"[^>]*aria-hidden="true"|aria-hidden="true"[^>]*class="[^"]*hero__sun/);
+  });
+
+  it('wraps sun and text in a stage that can be pinned during the departure', async () => {
+    const html = await container.renderToString(Hero, { props: { profile, lang: 'en' } });
+    expect(html).toMatch(/class="[^"]*hero__stage[^"]*"[\s\S]*hero__sun[\s\S]*<h1/);
   });
 
   it('shows the tagline in the requested language', async () => {
@@ -158,6 +164,13 @@ describe('Language toggle', () => {
     const html = await container.renderToString(LangToggle, { props: { lang: 'en' } });
     expect(html).toMatch(/aria-current="true"[^>]*>\s*EN\s*</);
     expect(html).not.toMatch(/hreflang="en"/);
+  });
+});
+
+describe('Scene canvas', () => {
+  it('renders a decorative canvas hidden from screen readers', async () => {
+    const html = await container.renderToString(SceneCanvas);
+    expect(html).toMatch(/<canvas[^>]*class="[^"]*scene-canvas[^"]*"[^>]*aria-hidden="true"|<canvas[^>]*aria-hidden="true"[^>]*class="[^"]*scene-canvas/);
   });
 });
 

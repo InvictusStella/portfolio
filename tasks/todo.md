@@ -117,14 +117,15 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 **Description:** Fixed `<canvas>` behind the content; Three.js lazy-loaded after first paint. A director computes per-section progress (pure, unit-tested) and calls chapters. The hero becomes ~2 screens tall with a **pinned stage** (`position: sticky`); scrolling the extra screen is the **departure zone** (spec §5.4): name/tagline fade out over 0–30%, and an eased camera flies away from a **plain glowing sphere** sun, which stays whole and centred until it recedes. WebGL detection keeps the CSS gradient fallback; reduced motion or no WebGL → normal one-screen hero, one still frame; DPR capped at 2; rendering pauses when the tab is hidden or idle.
 
 **Acceptance criteria:**
-- [ ] Sun stays pinned and whole through the departure zone; scrolling smoothly moves the camera away from it; text stays readable on top
-- [ ] Unit tests cover departure-zone progress (0 at hero top, 1 when About arrives; text fade over 0–0.3)
-- [ ] WebGL disabled (devtools/flag) → gradient fallback, no console errors
-- [ ] Reduced motion → still frame, no animation loop running
+- [x] Sun stays pinned and whole through the departure zone; scrolling smoothly moves the camera away from it; text stays readable on top
+- [x] Unit tests cover departure-zone progress (0 at hero top, 1 when About arrives; text fade over 0–0.3)
+- [x] WebGL disabled (devtools/flag) → gradient fallback, no console errors
+- [x] Reduced motion → still frame, no animation loop running
 
 **Verification:**
-- [ ] `npm test` (director progress tests) and `npm run build`
-- [ ] Manual: Chrome Performance panel shows no long frames while scrolling on desktop; check on a real phone
+- [x] `npm test` (director progress tests) and `npm run build`
+- [x] Manual: Chrome Performance panel shows no long frames while scrolling on desktop
+- [ ] Manual: check on a real phone (needs you)
 
 **Dependencies:** T3
 **Files likely touched:** `src/scene/index.ts`, `src/scene/director.ts`, `src/scene/director.test.ts`, `src/scene/chapters/sun.ts`, `src/components/SceneCanvas.astro`

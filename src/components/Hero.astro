@@ -11,20 +11,29 @@ const { profile, lang } = Astro.props;
 ---
 
 <header class="hero" id="top">
-	<!-- CSS stand-in; the WebGL sun replaces it in Task 10. -->
-	<div class="hero__sun" aria-hidden="true"></div>
-	<div class="hero__text">
-		<h1>{profile.name}</h1>
-		<p class="hero__tagline">{profile.tagline[lang]}</p>
+	<!--
+		The stage is pinned while the hero's extra screen scrolls by (the "departure zone").
+		Pinning only happens with WebGL and motion allowed; otherwise the hero is one screen tall.
+	-->
+	<div class="hero__stage">
+		<!--
+			CSS sun: shown until the WebGL sun is ready (and for visitors without WebGL).
+			The 3D scene measures this element to place its sun in exactly the same spot.
+		-->
+		<div class="hero__sun" aria-hidden="true"></div>
+		<div class="hero__text" data-departure-fade>
+			<h1>{profile.name}</h1>
+			<p class="hero__tagline">{profile.tagline[lang]}</p>
+		</div>
+		<a class="hero__hint" href="#about" data-departure-fade>
+			{ui.scrollHint[lang]}
+			<span aria-hidden="true">↓</span>
+		</a>
 	</div>
-	<a class="hero__hint" href="#about">
-		{ui.scrollHint[lang]}
-		<span aria-hidden="true">↓</span>
-	</a>
 </header>
 
 <style>
-	.hero {
+	.hero__stage {
 		position: relative;
 		min-height: 100svh;
 		display: grid;
@@ -34,6 +43,19 @@ const { profile, lang } = Astro.props;
 		padding: var(--gutter);
 		padding-bottom: 2rem;
 		text-align: center;
+	}
+
+	/* Departure zone: only with WebGL (class set before first paint) and motion allowed. */
+	@media (prefers-reduced-motion: no-preference) {
+		:global(.webgl) .hero {
+			height: 200svh;
+		}
+
+		:global(.webgl) .hero__stage {
+			position: sticky;
+			top: 0;
+			height: 100svh;
+		}
 	}
 
 	.hero__sun {
@@ -57,6 +79,12 @@ const { profile, lang } = Astro.props;
 		box-shadow:
 			0 0 calc(var(--size) * 0.12) calc(var(--size) * 0.04) rgba(255, 170, 70, 0.55),
 			0 0 calc(var(--size) * 0.45) calc(var(--size) * 0.12) var(--sun-glow);
+		transition: opacity 0.6s ease;
+	}
+
+	/* Hidden (but still measurable) once the WebGL sun has drawn its first frame. */
+	:global(.scene-ready) .hero__sun {
+		opacity: 0;
 	}
 
 	/* Soft, borderless haze behind the text: dims the sun without boxing it in. */
@@ -73,6 +101,10 @@ const { profile, lang } = Astro.props;
 			transparent 100%
 		);
 		text-shadow: 0 2px 18px rgba(3, 4, 12, 0.7);
+	}
+
+	[data-departure-fade] {
+		opacity: var(--departure-fade, 1);
 	}
 
 	h1 {

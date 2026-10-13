@@ -1,0 +1,51 @@
+---
+// The 3D scene's canvas. It sits behind all content; the scene code loads only
+// after the page has loaded, and only if the WebGL check in <head> passed.
+---
+
+<canvas class="scene-canvas" aria-hidden="true"></canvas>
+
+<script>
+	const root = document.documentElement;
+	const canvas = document.querySelector<HTMLCanvasElement>('.scene-canvas');
+
+	if (canvas && root.classList.contains('webgl')) {
+		const start = () =>
+			import('../scene/index')
+				.then(({ startScene }) => startScene(canvas))
+				.catch((error) => {
+					// Fall back to the CSS sun and a normal one-screen hero.
+					console.error('3D scene failed to start:', error);
+					root.classList.remove('webgl', 'scene-ready');
+				});
+
+		if (document.readyState === 'complete') start();
+		else addEventListener('load', start, { once: true });
+	}
+</script>
+
+<style>
+	.scene-canvas {
+		display: none;
+		position: fixed;
+		inset: 0;
+		width: 100%;
+		height: 100vh;
+		z-index: -1;
+		pointer-events: none;
+	}
+
+	:global(.webgl) .scene-canvas {
+		display: block;
+	}
+
+	/* No flight under reduced motion: the canvas scrolls away with the hero instead. */
+	@media (prefers-reduced-motion: reduce) {
+		.scene-canvas {
+			position: absolute;
+			height: 100svh;
+			/* Fade the bottom so the sun's glow doesn't end in a hard line. */
+			mask-image: linear-gradient(to bottom, black 75%, transparent);
+		}
+	}
+</style>
