@@ -66,7 +66,7 @@ T10 needs only T3 (sections to observe), so the sun (T10–T11b) runs before the
 ### Phase 4 — Projects from GitHub
 - [x] T6: Fetch tagged repos at build time → plain project list; daily cron
 - [x] T7: Journey constellation with star links and cards
-- [ ] T8: Turkish project description overrides
+- [x] T8: Turkish project description overrides
 - [ ] T9: Playwright smoke test in CI
 
 ### Checkpoint 4

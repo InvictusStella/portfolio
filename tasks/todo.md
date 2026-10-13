@@ -214,11 +214,11 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 **Description:** Optional `project-overrides.ts` mapping `repoName → { tr }`; the Turkish page uses the override and otherwise falls back to the GitHub text.
 
 **Acceptance criteria:**
-- [ ] Unit test: override used on `tr`, ignored on `en`, fallback when missing
-- [ ] `/tr/` shows an overridden description for one real repo
+- [x] Unit test: override used on `tr`, ignored on `en`, fallback when missing
+- [x] `/tr/` shows an overridden description (verified with sample data; no real repos tagged yet)
 
 **Verification:**
-- [ ] `npm test && npm run build`; inspect `/tr/`
+- [x] `npm test && npm run build`; inspect `/tr/`
 
 **Dependencies:** T5, T7
 **Files likely touched:** `src/content/project-overrides.ts`, `src/lib/github.ts`, `src/lib/github.test.ts`
