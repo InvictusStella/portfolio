@@ -66,6 +66,11 @@ jobs:
           # public repos with a higher rate limit. Nothing to set up.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # The real build can look different from the sample one (e.g. no tagged repos yet),
+      # so check it loads without errors too before deploying it.
+      - name: Check the real build loads without errors
+        run: npx playwright test -g "without errors"
+
       - name: Upload the built site
         uses: actions/upload-pages-artifact@v5
         with:

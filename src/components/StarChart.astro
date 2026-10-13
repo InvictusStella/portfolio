@@ -81,7 +81,8 @@ const linePoints = points.map((p) => `${p.x.toFixed(4)},${p.y.toFixed(4)}`).join
 	const closeAll = (except?: Element) =>
 		items().forEach((item) => item !== except && item.classList.remove('is-open'));
 
-	for (const star of document.querySelectorAll<HTMLAnchorElement>('.chart .star')) {
+	// Only real project stars (the empty-state placeholder is also a .star, but has no card).
+	for (const star of document.querySelectorAll<HTMLAnchorElement>('.chart__item > a.star')) {
 		const item = star.closest<HTMLElement>('.chart__item')!;
 		star.addEventListener('click', (event) => {
 			if (!noHover.matches || item.classList.contains('is-open')) return;
