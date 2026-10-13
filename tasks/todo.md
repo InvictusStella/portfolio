@@ -76,12 +76,12 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 **Description:** Add the vertical experience timeline under About, and the fixed bottom-right `CV ↓` button that downloads `public/cv.pdf`.
 
 **Acceptance criteria:**
-- [ ] Timeline renders entries (role, place, dates, sentence) from `profile.ts`; looks fine with 1 entry
-- [ ] CV button visible at every scroll position, downloads `cv.pdf`, has an accessible label
-- [ ] Button doesn't cover content on phone widths
+- [x] Timeline renders entries (role, place, dates, sentence) from `profile.ts`; looks fine with 1 entry
+- [x] CV button visible at every scroll position, downloads `cv.pdf`, has an accessible label
+- [x] Button doesn't cover content on phone widths
 
 **Verification:**
-- [ ] Build passes; manual click-to-download on desktop and phone width
+- [x] Build passes; manual click-to-download on desktop and phone width
 
 **Dependencies:** T3
 **Files likely touched:** `src/components/Timeline.astro`, `src/components/CvButton.astro`, `public/cv.pdf`, `src/pages/index.astro`
