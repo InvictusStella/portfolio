@@ -31,10 +31,10 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 
 ### Task 2: Deploy pipeline to GitHub Pages
 
-**Description:** Add a GitHub Actions workflow that runs check → test → build → deploy to Pages on push to `main` and on manual trigger. Includes the human steps: create the `InvictusStella.github.io` repo, push, set Pages source to "GitHub Actions".
+**Description:** Add a GitHub Actions workflow that runs check → test → build → deploy to Pages on push to `main` and on manual trigger. Sets Astro `site` + `base: "/portfolio"` (repo is `InvictusStella/portfolio`). Human step: set Pages source to "GitHub Actions".
 
 **Acceptance criteria:**
-- [ ] Pushing to `main` deploys the Hello page to https://invictusstella.github.io
+- [ ] Pushing to `main` deploys the Hello page to https://invictusstella.github.io/portfolio/
 - [ ] A failing test stops the deploy (verified once by intentionally breaking a test on a branch)
 - [ ] "Run workflow" button works
 

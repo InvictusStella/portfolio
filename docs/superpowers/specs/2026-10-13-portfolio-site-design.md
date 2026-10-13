@@ -13,7 +13,7 @@ A personal portfolio site for a newly graduated software engineer. It is three t
 3. **A learning project** — I build and deploy it myself, end to end.
 
 **Success looks like:**
-- The site is live at `https://invictusstella.github.io` in English and Turkish.
+- The site is live at `https://invictusstella.github.io/portfolio/` in English and Turkish.
 - Tagging a GitHub repo `portfolio` makes it appear on the star chart within 24 hours, with no code change.
 - A recruiter can download the CV in one click from anywhere on the page.
 - The page is readable and usable with no WebGL, with reduced motion, and by keyboard.
@@ -26,7 +26,7 @@ A personal portfolio site for a newly graduated software engineer. It is three t
 |---|---|---|
 | Framework | **Astro** + **TypeScript** | Outputs static HTML (fits GitHub Pages); ships no JS unless asked. |
 | 3D | **Three.js** (plain, no React) | Only one canvas and a few interactive bits; React would add a layer without solving a problem. |
-| Hosting | **GitHub Pages**, repo `InvictusStella.github.io` | Free; that repo name serves at the root address. |
+| Hosting | **GitHub Pages**, repo `InvictusStella/portfolio` → `https://invictusstella.github.io/portfolio/` | Free. Astro `base: "/portfolio"` prefixes every URL; renaming the repo to `InvictusStella.github.io` later would move it to the root (one config line). |
 | CI/CD | **GitHub Actions** | Builds, tests and deploys; also refreshes project data on a schedule. |
 | Tests | **Vitest** (unit), **Playwright** (one smoke test), `astro check` (types) | Proportionate to project size. |
 
@@ -108,7 +108,7 @@ Build order within the task: plain glowing sphere first, then add 1–4.
 
 ## 6. Internationalisation (EN / TR)
 
-- Two static versions via Astro i18n routing: **English at `/`** (default), **Turkish at `/tr/`**.
+- Two static versions via Astro i18n routing: **English at `/`** (default), **Turkish at `/tr/`** (paths relative to the base, i.e. `/portfolio/` and `/portfolio/tr/`).
 - `<html lang>` set correctly per page. No automatic redirect by browser language.
 - The toggle preserves the current section (e.g. `#projects` → `/tr/#projects`).
 - **Hand-written content** lives in `src/content/profile.ts` with every text as `{ en, tr }`. The types require both, so a missing translation fails the build.

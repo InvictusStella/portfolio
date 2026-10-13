@@ -5,7 +5,7 @@ Detailed tasks: [tasks/todo.md](todo.md)
 
 ## Overview
 
-A single-page, space-themed portfolio built with Astro + TypeScript, deployed to GitHub Pages at `https://invictusstella.github.io` via GitHub Actions. English at `/` and Turkish at `/tr/`. A fixed Three.js canvas plays a continuous scroll-driven flight from a sun (hero), through deep space (about, skills, experience), to a star chart. On the chart, each GitHub repo tagged `portfolio` is an HTML star in one chronological constellation. Project data is fetched at build time; a daily scheduled build keeps it fresh.
+A single-page, space-themed portfolio built with Astro + TypeScript, deployed to GitHub Pages at `https://invictusstella.github.io/portfolio/` (repo `InvictusStella/portfolio`) via GitHub Actions. English at `/` and Turkish at `/tr/`. A fixed Three.js canvas plays a continuous scroll-driven flight from a sun (hero), through deep space (about, skills, experience), to a star chart. On the chart, each GitHub repo tagged `portfolio` is an HTML star in one chronological constellation. Project data is fetched at build time; a daily scheduled build keeps it fresh.
 
 ## Architecture Decisions
 
@@ -45,7 +45,7 @@ T10 needs only T3 (sections to observe). The 3D track (T10–T13) can run in par
 - [ ] T2: Deploy pipeline to GitHub Pages
 
 ### Checkpoint 1
-- [ ] "Hello" page live at https://invictusstella.github.io, deployed by Actions
+- [ ] "Hello" page live at https://invictusstella.github.io/portfolio/, deployed by Actions
 
 ### Phase 2 — Content (no 3D)
 - [ ] T3: English page: hero, about, footer on a gradient background
