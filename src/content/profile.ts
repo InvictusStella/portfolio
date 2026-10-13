@@ -38,8 +38,8 @@ export const profile: Profile = {
   name: 'Muhammed Kaan Uman',
   initials: 'KU',
   tagline: {
-    en: 'Software engineer — backend systems, cloud and machine learning.',
-    tr: 'Yazılım mühendisi — backend sistemleri, bulut ve makine öğrenmesi.',
+    en: "Let's build the future together.",
+    tr: 'Geleceği birlikte inşa edelim.',
   },
   bio: {
     en:
@@ -71,11 +71,13 @@ export const profile: Profile = {
     },
     {
       label: { en: 'AI & ML', tr: 'Yapay zekâ ve ML' },
-      skills: ['Gemini API', 'LLM integration', 'TensorFlow / Keras', 'MediaPipe', 'OpenCV'],
+      skills: ['Gemini API', 'LLM integration', 'TensorFlow / Keras', 'MediaPipe', 'OpenCV', 'Claude', 'AI Assisted Development'],
     },
     { label: { en: 'Tools', tr: 'Araçlar' }, skills: ['Git', 'Postman', 'Ollama'] },
   ],
-  hobbies: [{ en: 'Space & astronomy', tr: 'Uzay ve astronomi' }],
+  hobbies: [{ en: 'Space & astronomy', tr: 'Uzay ve astronomi' }, {en: 'Bodybuilding', tr: 'Vücut Geliştirme'},
+    {en: 'Video Games', tr:'Video Oyunları'}
+  ],
   experience: [
     {
       role: { en: 'Backend Development Intern', tr: 'Backend Geliştirme Stajyeri' },
