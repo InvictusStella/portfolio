@@ -99,12 +99,12 @@ Build order: plain glowing sphere first (T10), then 1–4 (T11), then 5 (its own
 
 | Departure progress | What happens |
 |---|---|
-| 0–30% | Name and tagline fade out; the sun holds its place (it begins to shrink). |
-| 30–85% | The sun **rises and shrinks**, leaving through the top edge (about a third of its start size as it exits). **Big lightspeed jump** (T15) builds over this stretch. |
-| 55% → end of page | Only the sun's **light** remains: a warm glow from the top edge, fading in as the sun leaves and dimming gently (to ~30%) towards the bottom of the page. |
+| 0–35% | Name and tagline fade out (by 30%); the sun holds its place (it begins to shrink). |
+| 35–100% | The sun **rises and shrinks** — slowly at first, faster at the end — and leaves through the top edge exactly as the departure ends (about a quarter of its start size). **Big lightspeed jump** (T15) builds over this stretch. |
+| 75% → end of page | Only the sun's **light** remains: a warm glow from the top edge, fading in as the sun leaves and dimming gently (to ~30%) towards the bottom of the page. |
 | End | Streaks settle as About arrives in deep space. |
 
-**Sun size:** `min(90vw, 88svh, 56rem)` — +40% on large screens, as much as fits on laptops (never taller than 88% of the screen), +15% on phones. Its centre is **golden** rather than white-hot so the text shadow can stay soft and still meet WCAG AA (measured ≥ 4.8:1 for the tagline on laptop, monitor and phone).
+**Sun size:** `min(90vw, 72svh, 56rem)`, centred — as big as fits with its corona fully on screen (never taller than 72% of the screen height); +15% on phones, up to +40% on large screens. Its centre is **golden** rather than white-hot so the text shadow can stay soft and still meet WCAG AA (measured ≥ 4.8:1 for the tagline on laptop, monitor and phone).
 
 **Lightspeed jumps.** Two jumps, of different sizes:
 - **Hero → About: big** (the departure zone above).

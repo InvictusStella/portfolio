@@ -40,7 +40,7 @@ describe('sunScale', () => {
   });
 
   it('is still clearly visible when it leaves the screen (not a dot)', () => {
-    expect(sunScale(0.85)).toBeGreaterThan(0.25);
+    expect(sunScale(1)).toBeGreaterThan(0.2);
   });
 });
 
@@ -49,18 +49,25 @@ describe('sunScreenY', () => {
   const startY = 400;
   const diameter = 700;
 
-  it('stays put while the name fades (first 30%)', () => {
+  it('stays put while the name fades and a little after (first 35%)', () => {
     expect(sunScreenY(0, startY, diameter)).toBe(startY);
-    expect(sunScreenY(0.3, startY, diameter)).toBe(startY);
+    expect(sunScreenY(0.35, startY, diameter)).toBe(startY);
   });
 
-  it('rises as the departure continues', () => {
-    expect(sunScreenY(0.6, startY, diameter)).toBeLessThan(startY);
+  it('rises slowly at first, then faster', () => {
+    const early = startY - sunScreenY(0.5, startY, diameter);
+    const late = sunScreenY(0.85, startY, diameter) - sunScreenY(1, startY, diameter);
+    expect(early).toBeGreaterThan(0);
+    expect(late).toBeGreaterThan(early);
   });
 
-  it('is entirely above the top edge, glow included, by 85%', () => {
-    const y = sunScreenY(0.85, startY, diameter);
-    const glowRadius = (diameter / 2) * sunScale(0.85) * 2;
+  it('still shows its centre at 85% of the departure', () => {
+    expect(sunScreenY(0.85, startY, diameter)).toBeGreaterThan(0);
+  });
+
+  it('is entirely above the top edge, glow included, at the end of the departure', () => {
+    const y = sunScreenY(1, startY, diameter);
+    const glowRadius = (diameter / 2) * sunScale(1) * 2;
     expect(y + glowRadius).toBeLessThan(0);
   });
 });
@@ -75,17 +82,18 @@ describe('sunOnScreen', () => {
 
   it('is on screen while it rises', () => {
     expect(sunOnScreen(0.6, startY, diameter)).toBe(true);
+    expect(sunOnScreen(0.85, startY, diameter)).toBe(true);
   });
 
   it('is off screen once it has left through the top', () => {
-    expect(sunOnScreen(0.85, startY, diameter)).toBe(false);
     expect(sunOnScreen(1, startY, diameter)).toBe(false);
   });
 });
 
 describe('sunlightOpacity', () => {
-  it('is off while the sun itself is on screen', () => {
+  it('is off while the sun itself is clearly on screen', () => {
     expect(sunlightOpacity(0.5, 0)).toBe(0);
+    expect(sunlightOpacity(0.7, 0)).toBe(0);
   });
 
   it('is fully on once the sun has left the screen', () => {

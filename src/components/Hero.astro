@@ -61,13 +61,13 @@ const { profile, lang } = Astro.props;
 	}
 
 	.hero__sun {
-		--size: min(90vw, 88svh, 56rem); /* +40% on large screens, as much as fits on laptops, +15% on phones */
+		--size: min(90vw, 72svh, 56rem); /* bigger on large screens; always leaves room for the corona above and the hint below */
 		position: absolute;
 		top: 50%;
 		left: 50%;
 		width: var(--size);
 		height: var(--size);
-		translate: -50% -55%; /* sits a little high, leaving room for the scroll hint below it */
+		translate: -50% -50%;
 		border-radius: 50%;
 		/* Bright centre, darker redder edge ("limb darkening") so it reads as a sphere. */
 		background: radial-gradient(

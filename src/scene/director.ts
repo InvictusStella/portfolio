@@ -37,12 +37,14 @@ export function sunScale(progress: number): number {
 
 /**
  * Vertical screen position (px from the top) of the sun's centre.
- * It holds still while the name fades (0–30%), then rises and is fully off the
- * top edge, glow included, by 85%.
+ * It holds still while the name fades (0–35%), then rises — slowly at first,
+ * faster at the end — and is fully off the top edge, glow included, exactly as
+ * the departure ends.
  */
 export function sunScreenY(progress: number, startY: number, startDiameter: number): number {
-  const exitY = -(startDiameter / 2) * sunScale(0.85) * GLOW_REACH * 1.05; // 5% margin: clearly gone
-  return startY + (exitY - startY) * smoothstep(0.3, 0.85, progress);
+  const exitY = -(startDiameter / 2) * sunScale(1) * GLOW_REACH * 1.05; // 5% margin: clearly gone
+  const t = clamp01((progress - 0.35) / 0.65);
+  return startY + (exitY - startY) * t * t; // ease-in: lingers, then leaves
 }
 
 /** Whether any part of the sun, glow included, is still inside the screen. */
@@ -58,7 +60,7 @@ export function sunOnScreen(progress: number, startY: number, startDiameter: num
  */
 export function sunlightOpacity(departure: number, pageProgress: number): number {
   // Comes in while the sun is leaving through the top, so there is no dark gap.
-  const sunGone = smoothstep(0.55, 0.85, departure);
+  const sunGone = smoothstep(0.75, 1, departure);
   const depth = 1 - 0.7 * smoothstep(0.35, 1, pageProgress);
   return sunGone * depth;
 }
