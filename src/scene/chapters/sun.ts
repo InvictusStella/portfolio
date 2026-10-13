@@ -145,7 +145,6 @@ function glowTexture(): THREE.CanvasTexture {
 	ctx.fillStyle = g;
 	ctx.fillRect(0, 0, size, size);
 	const texture = new THREE.CanvasTexture(canvas);
-	texture.colorSpace = THREE.SRGBColorSpace;
 	return texture;
 }
 

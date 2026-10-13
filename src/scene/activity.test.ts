@@ -7,6 +7,12 @@ const fromHorizontal = (angle: number) => {
   return Math.min(a, Math.PI - a);
 };
 const KEEP_OUT = (25 * Math.PI) / 180;
+/** Angle (radians) from straight down, 0..π. */
+const fromBottom = (angle: number) => {
+  const a = Math.atan2(Math.sin(angle), Math.cos(angle)); // -π..π
+  return Math.abs(a + Math.PI / 2) > Math.PI ? 2 * Math.PI - Math.abs(a + Math.PI / 2) : Math.abs(a + Math.PI / 2);
+};
+const HINT_KEEP_OUT = (30 * Math.PI) / 180;
 const times = Array.from({ length: 2000 }, (_, i) => i * 0.37); // ~12 minutes of samples
 
 describe('prominenceState', () => {
@@ -21,6 +27,24 @@ describe('prominenceState', () => {
         if (p.life > 0) expect(fromHorizontal(p.angle)).toBeGreaterThanOrEqual(KEEP_OUT - 1e-9);
       }
     }
+  });
+
+  it('keeps its whole span (both feet) out of the name band and away from the scroll hint below', () => {
+    for (let i = 0; i < PROMINENCE_COUNT; i++) {
+      for (const t of times) {
+        const p = prominenceState(i, t);
+        if (p.life <= 0) continue;
+        for (const edge of [p.angle - p.width, p.angle, p.angle + p.width]) {
+          expect(fromHorizontal(edge)).toBeGreaterThanOrEqual(KEEP_OUT - 1e-9);
+          expect(fromBottom(edge)).toBeGreaterThanOrEqual(HINT_KEEP_OUT - 1e-9);
+        }
+      }
+    }
+  });
+
+  it('still appears on the lower half sometimes (not only on top)', () => {
+    const lower = times.filter((t) => Math.sin(prominenceState(1, t).angle) < 0).length;
+    expect(lower).toBeGreaterThan(0);
   });
 
   it('keeps its size in a sensible range (arcs, not giant loops)', () => {
@@ -69,7 +93,10 @@ describe('flareState', () => {
     for (let i = 0; i < FLARE_COUNT; i++) {
       for (const t of times) {
         const f = flareState(i, t);
-        if (f.strength > 0) expect(fromHorizontal(f.angle)).toBeGreaterThanOrEqual(KEEP_OUT - 1e-9);
+        if (f.strength > 0) {
+          expect(fromHorizontal(f.angle)).toBeGreaterThanOrEqual(KEEP_OUT - 1e-9);
+          expect(fromBottom(f.angle)).toBeGreaterThanOrEqual(HINT_KEEP_OUT - 1e-9);
+        }
       }
     }
   });

@@ -35,6 +35,9 @@
 		height: 100vh;
 		z-index: -1;
 		pointer-events: none;
+		/* The scene is light on black: "screen" adds its light to the page and lets the
+		   background gradient show through wherever the scene is dark (bloom makes the canvas opaque). */
+		mix-blend-mode: screen;
 	}
 
 	:global(.webgl) .scene-canvas {

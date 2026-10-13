@@ -1,4 +1,7 @@
 import * as THREE from 'three';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { BOUNDS, createDeepSpace } from './chapters/deepSpace';
 import { createSun, SUN_RADIUS } from './chapters/sun';
 import {
@@ -31,10 +34,19 @@ export async function startScene(canvas: HTMLCanvasElement) {
 	const projects = document.getElementById('projects');
 
 	const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+	// Our shaders already output display-ready colours: don't convert them again.
+	renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
 	renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 
 	const scene = new THREE.Scene();
 	const camera = new THREE.PerspectiveCamera(FOV, 1, 0.1, 2000);
+
+	// Bloom: the brightest parts (active regions, flares, prominences, bright stars) glare softly.
+	// Only light above the threshold glows, so the sun's darker surface stays crisp.
+	const composer = new EffectComposer(renderer);
+	composer.addPass(new RenderPass(scene, camera));
+	const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.55, 0.45, 0.72);
+	composer.addPass(bloom);
 	const small = innerWidth < 640;
 	const deepSpace = createDeepSpace({ small });
 	scene.add(deepSpace.object);
@@ -61,6 +73,8 @@ export async function startScene(canvas: HTMLCanvasElement) {
 		const width = canvas.clientWidth;
 		const height = canvas.clientHeight;
 		renderer.setSize(width, height, false);
+		composer.setPixelRatio(renderer.getPixelRatio());
+		composer.setSize(width, height);
 		deepSpace.setPixelRatio(renderer.getPixelRatio());
 		camera.aspect = width / height;
 		camera.updateProjectionMatrix();
@@ -111,7 +125,7 @@ export async function startScene(canvas: HTMLCanvasElement) {
 		deepSpace.update(scrolled, deepSpaceOpacity(progress), chartCalm(projectsTop, height));
 		streaks.update(jump.strength, jump.radial, velocity, deepSpaceOpacity(progress));
 
-		renderer.render(scene, camera);
+		composer.render();
 	}
 
 	// Sunrise intro (first visit only; the page head decided, before first paint).

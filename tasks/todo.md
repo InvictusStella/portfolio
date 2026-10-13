@@ -357,7 +357,7 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 
 ### Task P3: Bloom
 **Acceptance criteria:**
-- [ ] Bright regions, flares and stars glare softly; text unaffected (it's HTML)
+- [x] Bright regions, flares and stars glare softly; text unaffected (it's HTML)
 **Files:** `src/scene/index.ts`
 
 ### Task P4: Prominences v2
