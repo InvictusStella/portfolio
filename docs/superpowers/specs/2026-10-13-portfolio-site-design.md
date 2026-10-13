@@ -36,7 +36,7 @@ A personal portfolio site for a newly graduated software engineer. It is three t
 
 A single continuous page. A fixed WebGL `<canvas>` sits behind all content; content is ordinary HTML that scrolls over it.
 
-1. **Hero** — a large sun centred in the viewport; name and one-line tagline centred on top of it over a soft, borderless dark haze (no box edges) so the text stays readable without hiding the sun; "scroll ↓" hint below. Plays the sunrise intro (§5.3).
+1. **Hero** — the sun is the **centrepiece of the site**: large, whole (never cropped), centred, and alive (§5.2). Name and one-line tagline centred on top of it over a soft, borderless 55% dark haze (meets WCAG AA for the tagline); "scroll ↓" hint below. Plays the sunrise intro (§5.3). With WebGL and motion allowed, the hero is ~2 screens tall: a **pinned stage** holds the sun in place while the extra screen of scrolling is the **departure zone** that flies you away from it (§5.4). Otherwise it is a normal one-screen section.
 2. **About** — text floats directly in space (no card borders or backgrounds; a soft text shadow keeps it readable over the scene), in a column offset to the left of the page. Contains photo, about-me paragraph, skills (labelled chips, no percentage bars), hobbies, then an **experience timeline** (vertical line; each entry: role, place, dates, one sentence).
 3. **Star chart** — short heading, then the **journey constellation** (§4).
 4. **Edge footer** — contact links (GitHub, LinkedIn, email) and a one-line sign-off.
@@ -66,7 +66,7 @@ A single continuous page. A fixed WebGL `<canvas>` sits behind all content; cont
 
 | Chapter | Draws | Technique |
 |---|---|---|
-| `sun` | The sun (hero) | Sphere + noise fragment shader; glow sprite; no bloom post-processing. |
+| `sun` | The sun (hero) — the site's centrepiece | Sphere + noise fragment shader; corona shell; flares/prominences; glow sprite; no bloom post-processing. |
 | `deepSpace` | Dust/stars with depth, faint nebula (about) | One instanced/points draw call; a few soft nebula layers; parallax from camera motion. |
 | `starField` | Dim, calm sky behind the constellation | Same points technique, sparser. |
 
@@ -75,13 +75,15 @@ A single continuous page. A fixed WebGL `<canvas>` sits behind all content; cont
 
 ### 5.2 Sun detail (in order)
 
+The sun must feel **alive — churning and flaring**, not a static ball. The CSS sun in the page today is a stand-in only.
+
 1. Surface granulation (animated noise).
 2. Limb darkening (edges darker/redder).
 3. Corona (slightly larger rim-glow shell, slowly shifting).
 4. Sunspots (a few slow dark patches).
-5. *(Later, optional task)* Prominences / flares.
+5. **Prominences and flares** — glowing plasma arcs looping off the limb, plus occasional brighter flare bursts. **Required** (its own task).
 
-Build order within the task: plain glowing sphere first, then add 1–4.
+Build order: plain glowing sphere first (T10), then 1–4 (T11), then 5 (its own task).
 
 ### 5.3 Sunrise intro
 
@@ -91,11 +93,23 @@ Build order within the task: plain glowing sphere first, then add 1–4.
 - Skipped entirely under reduced motion.
 - Content is present in the HTML from the start; the intro only animates its reveal.
 
-### 5.4 Lightspeed transitions
+### 5.4 Departure zone and lightspeed jumps
 
-- In the transition zones between sections, the existing particles are **stretched into streaks** along the travel direction, scaled by **scroll velocity**; slight FOV widening and a faint chromatic shift at the edges.
-- Streak length is **capped**, and the effect is limited to transition zones (motion-sickness guard).
-- Disabled under reduced motion.
+**Departure zone (hero).** The hero's sun stays pinned (`position: sticky`) for one extra screen of scrolling. Progress through that screen drives:
+
+| Departure progress | What happens |
+|---|---|
+| 0–30% | Name and tagline fade out; the sun begins to recede (shrinks, glow dims). |
+| 30–100% | **Big lightspeed jump**: streaks build up with scroll speed; the sun shrinks to a distant point behind you. |
+| End | Streaks settle as About arrives in deep space. |
+
+**Lightspeed jumps.** Two jumps, of different sizes:
+- **Hero → About: big** (the departure zone above).
+- **About → Star chart: small** — a shorter, gentler burst in the transition between the two sections.
+
+In both, the existing particles are **stretched into streaks** along the travel direction, scaled by **scroll velocity**, with slight FOV widening and a faint chromatic shift at the edges. Streak length is **capped** and the effect is confined to these two zones (motion-sickness guard).
+
+**Reduced motion or no WebGL:** no pinning, no departure zone, no streaks — the hero is a normal one-screen section.
 
 ### 5.5 Performance and fallbacks
 
@@ -161,7 +175,6 @@ GitHub REST API ─► fetchProjects() ─► toProject() ─► layoutConstella
 
 ## 11. Future (explicitly not now)
 
-- Sun prominences / flares (optional task after the core is done).
 - Replace non-hero chapters with separate cross-faded scenes.
 - Turkish CV (`cv-tr.pdf`) chosen by page language.
 - Custom domain.

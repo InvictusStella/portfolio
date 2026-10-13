@@ -186,10 +186,11 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 
 ### Task 10: Scene skeleton: canvas, director, camera flight, fallbacks
 
-**Description:** Fixed `<canvas>` behind the content; Three.js lazy-loaded after first paint. A director computes per-section progress (pure, unit-tested) and calls chapters. An eased camera flies outward from a **plain glowing sphere** sun. WebGL detection keeps the CSS gradient fallback; reduced motion renders one still frame; DPR capped at 2; rendering pauses when the tab is hidden or idle.
+**Description:** Fixed `<canvas>` behind the content; Three.js lazy-loaded after first paint. A director computes per-section progress (pure, unit-tested) and calls chapters. The hero becomes ~2 screens tall with a **pinned stage** (`position: sticky`); scrolling the extra screen is the **departure zone** (spec §5.4): name/tagline fade out over 0–30%, and an eased camera flies away from a **plain glowing sphere** sun, which stays whole and centred until it recedes. WebGL detection keeps the CSS gradient fallback; reduced motion or no WebGL → normal one-screen hero, one still frame; DPR capped at 2; rendering pauses when the tab is hidden or idle.
 
 **Acceptance criteria:**
-- [ ] Scrolling smoothly moves the camera away from the sun; text stays readable on top
+- [ ] Sun stays pinned and whole through the departure zone; scrolling smoothly moves the camera away from it; text stays readable on top
+- [ ] Unit tests cover departure-zone progress (0 at hero top, 1 when About arrives; text fade over 0–0.3)
 - [ ] WebGL disabled (devtools/flag) → gradient fallback, no console errors
 - [ ] Reduced motion → still frame, no animation loop running
 
@@ -217,6 +218,22 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 **Files likely touched:** `src/scene/chapters/sun.ts`, `src/scene/shaders/sun.frag.glsl`, `src/scene/shaders/corona.frag.glsl`
 **Estimated scope:** M
 **You'll learn:** fragment shaders, noise functions.
+
+### Task 11b: Sun prominences and flares
+
+**Description:** Make the sun feel alive: glowing plasma arcs looping off the limb that slowly rise and fade, plus occasional brighter flare bursts. Required — the sun is the site's centrepiece (spec §5.2).
+
+**Acceptance criteria:**
+- [ ] Several prominences visible around the limb at any time, each animating over seconds (rise, arc, fade)
+- [ ] Occasional flare bursts; never so bright or frequent that the hero text loses contrast
+- [ ] No measurable frame-rate drop vs T11 on desktop; acceptable on phone
+
+**Verification:**
+- [ ] Manual visual check desktop + phone; Performance panel comparison; re-check tagline contrast
+
+**Dependencies:** T11
+**Files likely touched:** `src/scene/chapters/sun.ts`, `src/scene/shaders/prominence.vert.glsl`, `src/scene/shaders/prominence.frag.glsl`
+**Estimated scope:** M
 
 ### Task 12: deepSpace chapter
 
@@ -273,10 +290,11 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 
 ### Task 15: Lightspeed streaks
 
-**Description:** In transition zones between sections, stretch particles into streaks scaled by (capped) scroll velocity, with slight FOV widening and edge chromatic shift. Off under reduced motion.
+**Description:** Two lightspeed jumps (spec §5.4): a **big** one through the hero's departure zone (30–100%) into About, and a **small** one between About and the star chart. Particles stretch into streaks scaled by (capped) scroll velocity, with slight FOV widening and edge chromatic shift. Off under reduced motion.
 
 **Acceptance criteria:**
-- [ ] Slow scroll = drift, fast flick = streaks; effect confined to transition zones
+- [ ] Hero → About jump is clearly bigger (longer, stronger streaks) than About → Star chart
+- [ ] Slow scroll = drift, fast flick = streaks; effect confined to the two jump zones
 - [ ] Streak length capped; nothing under reduced motion
 
 **Verification:**
@@ -297,28 +315,10 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 **Verification:**
 - [ ] Lighthouse reports for `/` and `/tr/`; full test suite green
 
-**Dependencies:** T11–T15
+**Dependencies:** T11, T11b, T12–T15
 **Files likely touched:** `src/scene/quality.ts`, `src/scene/index.ts`, plus whatever Lighthouse flags
 **Estimated scope:** S–M
 
 ## Checkpoint 5 — Complete
 - [ ] All spec success criteria met (spec §1)
 - [ ] Ready to share
-
----
-
-## Optional
-
-### Task 17: Sun prominences / flares
-
-**Description:** Animated plasma arcs looping off the sun's limb.
-
-**Acceptance criteria:**
-- [ ] Visible on the hero without frame-rate regression from T16
-
-**Verification:**
-- [ ] Manual visual + Performance panel
-
-**Dependencies:** T16
-**Files likely touched:** `src/scene/chapters/sun.ts`, `src/scene/shaders/prominence.*`
-**Estimated scope:** M

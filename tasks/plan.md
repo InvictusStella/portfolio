@@ -27,13 +27,13 @@ T1 Scaffold
          ├─ T6 GitHub fetch → project list ◄─────┼─────┘ (CI token, cron)
          │    └─ T7 Constellation + cards ───────┘
          │         └─ T9 E2E smoke test (needs T5, T7)
-         └─ T10 Scene skeleton (canvas, director, fallbacks)
+         └─ T10 Scene skeleton (canvas, director, pinned hero, fallbacks)
               ├─ T11 Sun details
+              │    ├─ T11b Prominences + flares
               │    └─ T14 Sunrise intro
               ├─ T12 deepSpace ─┐
-              ├─ T13 starField ─┴─ T15 Lightspeed streaks
+              ├─ T13 starField ─┴─ T15 Lightspeed jumps (big + small)
               └─ T16 Adaptive quality + perf pass (after T11–T15)
-                   └─ T17 (optional) Prominences
 ```
 
 T10 needs only T3 (sections to observe). The 3D track (T10–T13) can run in parallel with the projects track (T6–T9) if desired.
@@ -65,8 +65,9 @@ T10 needs only T3 (sections to observe). The 3D track (T10–T13) can run in par
 - [ ] Tag/untag a repo → site updates after "Run workflow"; all tests green in CI
 
 ### Phase 4 — The flight
-- [ ] T10: Scene skeleton: canvas, director, camera flight, fallbacks
+- [ ] T10: Scene skeleton: canvas, director, pinned hero + departure zone, fallbacks
 - [ ] T11: Sun surface details
+- [ ] T11b: Sun prominences and flares
 - [ ] T12: deepSpace chapter
 - [ ] T13: starField chapter
 
@@ -75,14 +76,11 @@ T10 needs only T3 (sections to observe). The 3D track (T10–T13) can run in par
 
 ### Phase 5 — Cinematic polish
 - [ ] T14: Sunrise intro
-- [ ] T15: Lightspeed streaks
+- [ ] T15: Lightspeed jumps (big hero → about, small about → projects)
 - [ ] T16: Adaptive quality and performance pass
 
 ### Checkpoint 5 — Complete
 - [ ] All spec success criteria met; Lighthouse checked; ready to share
-
-### Optional
-- [ ] T17: Sun prominences / flares
 
 ## Risks and Mitigations
 
@@ -90,10 +88,10 @@ T10 needs only T3 (sections to observe). The 3D track (T10–T13) can run in par
 |---|---|---|
 | First-time GitHub Pages / Actions setup fails in confusing ways | High | Done first (T2) with a trivial page; step-by-step walkthrough. |
 | Scroll-driven WebGL janky on phones | High | Fallbacks built in T3/T10; DPR cap and pause in T10; adaptive quality in T16; test on a real phone at Checkpoint 4. |
-| Sun shader harder than expected | Med | T10 ships a plain glowing sphere; T11 layers details one at a time, each kept only if it holds up. |
+| Sun shader harder than expected — and the sun is the centrepiece, so it must land | High | T10 ships a plain glowing sphere; T11 layers surface details one at a time, T11b adds flares; each step kept only if it holds up. |
 | HTML stars and SVG line misalign with the canvas on resize | Med | Stars and lines share one HTML/SVG layer, independent of the canvas; resize covered in the T7 manual check. |
 | GitHub API outage during scheduled build | Low | Build fails, Pages keeps the last good deploy (spec §9). |
-| Lightspeed effect causes motion sickness | Low | Capped length, transition zones only, off under reduced motion. |
+| Lightspeed effect causes motion sickness | Low | Capped length, only the two jump zones, off under reduced motion. |
 
 ## Open Questions (content needed from you; not blocking until the task that uses it)
 
