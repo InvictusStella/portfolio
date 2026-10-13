@@ -1,59 +1,103 @@
 import { describe, expect, it } from 'vitest';
-import { crossedDown, scrollDrive, WARP_ZONES, warpProgress, WARPS, warpState, warpStateAt } from './warp';
+import {
+  BEGIN_SECONDS,
+  crossedDown,
+  RETURN_SECONDS,
+  scrollDrive,
+  travelScroll,
+  WARP,
+  WARP_ZONE,
+  warpProgress,
+  warpState,
+  warpStateAt,
+} from './warp';
 
 describe('warpState', () => {
   it('starts calm', () => {
-    const s = warpState('big', 0);
+    const s = warpState(0);
     expect(s.stretch).toBe(0);
     expect(s.flash).toBe(0);
     expect(s.fov).toBe(0);
   });
 
   it('anticipates first: a slight stretch and a tighter view before the burst', () => {
-    const s = warpState('big', 0.2);
+    const s = warpState(0.2);
     expect(s.stretch).toBeGreaterThan(0);
     expect(s.stretch).toBeLessThan(0.25);
     expect(s.fov).toBeLessThan(0);
   });
 
   it('bursts into full-length streaks with a wide view', () => {
-    const s = warpState('big', 0.75);
+    const s = warpState(0.75);
     expect(s.stretch).toBeGreaterThan(0.9);
     expect(s.fov).toBeGreaterThan(8);
   });
 
   it('flashes near the end of the burst', () => {
-    const peak = Math.max(...[0.7, 0.75, 0.8, 0.85, 0.9].map((t) => warpState('big', t).flash));
+    const peak = Math.max(...[0.7, 0.75, 0.8, 0.85, 0.9].map((t) => warpState(t).flash));
     expect(peak).toBeGreaterThan(0.4);
-    expect(warpState('big', 0.3).flash).toBe(0);
+    expect(warpState(0.3).flash).toBe(0);
   });
 
   it('settles back to nothing and reports done', () => {
-    const end = warpState('big', WARPS.big.duration);
-    expect(end).toEqual({ stretch: 0, fov: 0, flash: 0, done: true });
-    expect(warpState('big', 10).done).toBe(true);
-  });
-
-  it('takes about 1.6 s for the big jump and 0.9 s for the small one', () => {
-    expect(WARPS.big.duration).toBeCloseTo(1.6, 5);
-    expect(WARPS.small.duration).toBeCloseTo(0.9, 5);
-  });
-
-  it('makes the small jump clearly gentler than the big one', () => {
-    const bigPeak = Math.max(...Array.from({ length: 33 }, (_, i) => warpState('big', i * 0.05).stretch));
-    const smallPeak = Math.max(...Array.from({ length: 19 }, (_, i) => warpState('small', i * 0.05).stretch));
-    expect(smallPeak).toBeGreaterThan(0.3);
-    expect(smallPeak).toBeLessThan(bigPeak * 0.7);
+    expect(warpState(WARP.duration)).toEqual({ stretch: 0, fov: 0, flash: 0, done: true });
+    expect(warpState(10).done).toBe(true);
   });
 
   it('never jumps abruptly (smooth from frame to frame)', () => {
-    for (const kind of ['big', 'small'] as const) {
-      let previous = warpState(kind, 0);
-      for (let t = 1 / 60; t <= WARPS[kind].duration + 0.1; t += 1 / 60) {
-        const now = warpState(kind, t);
-        expect(Math.abs(now.stretch - previous.stretch)).toBeLessThan(0.12);
-        previous = now;
-      }
+    let previous = warpState(0);
+    for (let t = 1 / 60; t <= WARP.duration + 0.1; t += 1 / 60) {
+      const now = warpState(t);
+      expect(Math.abs(now.stretch - previous.stretch)).toBeLessThan(0.12);
+      previous = now;
+    }
+  });
+});
+
+describe('warpStateAt (progress-based)', () => {
+  it('matches the timed version at the same point', () => {
+    expect(warpStateAt(0.5)).toEqual(warpState(WARP.duration * 0.5));
+  });
+
+  it('is done at 1', () => {
+    expect(warpStateAt(1).done).toBe(true);
+  });
+});
+
+describe('button warps', () => {
+  it('"Scroll to begin" takes 1.5 s — long enough to see', () => {
+    expect(BEGIN_SECONDS).toBe(1.5);
+  });
+
+  it('"Return to Sun" takes between 1.5 and 2 s', () => {
+    expect(RETURN_SECONDS).toBeGreaterThanOrEqual(1.5);
+    expect(RETURN_SECONDS).toBeLessThanOrEqual(2);
+  });
+});
+
+describe('travelScroll', () => {
+  it('starts where you are and ends at the destination', () => {
+    expect(travelScroll(100, 2000, 0)).toBe(100);
+    expect(travelScroll(100, 2000, 1)).toBe(2000);
+  });
+
+  it('eases: slow start, fast middle, gentle arrival', () => {
+    const early = travelScroll(0, 1000, 0.1);
+    const middle = travelScroll(0, 1000, 0.5);
+    expect(early).toBeLessThan(100); // slower than linear at first
+    expect(middle).toBeCloseTo(500, 6);
+  });
+
+  it('works going back up', () => {
+    expect(travelScroll(3000, 0, 0.5)).toBeCloseTo(1500, 6);
+    expect(travelScroll(3000, 0, 1)).toBe(0);
+  });
+
+  it('never overshoots', () => {
+    for (let u = 0; u <= 1; u += 0.01) {
+      const y = travelScroll(0, 1000, u);
+      expect(y).toBeGreaterThanOrEqual(0);
+      expect(y).toBeLessThanOrEqual(1000);
     }
   });
 });
@@ -63,7 +107,7 @@ describe('warpProgress', () => {
     expect(warpProgress(0.6, 0.2)).toBe(0.6);
   });
 
-  it('is pushed along by the scroll when you scroll fast, so it ends as the next section arrives', () => {
+  it('is pushed along by the scroll when you scroll fast', () => {
     expect(warpProgress(0.2, 0.9)).toBe(0.9);
   });
 
@@ -85,21 +129,11 @@ describe('scrollDrive', () => {
   });
 });
 
-describe('warpStateAt (progress-based)', () => {
-  it('matches the timed version at the same point', () => {
-    expect(warpStateAt('big', 0.5)).toEqual(warpState('big', WARPS.big.duration * 0.5));
-  });
-
-  it('is done at 1', () => {
-    expect(warpStateAt('small', 1).done).toBe(true);
-  });
-});
-
-describe('WARP_ZONES', () => {
-  it('starts the big warp right after the name has faded (30%) and ends it before About', () => {
-    expect(WARP_ZONES.big.start).toBeGreaterThanOrEqual(0.3);
-    expect(WARP_ZONES.big.start).toBeLessThan(0.4);
-    expect(WARP_ZONES.big.end).toBeLessThan(1);
+describe('WARP_ZONE', () => {
+  it('starts the sun warp right after the name has faded (30%) and ends it before About', () => {
+    expect(WARP_ZONE.start).toBeGreaterThanOrEqual(0.3);
+    expect(WARP_ZONE.start).toBeLessThan(0.4);
+    expect(WARP_ZONE.end).toBeLessThan(1);
   });
 });
 

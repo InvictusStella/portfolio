@@ -10,7 +10,7 @@ interface Props {
 const { profile, lang } = Astro.props;
 ---
 
-<header class="hero" id="top">
+<header class="hero" id="top" tabindex="-1">
 	<!--
 		The stage is pinned while the hero's extra screen scrolls by (the "departure zone").
 		Pinning only happens with WebGL and motion allowed; otherwise the hero is one screen tall.
@@ -25,7 +25,7 @@ const { profile, lang } = Astro.props;
 			<h1>{profile.name}</h1>
 			<p class="hero__tagline">{profile.tagline[lang]}</p>
 		</div>
-		<a class="hero__hint" href="#about" data-departure-fade>
+		<a class="hero__hint" href="#about" data-travel="about" data-departure-fade>
 			{ui.scrollHint[lang]}
 			<span aria-hidden="true">↓</span>
 		</a>

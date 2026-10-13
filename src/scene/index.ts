@@ -19,7 +19,18 @@ import {
 } from './director';
 import { createStreaks } from './effects/streaks';
 import { INTRO_PLAYED_KEY, introState } from './intro';
-import { crossedDown, scrollDrive, WARP_ZONES, WARPS, warpProgress, warpStateAt, type WarpKind, type WarpState } from './warp';
+import {
+	BEGIN_SECONDS,
+	crossedDown,
+	RETURN_SECONDS,
+	scrollDrive,
+	travelScroll,
+	WARP,
+	WARP_ZONE,
+	warpProgress,
+	warpStateAt,
+	type WarpState,
+} from './warp';
 
 const FOV = 45;
 /** How quickly the scene catches up with the scroll position (higher = snappier). */
@@ -74,14 +85,14 @@ export async function startScene(canvas: HTMLCanvasElement) {
 	let progress = 0;
 	/** Page scroll in px, eased like the departure so the star field glides. */
 	let scrolled = 0;
-	// Warp jumps: triggered when you scroll past a point (downward), whatever your speed.
+	// The warp. Either scroll-driven (leaving the sun: it advances by the clock or the scroll,
+	// whichever is further) or timed (the "begin" and "Return to Sun" buttons).
 	const IDLE: WarpState = { stretch: 0, fov: 0, flash: 0, done: true };
-	let warp: { kind: WarpKind; start: number } | null = null;
+	let warp: { start: number; duration: number; scrollDriven: boolean } | null = null;
 	let warpNow = IDLE;
-	/** How far the projects section has come up the screen (0 = at the bottom edge). */
-	const chartEntry = () => (projects ? (innerHeight - projects.getBoundingClientRect().top) / innerHeight : 0);
 	let lastDeparture = 0;
-	let lastChartEntry = 0;
+	// A button journey: the page glides to a destination in step with a timed warp.
+	let travel: { from: number; to: number; start: number; duration: number; destination: HTMLElement } | null = null;
 
 	function layout() {
 		const width = canvas.clientWidth;
@@ -188,24 +199,26 @@ export async function startScene(canvas: HTMLCanvasElement) {
 	function tick(now: number) {
 		const dt = Math.min((now - last) / 1000, 0.1);
 		last = now;
+		// A button journey moves the page itself, in step with its warp.
+		if (travel) {
+			const u = (now - travel.start) / 1000 / travel.duration;
+			scrollTo({ top: travelScroll(travel.from, travel.to, u), behavior: 'instant' });
+			if (u >= 1) finishTravel();
+		}
 		const target = targetProgress();
 		progress = damp(progress, target, EASE, dt);
 		if (Math.abs(progress - target) < 1e-4) progress = target;
 		scrolled = damp(scrolled, scrollY, EASE, dt);
-		// Start a warp when its zone is entered going down (one at a time). It then advances by
-		// the clock or the scroll, whichever is further, so it always ends before the next section.
-		const entry = chartEntry();
-		if (!reducedMotion && !warp) {
-			if (crossedDown(lastDeparture, target, WARP_ZONES.big.start)) warp = { kind: 'big', start: now };
-			else if (crossedDown(lastChartEntry, entry, WARP_ZONES.small.start)) warp = { kind: 'small', start: now };
+		// Leaving the sun: start the warp when its zone is entered going down. It then advances by
+		// the clock or the scroll, whichever is further, so it always ends before About arrives.
+		if (!reducedMotion && !warp && crossedDown(lastDeparture, target, WARP_ZONE.start)) {
+			warp = { start: now, duration: WARP.duration, scrollDriven: true };
 		}
 		lastDeparture = target;
-		lastChartEntry = entry;
 		if (warp) {
-			const zone = WARP_ZONES[warp.kind];
-			const byTime = (now - warp.start) / 1000 / WARPS[warp.kind].duration;
-			const byScroll = scrollDrive(warp.kind === 'big' ? target : entry, zone.start, zone.end);
-			warpNow = warpStateAt(warp.kind, warpProgress(byTime, byScroll));
+			const byTime = (now - warp.start) / 1000 / warp.duration;
+			const u = warp.scrollDriven ? warpProgress(byTime, scrollDrive(target, WARP_ZONE.start, WARP_ZONE.end)) : Math.min(1, byTime);
+			warpNow = warpStateAt(u);
 			if (warpNow.done) warp = null;
 		} else {
 			warpNow = IDLE;
@@ -214,7 +227,7 @@ export async function startScene(canvas: HTMLCanvasElement) {
 		updateIntro(now);
 		sun.update(now / 1000);
 		const settling = (progress !== target || scrolled !== scrollY) && !document.hidden;
-		const busy = settling || animating() || warp !== null;
+		const busy = settling || animating() || warp !== null || travel !== null;
 		const twinkle = twinkling();
 		if (busy || (twinkle && ++twinkleFrame % 2 === 0)) draw();
 		frame = busy || twinkle ? requestAnimationFrame(tick) : 0;
@@ -225,6 +238,31 @@ export async function startScene(canvas: HTMLCanvasElement) {
 		frame = requestAnimationFrame(tick);
 	}
 
+	/** Glide to `destination` over `seconds`, with a timed warp the whole way. */
+	function startTravel(destination: HTMLElement, seconds: number) {
+		const now = performance.now();
+		const to = destination.getBoundingClientRect().top + scrollY;
+		travel = { from: scrollY, to, start: now, duration: seconds, destination };
+		warp = { start: now, duration: seconds, scrollDriven: false };
+		wake();
+	}
+	function finishTravel() {
+		if (!travel) return;
+		// Like following a link: move keyboard focus to where we arrived.
+		travel.destination.focus({ preventScroll: true });
+		travel = null;
+	}
+	// Any input mid-journey hands control straight back (the warp still finishes on its own).
+	for (const type of ['wheel', 'touchstart', 'keydown'] as const) {
+		addEventListener(type, () => (travel = null), { passive: true });
+	}
+	// The page's buttons ask for a journey with this event (see TravelLink.astro).
+	addEventListener('portfolio:travel', (event) => {
+		const { to } = (event as CustomEvent<{ to: 'about' | 'top' }>).detail;
+		const destination = document.getElementById(to);
+		if (destination) startTravel(destination, to === 'top' ? RETURN_SECONDS : BEGIN_SECONDS);
+	});
+
 	layout();
 	// Compile every shader (including hidden ones, like the streaks) without blocking the
 	// page: the GPU driver works in the background while the page stays responsive.
@@ -233,7 +271,6 @@ export async function startScene(canvas: HTMLCanvasElement) {
 	progress = reducedMotion ? 0 : targetProgress();
 	// Start from where the page is, so loading mid-page never fires a warp.
 	lastDeparture = targetProgress();
-	lastChartEntry = chartEntry();
 	scrolled = reducedMotion ? 0 : scrollY;
 	sun.update(reducedMotion ? 30 : performance.now() / 1000);
 	draw();

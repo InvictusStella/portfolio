@@ -61,6 +61,33 @@ test('the name can be selected while visible, but not once it has faded away', a
 	await expect(page.getByRole('heading', { level: 1 })).toBeAttached();
 });
 
+test('"Scroll to begin the journey" glides to About over about 1.5 s', async ({ page }) => {
+	await page.goto('./');
+	const scene = await page.evaluate(() => document.documentElement.classList.contains('webgl'));
+	test.skip(!scene, 'The warp journey needs the 3D scene');
+	await page.waitForFunction(() => document.documentElement.classList.contains('scene-ready'));
+	const start = Date.now();
+	await page.getByRole('link', { name: /Scroll to begin the journey/ }).click();
+	// Not an instant jump: half a second in, we're still on the way.
+	await page.waitForTimeout(500);
+	const midway = await page.evaluate(() => document.getElementById('about')!.getBoundingClientRect().top);
+	expect(midway).toBeGreaterThan(50);
+	// Then it arrives at About.
+	await page.waitForFunction(() => Math.abs(document.getElementById('about')!.getBoundingClientRect().top) < 2, null, { timeout: 5000 });
+	expect(Date.now() - start).toBeGreaterThan(1300);
+});
+
+test('"Return to Sun" appears after the hero and takes you back to the top', async ({ page }) => {
+	await page.goto('./');
+	const returnLink = page.getByRole('link', { name: /Return to Sun/ });
+	await expect(returnLink).toBeHidden();
+	await page.evaluate(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'instant' }));
+	await expect(returnLink).toBeVisible();
+	await returnLink.click();
+	await page.waitForFunction(() => window.scrollY < 2, null, { timeout: 5000 });
+	await expect(page.getByRole('heading', { level: 1 })).toBeInViewport();
+});
+
 test('the page loads without errors', async ({ page }) => {
 	const errors: string[] = [];
 	page.on('pageerror', (error) => errors.push(error.message));

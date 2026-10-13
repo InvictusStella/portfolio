@@ -5,6 +5,7 @@ import CvButton from './CvButton.astro';
 import Footer from './Footer.astro';
 import Hero from './Hero.astro';
 import LangToggle from './LangToggle.astro';
+import ReturnToSun from './ReturnToSun.astro';
 import StarChart from './StarChart.astro';
 import SceneCanvas from './SceneCanvas.astro';
 import type { Profile } from '../content/profile';
@@ -238,6 +239,27 @@ describe('Star chart', () => {
     const html = await render(projects, 'tr');
     expect(html).toContain('Projeler');
     expect(html).toContain('Canlı site');
+  });
+});
+
+describe('Return to Sun', () => {
+  it('is a link back to the top that asks the scene for a warp journey', async () => {
+    const html = await container.renderToString(ReturnToSun, { props: { lang: 'en' } });
+    expect(html).toMatch(/<a[^>]*href="#top"/);
+    expect(html).toContain('data-travel="top"');
+    expect(html).toContain('Return to Sun');
+  });
+
+  it('speaks Turkish on the Turkish page', async () => {
+    const html = await container.renderToString(ReturnToSun, { props: { lang: 'tr' } });
+    expect(html).toContain('Güneşe dön');
+  });
+});
+
+describe('Scroll hint', () => {
+  it('still links to About, and asks the scene for a warp journey', async () => {
+    const html = await container.renderToString(Hero, { props: { profile, lang: 'en' } });
+    expect(html).toMatch(/<a[^>]*href="#about"[^>]*data-travel="about"|<a[^>]*data-travel="about"[^>]*href="#about"/);
   });
 });
 

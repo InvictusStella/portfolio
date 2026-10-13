@@ -26,6 +26,17 @@
 		if (document.readyState === 'complete') start();
 		else addEventListener('load', start, { once: true });
 	}
+
+	// Links marked data-travel ("Scroll to begin the journey", "Return to Sun") become warp
+	// journeys while the 3D scene is running. Otherwise (no WebGL, reduced motion, scene not
+	// up yet) nothing intercepts them and they work as plain links.
+	document.addEventListener('click', (event) => {
+		const link = (event.target as Element).closest<HTMLAnchorElement>('a[data-travel]');
+		if (!link || !root.classList.contains('scene-ready')) return;
+		if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+		event.preventDefault();
+		dispatchEvent(new CustomEvent('portfolio:travel', { detail: { to: link.dataset.travel } }));
+	});
 </script>
 
 <style>

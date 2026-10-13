@@ -11,7 +11,7 @@ interface Props {
 const { profile, lang } = Astro.props;
 ---
 
-<section class="about" id="about" aria-labelledby="about-heading">
+<section class="about" id="about" aria-labelledby="about-heading" tabindex="-1">
 	<div class="panel about__intro">
 		<!-- Placeholder until a photo is added (see src/content/profile.ts). -->
 		<div class="avatar" role="img" aria-label={ui.photoAlt[lang].replace('{name}', profile.name)}>

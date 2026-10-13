@@ -23,4 +23,5 @@ export const ui = {
   contactHeading: { en: 'Get in touch', tr: 'İletişim' },
   email: { en: 'Email', tr: 'E-posta' },
   signOff: { en: 'Thanks for flying by.', tr: 'Uğradığın için teşekkürler.' },
+  returnToSun: { en: 'Return to Sun', tr: 'Güneşe dön' },
 } satisfies Record<string, { en: string; tr: string }>;

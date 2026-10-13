@@ -193,10 +193,14 @@ The owner chose **realism over performance limits**, and is happy to use real ph
 - Prominences become **varied and moving**: several kinds (looping arcs whose shape keeps evolving with plasma sliding along them, eruptive arcs that lift off and dissolve, short jets/spicules), more of them, never static.
 - Hero text contrast is re-measured and the text shadow re-tuned (≥ 4.5:1 tagline).
 
-### 12.2 Warp jumps (replace scroll-speed streaks, §5.4)
-- Two **triggered** warp moments, inspired by Star Wars hyperspace and Mass Effect relay jumps: crossing a point while scrolling down plays a short sequence regardless of scroll speed — stars stretch (anticipation), long blue-white streaks burst **outward from the centre**, a brief flash, then the new section settles.
-- Big jump leaving the sun (~1.6 s); small jump into the star chart (~0.9 s). Downward only; each fires once per crossing. Off under reduced motion.
-- The big warp starts at 35% of the departure (just after the name has faded) and the small one as the projects are a quarter of the way up the screen. Each advances by **the clock or the scroll, whichever is further**: slow scrolling plays it at its own pace, fast scrolling pushes it so it always completes (by 95% of the departure / three quarters of the way up) **before the next section arrives**.
+### 12.2 Warp (replaces scroll-speed streaks, §5.4)
+- One warp look, inspired by Star Wars hyperspace and Mass Effect relay jumps: anticipation (slight stretch, tighter view) → long blue-white streaks bursting **outward from the centre**, wider view → a brief flash (behind the text) → settle.
+- **Three ways to set it off:**
+  - **Scrolling away from the sun:** starts at 35% of the departure (just after the name has faded) and advances by the clock (1.6 s) or the scroll, whichever is further — so fast scrolling pushes it to completion before About arrives. The hero is 2.5 screens tall for room.
+  - **"Scroll to begin the journey":** a timed **1.5 s** warp while the page glides to About in step with it.
+  - **"Return to Sun"** (fixed bottom-left, shown once the hero has scrolled away): a timed **1.8 s** warp while the page glides back to the top.
+- No warp between About and the star chart.
+- The buttons are plain links underneath: without WebGL, with reduced motion, or before the scene is up, they simply navigate. Any wheel/touch/key input mid-journey hands control back. On arrival, keyboard focus moves to the destination.
 - Faded hero text is not selectable or clickable (it stays in the accessibility tree as the page's main heading).
 
 ### 12.3 Real photography for space
