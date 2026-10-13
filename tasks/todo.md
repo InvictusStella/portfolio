@@ -342,9 +342,9 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 
 ### Task P1: Star chart as Scorpius
 **Acceptance criteria:**
-- [ ] Projects take Scorpius's 15 main stars in order (stinger → claws), positioned from real coordinates
-- [ ] Figure segments appear only when both stars exist; the claws branch from Dschubba
-- [ ] Appending never moves stars; more than 15 projects still lay out (seeded extras near the figure)
+- [x] Projects take Scorpius's 15 main stars in order (stinger → claws), positioned from real coordinates
+- [x] Figure segments appear only when both stars exist; the claws branch from Dschubba
+- [x] Appending never moves stars; more than 15 projects still lay out (seeded extras near the figure)
 **Verification:** unit tests (layout, segments); visual check at 4, 11 and 15 projects
 **Files:** `src/lib/constellation.ts` (+test), `src/components/StarChart.astro`
 

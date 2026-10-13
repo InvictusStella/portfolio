@@ -1,8 +1,9 @@
 ---
-// The projects as a constellation: each project is a star (a real link), joined by one
-// line in the order they were built. Hover, focus or tap a star to see its card.
+// The projects as the constellation Scorpius: each project is a star (a real link) taking
+// the next star of the figure, from the stinger up to the claws. Hover, focus or tap a
+// star to see its card.
 import { ui, type Lang } from '../i18n/ui';
-import { layoutConstellation, toPercent } from '../lib/constellation';
+import { layoutConstellation, SCORPIUS, toPercent } from '../lib/constellation';
 import type { Project } from '../lib/github';
 
 interface Props {
@@ -11,10 +12,9 @@ interface Props {
 }
 
 const { projects, lang } = Astro.props;
-const { points, box } = layoutConstellation(projects.length);
+const { points, segments, box } = layoutConstellation(projects.length);
 const latest = projects.length - 1;
 const placed = projects.map((project, i) => ({ project, ...toPercent(points[i], box) }));
-const linePoints = points.map((p) => `${p.x.toFixed(4)},${p.y.toFixed(4)}`).join(' ');
 ---
 
 <section class="chart-section" id="projects" aria-labelledby="projects-heading">
@@ -35,7 +35,17 @@ const linePoints = points.map((p) => `${p.x.toFixed(4)},${p.y.toFixed(4)}`).join
 						preserveAspectRatio="none"
 						aria-hidden="true"
 					>
-						<polyline points={linePoints} pathLength="1" vector-effect="non-scaling-stroke" />
+						{segments.map(([a, b], i) => (
+							<line
+								x1={points[a].x.toFixed(4)}
+								y1={points[a].y.toFixed(4)}
+								x2={points[b].x.toFixed(4)}
+								y2={points[b].y.toFixed(4)}
+								pathLength="1"
+								vector-effect="non-scaling-stroke"
+								style={`--i: ${i}`}
+							/>
+						))}
 					</svg>
 					<ol class="chart__stars">
 						{placed.map(({ project: p, left, top }, i) => (
@@ -53,6 +63,7 @@ const linePoints = points.map((p) => `${p.x.toFixed(4)},${p.y.toFixed(4)}`).join
 										{p.title}
 										{i === latest && <span class="card__badge">{ui.latestProject[lang]}</span>}
 									</h3>
+									{SCORPIUS[i] && <p class="card__star">{SCORPIUS[i].name}</p>}
 									{p.description && <p class="card__description">{p.description}</p>}
 									<p class="card__meta">
 										{p.language && <span>{p.language}</span>}
@@ -154,22 +165,30 @@ const linePoints = points.map((p) => `${p.x.toFixed(4)},${p.y.toFixed(4)}`).join
 		overflow: visible;
 	}
 
-	.chart__lines polyline {
-		fill: none;
+	.chart__lines line {
 		stroke: rgba(170, 190, 255, 0.45);
 		stroke-width: 1.25;
-		stroke-linejoin: round;
+		stroke-linecap: round;
 	}
 
-	/* Line draw-in (only when JS runs and motion is allowed; otherwise it's just there). */
-	.chart--will-draw .chart__lines polyline {
+	/* The figure draws itself line by line, stinger first (only when JS runs and motion
+	   is allowed; otherwise it's just there). */
+	.chart--will-draw .chart__lines line {
 		stroke-dasharray: 1;
 		stroke-dashoffset: 1;
-		transition: stroke-dashoffset 2.4s ease-in-out;
+		transition: stroke-dashoffset 0.35s ease-out;
+		transition-delay: calc(var(--i) * 0.18s);
 	}
 
-	.chart--drawn .chart__lines polyline {
+	.chart--drawn .chart__lines line {
 		stroke-dashoffset: 0;
+	}
+
+	.card__star {
+		margin: -0.2rem 0 0.4rem;
+		font-size: 0.75rem;
+		font-style: italic;
+		color: var(--text-muted);
 	}
 
 	.chart__stars {

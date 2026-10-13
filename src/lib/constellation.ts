@@ -1,39 +1,88 @@
-// Where each project's star goes on the chart.
+// Where each project's star goes on the chart: the constellation Scorpius.
 //
-// Stars sit on a gentle spiral: the first project at the centre, each newer one a
-// step further out. A star's place depends only on its position in the order, so
-// adding a project never moves the existing ones. The chart then frames ("zooms to")
-// whatever stars exist, so 4 stars and 15 stars both fill the space.
+// Projects take its 15 main stars in a fixed order, from the tip of the stinger up to
+// the claws, so Antares (the scorpion's heart) is the 11th project. A star's place
+// depends only on its position in the order, so adding a project never moves the
+// existing ones. The chart then frames ("zooms to") whatever stars exist.
+
+import { seededRandom } from '../scene/starfield';
 
 export type Point = { x: number; y: number };
 export type Box = { x: number; y: number; width: number; height: number };
+export type Segment = [number, number];
 
-/** Angle between consecutive stars (radians): about six stars per turn. */
-const TURN_STEP = 1.05;
-/** Distance of the first star from the centre, and how much further each next one is. */
-const START_RADIUS = 0.12;
-const RADIUS_STEP = 0.07;
-/** Empty space kept around the stars inside the frame (room for glow and labels). */
+/** Right ascension in hours, declination in degrees (J2000). */
+type SkyStar = { name: string; ra: number; dec: number };
+const hms = (h: number, m: number, s: number) => h + m / 60 + s / 3600;
+const dms = (d: number, m: number, s: number) => -(Math.abs(d) + m / 60 + s / 3600); // all southern
+
+/** Scorpius, stinger → claws. */
+export const SCORPIUS: SkyStar[] = [
+  // Real separation from Shaula is ~0.6°; nudged to ~1.6° so the two stars can be tapped separately.
+  { name: 'Lesath', ra: hms(17, 28, 40), dec: dms(38, 20, 0) },
+  { name: 'Shaula', ra: hms(17, 33, 36.5), dec: dms(37, 6, 14) },
+  { name: 'Girtab', ra: hms(17, 42, 29.3), dec: dms(39, 1, 48) },
+  { name: 'ι¹ Scorpii', ra: hms(17, 47, 35.1), dec: dms(40, 7, 37) },
+  { name: 'Sargas', ra: hms(17, 37, 19.1), dec: dms(42, 59, 52) },
+  { name: 'η Scorpii', ra: hms(17, 12, 9.2), dec: dms(43, 14, 21) },
+  { name: 'ζ² Scorpii', ra: hms(16, 54, 35.0), dec: dms(42, 21, 41) },
+  { name: 'μ¹ Scorpii', ra: hms(16, 51, 52.2), dec: dms(38, 2, 51) },
+  { name: 'ε Scorpii', ra: hms(16, 50, 9.8), dec: dms(34, 17, 36) },
+  { name: 'τ Scorpii', ra: hms(16, 35, 53.0), dec: dms(28, 12, 58) },
+  { name: 'Antares', ra: hms(16, 29, 24.5), dec: dms(26, 25, 55) },
+  { name: 'σ Scorpii', ra: hms(16, 21, 11.3), dec: dms(25, 35, 34) },
+  { name: 'Dschubba', ra: hms(16, 0, 20.0), dec: dms(22, 37, 18) },
+  { name: 'Acrab', ra: hms(16, 5, 26.2), dec: dms(19, 48, 20) },
+  { name: 'Fang', ra: hms(15, 58, 51.1), dec: dms(26, 6, 51) },
+];
+
+/** Lines of the traditional figure: the body as a chain, the claws branching from Dschubba. */
+const FIGURE: Segment[] = [
+  ...Array.from({ length: 13 }, (_, i): Segment => [i, i + 1]),
+  [12, 14],
+];
+
+// Flat projection around the figure's centre (accurate enough for ~25° of sky).
+// Units: tens of degrees. East is on the left and north is up, as on a sky chart.
+const RA0 = SCORPIUS.reduce((sum, s) => sum + s.ra, 0) / SCORPIUS.length;
+const DEC0 = SCORPIUS.reduce((sum, s) => sum + s.dec, 0) / SCORPIUS.length;
+const COS_DEC0 = Math.cos((DEC0 * Math.PI) / 180);
+const project = ({ ra, dec }: SkyStar): Point => ({
+  x: (-(ra - RA0) * 15 * COS_DEC0) / 10,
+  y: -(dec - DEC0) / 10,
+});
+const FIGURE_POINTS = SCORPIUS.map(project);
+
+/** Empty space kept around the stars inside the frame (room for glow and cards). */
 const MIN_PADDING = 0.3;
 const MIN_ASPECT = 1;
 const MAX_ASPECT = 1.8;
+/** Closest two extra stars (past the 15th project) may be, in projected units. */
+const EXTRA_SPACING = 0.18;
 
-/** Small repeatable wobble per slot, so the spiral looks hand-drawn rather than perfect. */
-function wobble(slot: number, salt: number): number {
-  const x = Math.sin(slot * 91.7 + salt * 47.3) * 43758.5453;
-  return x - Math.floor(x) - 0.5; // -0.5 .. 0.5
+/** Stars beyond the figure's 15: scattered near it, repeatably, never crowding others. */
+function extraStars(count: number): Point[] {
+  const random = seededRandom(8203);
+  const xs = FIGURE_POINTS.map((p) => p.x);
+  const ys = FIGURE_POINTS.map((p) => p.y);
+  const [minX, maxX, minY, maxY] = [Math.min(...xs), Math.max(...xs), Math.min(...ys), Math.max(...ys)];
+  const placed = [...FIGURE_POINTS];
+  const extras: Point[] = [];
+  while (extras.length < count) {
+    const candidate = { x: minX + (maxX - minX) * random(), y: minY + (maxY - minY) * random() };
+    if (placed.every((p) => Math.hypot(p.x - candidate.x, p.y - candidate.y) > EXTRA_SPACING)) {
+      placed.push(candidate);
+      extras.push(candidate);
+    }
+  }
+  return extras;
 }
 
-function starPosition(slot: number): Point {
-  const angle = slot * TURN_STEP + wobble(slot, 1) * 0.7 - Math.PI / 2;
-  const radius = START_RADIUS + slot * RADIUS_STEP + wobble(slot, 2) * 0.07;
-  return { x: Math.cos(angle) * radius, y: Math.sin(angle) * radius };
-}
-
-/** Positions for `count` stars and the box that frames them nicely. */
-export function layoutConstellation(count: number): { points: Point[]; box: Box } {
-  const points = Array.from({ length: count }, (_, slot) => starPosition(slot));
-  if (count === 0) return { points, box: { x: -1, y: -1, width: 2, height: 2 } };
+/** Positions for `count` stars, the figure lines between them, and a frame that fits. */
+export function layoutConstellation(count: number): { points: Point[]; segments: Segment[]; box: Box } {
+  const points = [...FIGURE_POINTS.slice(0, count), ...extraStars(Math.max(0, count - FIGURE_POINTS.length))];
+  const segments = FIGURE.filter(([a, b]) => a < count && b < count);
+  if (count === 0) return { points, segments, box: { x: -1, y: -1, width: 2, height: 2 } };
 
   const xs = points.map((p) => p.x);
   const ys = points.map((p) => p.y);
@@ -59,7 +108,7 @@ export function layoutConstellation(count: number): { points: Point[]; box: Box 
     height = width / MAX_ASPECT;
   }
 
-  return { points, box: { x: minX, y: minY, width, height } };
+  return { points, segments, box: { x: minX, y: minY, width, height } };
 }
 
 /** A point as percentages of the frame, for positioning HTML on top of the SVG. */

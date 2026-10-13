@@ -14,8 +14,8 @@ export const ui = {
   projectsHeading: { en: 'Projects', tr: 'Projeler' },
   projectsComingSoon: { en: 'First project coming soon.', tr: 'İlk proje yakında.' },
   chartCaption: {
-    en: 'My first project sits at the centre; each newer one is a step further out.',
-    tr: 'İlk projem merkezde; her yenisi bir adım daha dışarıda.',
+    en: 'Each project lights up the next star of Scorpius, from the stinger to the claws.',
+    tr: 'Her proje Akrep takımyıldızının bir sonraki yıldızını yakar: iğneden kıskaçlara.',
   },
   latestProject: { en: 'Latest', tr: 'En yeni' },
   viewCode: { en: 'Code', tr: 'Kod' },

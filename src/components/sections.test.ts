@@ -212,10 +212,15 @@ describe('Star chart', () => {
     expect(html.match(/Live site/g)).toHaveLength(1);
   });
 
-  it('joins the stars with one line through every star in order', async () => {
+  it('joins the stars with the lines of the Scorpius figure (2 lines for 3 stars)', async () => {
     const html = await render(projects);
-    const points = html.match(/<polyline[^>]*points="([^"]*)"/)?.[1].trim().split(/\s+/) ?? [];
-    expect(points).toHaveLength(3);
+    expect(html.match(/<line\s/g)).toHaveLength(2);
+  });
+
+  it('names each star after its star in Scorpius, for the curious', async () => {
+    const html = await render(projects);
+    expect(html).toContain('Lesath');
+    expect(html).toContain('Girtab');
   });
 
   it('marks the latest project', async () => {
@@ -226,7 +231,7 @@ describe('Star chart', () => {
   it('shows a single placeholder star when nothing is tagged yet', async () => {
     const html = await render([]);
     expect(html).toContain('First project coming soon');
-    expect(html).not.toContain('<polyline');
+    expect(html).not.toContain('<line');
   });
 
   it('uses Turkish labels on the Turkish page', async () => {
