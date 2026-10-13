@@ -1,5 +1,6 @@
 ---
 import About from '../components/About.astro';
+import CvButton from '../components/CvButton.astro';
 import Footer from '../components/Footer.astro';
 import Hero from '../components/Hero.astro';
 import { profile } from '../content/profile';
@@ -25,5 +26,6 @@ const base = import.meta.env.BASE_URL;
 			<About profile={profile} lang={lang} />
 		</main>
 		<Footer profile={profile} lang={lang} />
+		<CvButton lang={lang} />
 	</body>
 </html>

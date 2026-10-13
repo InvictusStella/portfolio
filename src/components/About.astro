@@ -1,6 +1,7 @@
 ---
 import type { Profile } from '../content/profile';
 import { ui, type Lang } from '../i18n/ui';
+import Timeline from './Timeline.astro';
 
 interface Props {
 	profile: Profile;
@@ -46,6 +47,8 @@ const { profile, lang } = Astro.props;
 			{profile.hobbies.map((hobby) => <li>{hobby[lang]}</li>)}
 		</ul>
 	</div>
+
+	<Timeline experience={profile.experience} lang={lang} />
 </section>
 
 <style>

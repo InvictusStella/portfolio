@@ -5,6 +5,18 @@ export type Localized = { en: string; tr: string };
 
 export type SkillGroup = { label: Localized; skills: string[] };
 
+export type Experience = {
+  role: Localized;
+  company: string;
+  place: string;
+  /** "YYYY-MM" */
+  start: string;
+  /** "YYYY-MM"; leave out for a current role. */
+  end?: string;
+  /** One sentence. */
+  summary: Localized;
+};
+
 export type Profile = {
   name: string;
   /** Shown in the avatar until a photo is added. */
@@ -13,6 +25,8 @@ export type Profile = {
   bio: Localized;
   skillGroups: SkillGroup[];
   hobbies: Localized[];
+  /** Newest first. */
+  experience: Experience[];
   contact: {
     email: string;
     github: string;
@@ -62,6 +76,35 @@ export const profile: Profile = {
     { label: { en: 'Tools', tr: 'Araçlar' }, skills: ['Git', 'Postman', 'Ollama'] },
   ],
   hobbies: [{ en: 'Space & astronomy', tr: 'Uzay ve astronomi' }],
+  experience: [
+    {
+      role: { en: 'Backend Development Intern', tr: 'Backend Geliştirme Stajyeri' },
+      company: 'Revlo AI',
+      place: 'Antalya',
+      start: '2025-10',
+      end: '2026-02',
+      summary: {
+        en:
+          'Extended production Go microservices on Azure, designed Cosmos DB and Azure SQL schemas, and ' +
+          'standardised Gemini API integration so new AI features shipped faster.',
+        tr:
+          'Azure üzerindeki Go mikroservislerini geliştirdim, Cosmos DB ve Azure SQL şemaları tasarladım ve ' +
+          'Gemini API entegrasyonunu standartlaştırarak yeni yapay zekâ özelliklerinin daha hızlı yayına ' +
+          'çıkmasını sağladım.',
+      },
+    },
+    {
+      role: { en: 'Software Engineering Intern', tr: 'Yazılım Mühendisliği Stajyeri' },
+      company: 'Talya Bilişim',
+      place: 'Antalya',
+      start: '2024-07',
+      end: '2024-08',
+      summary: {
+        en: 'Built REST API endpoints in .NET and C# for a B2B enterprise application and containerised services with Docker.',
+        tr: 'B2B kurumsal bir uygulama için .NET ve C# ile REST API uç noktaları geliştirdim ve servisleri Docker ile konteynerleştirdim.',
+      },
+    },
+  ],
   contact: {
     email: 'kaanuman_07@hotmail.com',
     github: 'https://github.com/InvictusStella',

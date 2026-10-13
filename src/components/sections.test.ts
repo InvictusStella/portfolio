@@ -1,6 +1,7 @@
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { beforeEach, describe, expect, it } from 'vitest';
 import About from './About.astro';
+import CvButton from './CvButton.astro';
 import Footer from './Footer.astro';
 import Hero from './Hero.astro';
 import type { Profile } from '../content/profile';
@@ -16,6 +17,24 @@ const profile: Profile = {
     { label: { en: 'Cloud', tr: 'Bulut' }, skills: ['Azure'] },
   ],
   hobbies: [{ en: 'Astronomy', tr: 'Astronomi' }],
+  experience: [
+    {
+      role: { en: 'Backend intern', tr: 'Backend stajyeri' },
+      company: 'Engine Works',
+      place: 'London',
+      start: '2025-10',
+      end: '2026-02',
+      summary: { en: 'Built the analytical engine API.', tr: 'Analitik motor API’sini geliştirdim.' },
+    },
+    {
+      role: { en: 'Software intern', tr: 'Yazılım stajyeri' },
+      company: 'Loom Ltd',
+      place: 'Manchester',
+      start: '2024-07',
+      end: '2024-08',
+      summary: { en: 'Automated punch cards.', tr: 'Delikli kartları otomatikleştirdim.' },
+    },
+  ],
   contact: {
     email: 'ada@example.com',
     github: 'https://github.com/ada',
@@ -71,6 +90,46 @@ describe('About', () => {
     const html = await container.renderToString(About, { props: { profile, lang: 'en' } });
     expect(html).toMatch(/<h2[^>]*>/);
     expect(html).not.toMatch(/<h1[^>]*>/);
+  });
+});
+
+describe('Experience timeline', () => {
+  it('lists every entry in the given order, newest first', async () => {
+    const html = await container.renderToString(About, { props: { profile, lang: 'en' } });
+    expect(html.indexOf('Engine Works')).toBeGreaterThan(-1);
+    expect(html.indexOf('Engine Works')).toBeLessThan(html.indexOf('Loom Ltd'));
+  });
+
+  it('shows role, place, dates and summary for an entry', async () => {
+    const html = await container.renderToString(About, { props: { profile, lang: 'en' } });
+    expect(html).toContain('Backend intern');
+    expect(html).toContain('London');
+    expect(html).toContain('Oct 2025 – Feb 2026');
+    expect(html).toContain('Built the analytical engine API.');
+  });
+
+  it('uses the Turkish texts on the Turkish page', async () => {
+    const html = await container.renderToString(About, { props: { profile, lang: 'tr' } });
+    expect(html).toContain('Backend stajyeri');
+    expect(html).toContain('Eki 2025 – Şub 2026');
+  });
+
+  it('marks dates with machine-readable <time> elements', async () => {
+    const html = await container.renderToString(About, { props: { profile, lang: 'en' } });
+    expect(html).toMatch(/<time[^>]*datetime="2025-10"/);
+  });
+});
+
+describe('CV button', () => {
+  it('links to the CV PDF and asks the browser to download it', async () => {
+    const html = await container.renderToString(CvButton, { props: { lang: 'en' } });
+    expect(html).toMatch(/href="[^"]*cv\.pdf"/);
+    expect(html).toMatch(/\sdownload(=|\s|>)/);
+  });
+
+  it('has an accessible label saying what it does', async () => {
+    const html = await container.renderToString(CvButton, { props: { lang: 'en' } });
+    expect(html).toContain('aria-label="Download CV (PDF)"');
   });
 });
 
