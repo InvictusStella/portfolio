@@ -73,7 +73,7 @@ T10 needs only T3 (sections to observe), so the sun (T10–T11b) runs before the
 - [ ] Tag/untag a repo → site updates after "Run workflow"; all tests green in CI
 
 ### Phase 5 — The rest of the flight
-- [ ] T12: deepSpace chapter
+- [x] T12: deepSpace chapter
 - [ ] T13: starField chapter
 
 ### Checkpoint 5

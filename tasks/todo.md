@@ -252,11 +252,11 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 **Description:** Points-based dust/star field with depth parallax and a few soft nebula layers, active through the About section.
 
 **Acceptance criteria:**
-- [ ] Rendered in a single points draw call (plus nebula layers)
-- [ ] Clear sense of depth while scrolling through About; text remains readable
+- [x] Rendered in a single points draw call (plus nebula layers)
+- [x] Clear sense of depth while scrolling through About; text remains readable
 
 **Verification:**
-- [ ] Manual visual + Performance panel; `renderer.info.render.calls` stays low
+- [x] Manual visual + Performance panel; `renderer.info.render.calls` stays low
 
 **Dependencies:** T10
 **Files likely touched:** `src/scene/chapters/deepSpace.ts`, `src/scene/index.ts`

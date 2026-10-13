@@ -1,8 +1,10 @@
 import * as THREE from 'three';
+import { createDeepSpace } from './chapters/deepSpace';
 import { createSun, SUN_RADIUS } from './chapters/sun';
 import {
 	cameraDistanceForDiameter,
 	damp,
+	deepSpaceOpacity,
 	departureProgress,
 	shouldAnimate,
 	sunOnScreen,
@@ -28,6 +30,8 @@ export function startScene(canvas: HTMLCanvasElement) {
 
 	const scene = new THREE.Scene();
 	const camera = new THREE.PerspectiveCamera(FOV, 1, 0.1, 2000);
+	const deepSpace = createDeepSpace({ small: innerWidth < 640 });
+	scene.add(deepSpace.object);
 	const sun = createSun();
 	scene.add(sun.object);
 
@@ -35,11 +39,14 @@ export function startScene(canvas: HTMLCanvasElement) {
 	let start = { x: 0, y: 0, diameter: 1 };
 	let startDistance = 10;
 	let progress = 0;
+	/** Page scroll in px, eased like the departure so the star field glides. */
+	let scrolled = 0;
 
 	function layout() {
 		const width = canvas.clientWidth;
 		const height = canvas.clientHeight;
 		renderer.setSize(width, height, false);
+		deepSpace.setPixelRatio(renderer.getPixelRatio());
 		camera.aspect = width / height;
 		camera.updateProjectionMatrix();
 
@@ -76,6 +83,7 @@ export function startScene(canvas: HTMLCanvasElement) {
 		stage.style.setProperty('--departure-fade', String(textOpacity(progress)));
 		const pageProgress = scrollY / Math.max(1, root.scrollHeight - innerHeight);
 		root.style.setProperty('--sunlight', String(sunlightOpacity(progress, pageProgress)));
+		deepSpace.update(scrolled, deepSpaceOpacity(progress));
 
 		renderer.render(scene, camera);
 	}
@@ -93,9 +101,11 @@ export function startScene(canvas: HTMLCanvasElement) {
 		const target = targetProgress();
 		progress = damp(progress, target, EASE, dt);
 		if (Math.abs(progress - target) < 1e-4) progress = target;
+		scrolled = damp(scrolled, scrollY, EASE, dt);
+		if (Math.abs(scrolled - scrollY) < 0.5) scrolled = scrollY;
 		sun.update(now / 1000);
 		draw();
-		const settling = progress !== target && !document.hidden;
+		const settling = (progress !== target || scrolled !== scrollY) && !document.hidden;
 		frame = settling || animating() ? requestAnimationFrame(tick) : 0;
 	}
 	function wake() {
@@ -106,6 +116,7 @@ export function startScene(canvas: HTMLCanvasElement) {
 
 	layout();
 	progress = reducedMotion ? 0 : targetProgress();
+	scrolled = reducedMotion ? 0 : scrollY;
 	sun.update(reducedMotion ? 30 : performance.now() / 1000);
 	draw();
 	wake();

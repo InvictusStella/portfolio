@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   cameraDistanceForDiameter,
   damp,
+  deepSpaceOpacity,
   departureProgress,
   shouldAnimate,
   sunOnScreen,
@@ -87,6 +88,22 @@ describe('sunOnScreen', () => {
 
   it('is off screen once it has left through the top', () => {
     expect(sunOnScreen(1, startY, diameter)).toBe(false);
+  });
+});
+
+describe('deepSpaceOpacity', () => {
+  it('shows only a faint sky around the sun at the start', () => {
+    expect(deepSpaceOpacity(0)).toBeGreaterThan(0);
+    expect(deepSpaceOpacity(0)).toBeLessThan(0.3);
+  });
+
+  it('brightens as we leave the sun', () => {
+    expect(deepSpaceOpacity(0.6)).toBeGreaterThan(deepSpaceOpacity(0.3));
+  });
+
+  it('is fully there once the sun has mostly gone', () => {
+    expect(deepSpaceOpacity(0.85)).toBe(1);
+    expect(deepSpaceOpacity(1)).toBe(1);
   });
 });
 

@@ -65,6 +65,11 @@ export function sunlightOpacity(departure: number, pageProgress: number): number
   return sunGone * depth;
 }
 
+/** Deep-space stars: a faint sky around the sun, full strength once it has mostly gone. */
+export function deepSpaceOpacity(departure: number): number {
+  return 0.15 + 0.85 * smoothstep(0.25, 0.8, departure);
+}
+
 /** The sun's surface animates every frame only when someone can actually see it move. */
 export function shouldAnimate(state: { reducedMotion: boolean; hidden: boolean; sunOnScreen: boolean }): boolean {
   return !state.reducedMotion && !state.hidden && state.sunOnScreen;
