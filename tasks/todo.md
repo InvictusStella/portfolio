@@ -105,12 +105,71 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 **Estimated scope:** M
 
 ## Checkpoint 2
-- [ ] Both languages live; full CV content readable; keyboard-navigable
+- [x] Both languages live; full CV content readable; keyboard-navigable
+- [x] Review with human before proceeding
+
+---
+
+## Phase 3 — The sun (moved ahead of projects: highest risk, and the centrepiece)
+
+### Task 10: Scene skeleton: canvas, director, camera flight, fallbacks
+
+**Description:** Fixed `<canvas>` behind the content; Three.js lazy-loaded after first paint. A director computes per-section progress (pure, unit-tested) and calls chapters. The hero becomes ~2 screens tall with a **pinned stage** (`position: sticky`); scrolling the extra screen is the **departure zone** (spec §5.4): name/tagline fade out over 0–30%, and an eased camera flies away from a **plain glowing sphere** sun, which stays whole and centred until it recedes. WebGL detection keeps the CSS gradient fallback; reduced motion or no WebGL → normal one-screen hero, one still frame; DPR capped at 2; rendering pauses when the tab is hidden or idle.
+
+**Acceptance criteria:**
+- [ ] Sun stays pinned and whole through the departure zone; scrolling smoothly moves the camera away from it; text stays readable on top
+- [ ] Unit tests cover departure-zone progress (0 at hero top, 1 when About arrives; text fade over 0–0.3)
+- [ ] WebGL disabled (devtools/flag) → gradient fallback, no console errors
+- [ ] Reduced motion → still frame, no animation loop running
+
+**Verification:**
+- [ ] `npm test` (director progress tests) and `npm run build`
+- [ ] Manual: Chrome Performance panel shows no long frames while scrolling on desktop; check on a real phone
+
+**Dependencies:** T3
+**Files likely touched:** `src/scene/index.ts`, `src/scene/director.ts`, `src/scene/director.test.ts`, `src/scene/chapters/sun.ts`, `src/components/SceneCanvas.astro`
+**Estimated scope:** M
+**You'll learn:** the Three.js render loop, cameras, scroll-linked animation, easing.
+
+### Task 11: Sun surface details
+
+**Description:** Upgrade the sun's shader in order: granulation → limb darkening → corona shell → sunspots. Each step is kept only if it looks right and holds frame rate.
+
+**Acceptance criteria:**
+- [ ] All four effects visible and animated subtly
+- [ ] No measurable frame-rate drop vs T10 on desktop; acceptable on phone
+
+**Verification:**
+- [ ] Manual visual check desktop + phone; Performance panel comparison
+
+**Dependencies:** T10
+**Files likely touched:** `src/scene/chapters/sun.ts`, `src/scene/shaders/sun.frag.glsl`, `src/scene/shaders/corona.frag.glsl`
+**Estimated scope:** M
+**You'll learn:** fragment shaders, noise functions.
+
+### Task 11b: Sun prominences and flares
+
+**Description:** Make the sun feel alive: glowing plasma arcs looping off the limb that slowly rise and fade, plus occasional brighter flare bursts. Required — the sun is the site's centrepiece (spec §5.2).
+
+**Acceptance criteria:**
+- [ ] Several prominences visible around the limb at any time, each animating over seconds (rise, arc, fade)
+- [ ] Occasional flare bursts; never so bright or frequent that the hero text loses contrast
+- [ ] No measurable frame-rate drop vs T11 on desktop; acceptable on phone
+
+**Verification:**
+- [ ] Manual visual check desktop + phone; Performance panel comparison; re-check tagline contrast
+
+**Dependencies:** T11
+**Files likely touched:** `src/scene/chapters/sun.ts`, `src/scene/shaders/prominence.vert.glsl`, `src/scene/shaders/prominence.frag.glsl`
+**Estimated scope:** M
+
+## Checkpoint 3 — The sun
+- [ ] The sun is alive (surface, corona, flares), pinned through the departure zone, and stays whole; fallbacks verified on desktop and a real phone
 - [ ] Review with human before proceeding
 
 ---
 
-## Phase 3 — Projects from GitHub
+## Phase 4 — Projects from GitHub
 
 ### Task 6: Fetch tagged repos at build time → plain project list
 
@@ -176,64 +235,13 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 **Files likely touched:** `playwright.config.ts`, `e2e/smoke.spec.ts`, `package.json`, `.github/workflows/deploy.yml`
 **Estimated scope:** S
 
-## Checkpoint 3
+## Checkpoint 4
 - [ ] Tag/untag flow works end to end; all tests green in CI
 - [ ] Review with human before proceeding
 
 ---
 
-## Phase 4 — The flight
-
-### Task 10: Scene skeleton: canvas, director, camera flight, fallbacks
-
-**Description:** Fixed `<canvas>` behind the content; Three.js lazy-loaded after first paint. A director computes per-section progress (pure, unit-tested) and calls chapters. The hero becomes ~2 screens tall with a **pinned stage** (`position: sticky`); scrolling the extra screen is the **departure zone** (spec §5.4): name/tagline fade out over 0–30%, and an eased camera flies away from a **plain glowing sphere** sun, which stays whole and centred until it recedes. WebGL detection keeps the CSS gradient fallback; reduced motion or no WebGL → normal one-screen hero, one still frame; DPR capped at 2; rendering pauses when the tab is hidden or idle.
-
-**Acceptance criteria:**
-- [ ] Sun stays pinned and whole through the departure zone; scrolling smoothly moves the camera away from it; text stays readable on top
-- [ ] Unit tests cover departure-zone progress (0 at hero top, 1 when About arrives; text fade over 0–0.3)
-- [ ] WebGL disabled (devtools/flag) → gradient fallback, no console errors
-- [ ] Reduced motion → still frame, no animation loop running
-
-**Verification:**
-- [ ] `npm test` (director progress tests) and `npm run build`
-- [ ] Manual: Chrome Performance panel shows no long frames while scrolling on desktop; check on a real phone
-
-**Dependencies:** T3
-**Files likely touched:** `src/scene/index.ts`, `src/scene/director.ts`, `src/scene/director.test.ts`, `src/scene/chapters/sun.ts`, `src/components/SceneCanvas.astro`
-**Estimated scope:** M
-**You'll learn:** the Three.js render loop, cameras, scroll-linked animation, easing.
-
-### Task 11: Sun surface details
-
-**Description:** Upgrade the sun's shader in order: granulation → limb darkening → corona shell → sunspots. Each step is kept only if it looks right and holds frame rate.
-
-**Acceptance criteria:**
-- [ ] All four effects visible and animated subtly
-- [ ] No measurable frame-rate drop vs T10 on desktop; acceptable on phone
-
-**Verification:**
-- [ ] Manual visual check desktop + phone; Performance panel comparison
-
-**Dependencies:** T10
-**Files likely touched:** `src/scene/chapters/sun.ts`, `src/scene/shaders/sun.frag.glsl`, `src/scene/shaders/corona.frag.glsl`
-**Estimated scope:** M
-**You'll learn:** fragment shaders, noise functions.
-
-### Task 11b: Sun prominences and flares
-
-**Description:** Make the sun feel alive: glowing plasma arcs looping off the limb that slowly rise and fade, plus occasional brighter flare bursts. Required — the sun is the site's centrepiece (spec §5.2).
-
-**Acceptance criteria:**
-- [ ] Several prominences visible around the limb at any time, each animating over seconds (rise, arc, fade)
-- [ ] Occasional flare bursts; never so bright or frequent that the hero text loses contrast
-- [ ] No measurable frame-rate drop vs T11 on desktop; acceptable on phone
-
-**Verification:**
-- [ ] Manual visual check desktop + phone; Performance panel comparison; re-check tagline contrast
-
-**Dependencies:** T11
-**Files likely touched:** `src/scene/chapters/sun.ts`, `src/scene/shaders/prominence.vert.glsl`, `src/scene/shaders/prominence.frag.glsl`
-**Estimated scope:** M
+## Phase 5 — The rest of the flight
 
 ### Task 12: deepSpace chapter
 
@@ -265,13 +273,13 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 **Files likely touched:** `src/scene/chapters/starField.ts`, `src/scene/index.ts`
 **Estimated scope:** S
 
-## Checkpoint 4
-- [ ] Full flight works on desktop and a real phone; fallbacks re-verified; all tests green
+## Checkpoint 5
+- [ ] Full flight sun → deep space → star chart works on desktop and a real phone; fallbacks re-verified; all tests green
 - [ ] Review with human before proceeding
 
 ---
 
-## Phase 5 — Cinematic polish
+## Phase 6 — Cinematic polish
 
 ### Task 14: Sunrise intro
 
@@ -319,6 +327,6 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 **Files likely touched:** `src/scene/quality.ts`, `src/scene/index.ts`, plus whatever Lighthouse flags
 **Estimated scope:** S–M
 
-## Checkpoint 5 — Complete
+## Checkpoint 6 — Complete
 - [ ] All spec success criteria met (spec §1)
 - [ ] Ready to share

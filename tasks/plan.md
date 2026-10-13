@@ -36,7 +36,7 @@ T1 Scaffold
               └─ T16 Adaptive quality + perf pass (after T11–T15)
 ```
 
-T10 needs only T3 (sections to observe). The 3D track (T10–T13) can run in parallel with the projects track (T6–T9) if desired.
+T10 needs only T3 (sections to observe), so the sun (T10–T11b) runs before the projects track (T6–T9) — decided 2026-10-13 to tackle the riskiest, most important piece first.
 
 ## Task List
 
@@ -53,33 +53,38 @@ T10 needs only T3 (sections to observe). The 3D track (T10–T13) can run in par
 - [x] T5: Turkish version and language toggle
 
 ### Checkpoint 2
-- [ ] Both languages live; full CV content readable; keyboard-navigable
+- [x] Both languages live; full CV content readable; keyboard-navigable
 
-### Phase 3 — Projects from GitHub
+### Phase 3 — The sun (moved first: highest risk, and the centrepiece)
+- [ ] T10: Scene skeleton: canvas, director, pinned hero + departure zone, fallbacks
+- [ ] T11: Sun surface details
+- [ ] T11b: Sun prominences and flares
+
+### Checkpoint 3 — The sun
+- [ ] Sun alive, pinned and whole; fallbacks verified on desktop and a real phone
+
+### Phase 4 — Projects from GitHub
 - [ ] T6: Fetch tagged repos at build time → plain project list; daily cron
 - [ ] T7: Journey constellation with star links and cards
 - [ ] T8: Turkish project description overrides
 - [ ] T9: Playwright smoke test in CI
 
-### Checkpoint 3
+### Checkpoint 4
 - [ ] Tag/untag a repo → site updates after "Run workflow"; all tests green in CI
 
-### Phase 4 — The flight
-- [ ] T10: Scene skeleton: canvas, director, pinned hero + departure zone, fallbacks
-- [ ] T11: Sun surface details
-- [ ] T11b: Sun prominences and flares
+### Phase 5 — The rest of the flight
 - [ ] T12: deepSpace chapter
 - [ ] T13: starField chapter
 
-### Checkpoint 4
+### Checkpoint 5
 - [ ] Full flight sun → deep space → star chart works on desktop and phone; fallbacks verified
 
-### Phase 5 — Cinematic polish
+### Phase 6 — Cinematic polish
 - [ ] T14: Sunrise intro
 - [ ] T15: Lightspeed jumps (big hero → about, small about → projects)
 - [ ] T16: Adaptive quality and performance pass
 
-### Checkpoint 5 — Complete
+### Checkpoint 6 — Complete
 - [ ] All spec success criteria met; Lighthouse checked; ready to share
 
 ## Risks and Mitigations
