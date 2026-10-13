@@ -13,6 +13,11 @@ export const ui = {
   cvShort: { en: 'CV', tr: 'CV' },
   projectsHeading: { en: 'Projects', tr: 'Projeler' },
   projectsComingSoon: { en: 'First project coming soon.', tr: 'İlk proje yakında.' },
+  chartCaption: {
+    en: 'My first project sits at the centre; each newer one is a step further out.',
+    tr: 'İlk projem merkezde; her yenisi bir adım daha dışarıda.',
+  },
+  latestProject: { en: 'Latest', tr: 'En yeni' },
   viewCode: { en: 'Code', tr: 'Kod' },
   liveSite: { en: 'Live site', tr: 'Canlı site' },
   contactHeading: { en: 'Get in touch', tr: 'İletişim' },

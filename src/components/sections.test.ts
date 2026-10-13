@@ -5,7 +5,7 @@ import CvButton from './CvButton.astro';
 import Footer from './Footer.astro';
 import Hero from './Hero.astro';
 import LangToggle from './LangToggle.astro';
-import ProjectList from './ProjectList.astro';
+import StarChart from './StarChart.astro';
 import SceneCanvas from './SceneCanvas.astro';
 import type { Profile } from '../content/profile';
 import type { Project } from '../lib/github';
@@ -176,38 +176,63 @@ describe('Scene canvas', () => {
   });
 });
 
-describe('Project list', () => {
+describe('Star chart', () => {
   const projects: Project[] = [
     { repo: 'first', title: 'First', description: 'The first one', language: 'Go', stars: 2, createdAt: '2024-01-01', url: 'https://github.com/x/first' },
     { repo: 'second', title: 'Second', stars: 0, createdAt: '2025-01-01', url: 'https://github.com/x/second', homepage: 'https://second.example.com' },
+    { repo: 'third', title: 'Third', stars: 5, createdAt: '2026-01-01', url: 'https://github.com/x/third' },
   ];
+  const render = (list: Project[], lang: 'en' | 'tr' = 'en') =>
+    container.renderToString(StarChart, { props: { projects: list, lang } });
 
-  it('shows every project in order, linking to its repo', async () => {
-    const html = await container.renderToString(ProjectList, { props: { projects, lang: 'en' } });
-    expect(html.indexOf('First')).toBeLessThan(html.indexOf('Second'));
-    expect(html).toContain('href="https://github.com/x/first"');
+  it('makes every project a star link to its repo, named after the project', async () => {
+    const html = await render(projects);
+    for (const p of projects) {
+      expect(html).toMatch(new RegExp(`<a[^>]*class="[^"]*star[^"]*"[^>]*href="${p.url}"|<a[^>]*href="${p.url}"[^>]*class="[^"]*star`));
+    }
+    expect(html).toMatch(/class="[^"]*visually-hidden[^"]*"[^>]*>\s*First\s*</);
   });
 
-  it('shows description and language when present', async () => {
-    const html = await container.renderToString(ProjectList, { props: { projects, lang: 'en' } });
+  it('lists the stars in the order they were built', async () => {
+    const html = await render(projects);
+    expect(html.indexOf('x/first')).toBeLessThan(html.indexOf('x/second'));
+    expect(html.indexOf('x/second')).toBeLessThan(html.indexOf('x/third'));
+  });
+
+  it('shows a card with description, language and stars', async () => {
+    const html = await render(projects);
     expect(html).toContain('The first one');
-    expect(html).toContain('Go');
+    expect(html).toMatch(/>\s*Go\s*</);
+    expect(html).toMatch(/★\s*2/);
   });
 
   it('links to the live site only when there is one', async () => {
-    const html = await container.renderToString(ProjectList, { props: { projects, lang: 'en' } });
+    const html = await render(projects);
     expect(html).toContain('href="https://second.example.com"');
     expect(html.match(/Live site/g)).toHaveLength(1);
   });
 
-  it('says a first project is coming when nothing is tagged yet', async () => {
-    const html = await container.renderToString(ProjectList, { props: { projects: [], lang: 'en' } });
+  it('joins the stars with one line through every star in order', async () => {
+    const html = await render(projects);
+    const points = html.match(/<polyline[^>]*points="([^"]*)"/)?.[1].trim().split(/\s+/) ?? [];
+    expect(points).toHaveLength(3);
+  });
+
+  it('marks the latest project', async () => {
+    const html = await render(projects);
+    expect(html).toMatch(/data-latest[^>]*>[\s\S]*x\/third|x\/third[\s\S]{0,400}data-latest/);
+  });
+
+  it('shows a single placeholder star when nothing is tagged yet', async () => {
+    const html = await render([]);
     expect(html).toContain('First project coming soon');
+    expect(html).not.toContain('<polyline');
   });
 
   it('uses Turkish labels on the Turkish page', async () => {
-    const html = await container.renderToString(ProjectList, { props: { projects: [], lang: 'tr' } });
+    const html = await render(projects, 'tr');
     expect(html).toContain('Projeler');
+    expect(html).toContain('Canlı site');
   });
 });
 

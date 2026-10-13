@@ -4,7 +4,7 @@ import CvButton from '../components/CvButton.astro';
 import Footer from '../components/Footer.astro';
 import Hero from '../components/Hero.astro';
 import LangToggle from '../components/LangToggle.astro';
-import ProjectList from '../components/ProjectList.astro';
+import StarChart from '../components/StarChart.astro';
 import SceneCanvas from '../components/SceneCanvas.astro';
 import { profile } from '../content/profile';
 import { localeUrl } from '../i18n/routes';
@@ -58,7 +58,7 @@ const absolute = (path: string) => new URL(path, Astro.site).href;
 		<Hero profile={profile} lang={lang} />
 		<main>
 			<About profile={profile} lang={lang} />
-			<ProjectList projects={projects} lang={lang} />
+			<StarChart projects={projects} lang={lang} />
 		</main>
 		<Footer profile={profile} lang={lang} />
 		<CvButton lang={lang} />

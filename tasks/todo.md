@@ -197,13 +197,13 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 **Description:** Pure `layoutConstellation(projects) → positions` (deterministic; appending never moves existing stars). Replace the list with HTML `<a>` stars plus an SVG line in creation order. Hover/focus card (name, description, language, stars, repo + live links); tap-to-open on touch; zero-repo placeholder star; line draws in on scroll (static under reduced motion).
 
 **Acceptance criteria:**
-- [ ] Unit tests: same input → same output; appending keeps prior positions; 0, 1, 4, 15 projects all lay out within bounds
-- [ ] Every star reachable with Tab; card opens on focus and hover; tap-then-follow works on touch
-- [ ] Stars and line stay aligned on window resize
+- [x] Unit tests: same input → same output; appending keeps prior positions; 0, 1, 4, 15 projects all lay out within bounds
+- [x] Every star reachable with Tab; card opens on focus and hover; tap-then-follow works on touch
+- [x] Stars and line stay aligned on window resize
 
 **Verification:**
-- [ ] `npm test && npm run build`
-- [ ] Manual: mouse, keyboard, phone emulation, resize, reduced-motion toggle in devtools
+- [x] `npm test && npm run build`
+- [x] Manual: mouse, keyboard, phone emulation, resize, reduced-motion toggle in devtools
 
 **Dependencies:** T6
 **Files likely touched:** `src/lib/constellation.ts`, `src/lib/constellation.test.ts`, `src/components/StarChart.astro`, `src/components/ProjectCard.astro`, `src/scripts/star-chart.ts`
