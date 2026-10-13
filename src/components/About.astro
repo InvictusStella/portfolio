@@ -49,12 +49,13 @@ const { profile, lang } = Astro.props;
 </section>
 
 <style>
+	/* Sits towards the left, leaving open space on the right. */
 	.about {
 		display: grid;
-		gap: 1.5rem;
-		max-width: 60rem;
-		margin: 0 auto;
+		gap: 3.5rem;
+		max-width: 52rem;
 		padding: 6rem var(--gutter);
+		margin-left: clamp(0rem, 6vw, 6rem);
 	}
 
 	.about__intro {

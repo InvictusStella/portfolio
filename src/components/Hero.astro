@@ -11,6 +11,8 @@ const { profile, lang } = Astro.props;
 ---
 
 <header class="hero" id="top">
+	<!-- CSS stand-in; the WebGL sun replaces it in Task 10. -->
+	<div class="hero__sun" aria-hidden="true"></div>
 	<div class="hero__text">
 		<h1>{profile.name}</h1>
 		<p class="hero__tagline">{profile.tagline[lang]}</p>
@@ -23,16 +25,54 @@ const { profile, lang } = Astro.props;
 
 <style>
 	.hero {
+		position: relative;
 		min-height: 100svh;
 		display: grid;
 		grid-template-rows: 1fr auto;
+		justify-items: center;
 		align-items: center;
 		padding: var(--gutter);
 		padding-bottom: 2rem;
+		text-align: center;
 	}
 
+	.hero__sun {
+		--size: min(78vw, 70svh, 40rem);
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: var(--size);
+		height: var(--size);
+		translate: -50% -55%;
+		border-radius: 50%;
+		/* Bright centre, darker redder edge ("limb darkening") so it reads as a sphere. */
+		background: radial-gradient(
+			circle,
+			#fff4d6 0%,
+			var(--sun-core) 35%,
+			#ff9a3c 62%,
+			#d9541a 82%,
+			#a33212 100%
+		);
+		box-shadow:
+			0 0 calc(var(--size) * 0.12) calc(var(--size) * 0.04) rgba(255, 170, 70, 0.55),
+			0 0 calc(var(--size) * 0.45) calc(var(--size) * 0.12) var(--sun-glow);
+	}
+
+	/* Soft, borderless haze behind the text: dims the sun without boxing it in. */
 	.hero__text {
-		max-width: 40rem;
+		position: relative;
+		max-width: 44rem;
+		padding: 4rem 4.5rem;
+		/* closest-side: fades out exactly at the edges of this box, so no visible bands. */
+		background: radial-gradient(
+			closest-side,
+			rgba(3, 4, 12, 0.4) 0%,
+			rgba(3, 4, 12, 0.4) 55%,
+			rgba(3, 4, 12, 0.2) 78%,
+			transparent 100%
+		);
+		text-shadow: 0 2px 18px rgba(3, 4, 12, 0.7);
 	}
 
 	h1 {
@@ -44,12 +84,12 @@ const { profile, lang } = Astro.props;
 
 	.hero__tagline {
 		font-size: clamp(1.1rem, 2.5vw, 1.4rem);
-		color: var(--text-muted);
+		color: var(--text);
 		margin: 0;
 	}
 
 	.hero__hint {
-		justify-self: center;
+		position: relative;
 		display: flex;
 		flex-direction: column;
 		align-items: center;

@@ -9,7 +9,6 @@
 	--text-muted: #a9b3d9;
 	--accent: #9fb8ff;
 	--line: rgba(160, 180, 255, 0.22);
-	--panel: rgba(6, 8, 22, 0.6);
 	--gutter: clamp(1rem, 5vw, 3rem);
 }
 
@@ -30,8 +29,8 @@ html {
 }
 
 /*
- * Deep-space background. The sun's glow sits at the top and the page darkens as
- * you scroll away from it. This is also the fallback when WebGL is unavailable.
+ * Deep-space background: warm near the sun (hero), darkening as you scroll away.
+ * This is also the fallback when WebGL is unavailable.
  */
 body {
 	margin: 0;
@@ -41,9 +40,7 @@ body {
 	line-height: 1.6;
 	color: var(--text);
 	background-color: var(--bg-deep);
-	background-image:
-		radial-gradient(circle at 85% 0, var(--sun-core) 0, var(--sun-glow) 18rem, transparent 40rem),
-		linear-gradient(to bottom, #1a0f14 0, var(--bg-mid) 100vh, var(--bg-deep) 200vh);
+	background-image: linear-gradient(to bottom, #1a0f14 0, var(--bg-mid) 100vh, var(--bg-deep) 200vh);
 	background-repeat: no-repeat;
 	overflow-x: hidden;
 }
@@ -63,10 +60,10 @@ a:hover {
 	border-radius: 4px;
 }
 
-/* Dark backing behind text blocks so they stay readable over the scene. */
+/*
+ * Text blocks float in space: no box, just a soft shadow behind the letters so
+ * they stay readable once the 3D scene moves behind them.
+ */
 .panel {
-	background: var(--panel);
-	border: 1px solid var(--line);
-	border-radius: 1rem;
-	padding: clamp(1.25rem, 4vw, 2rem);
+	text-shadow: 0 1px 14px rgba(3, 4, 12, 0.9);
 }

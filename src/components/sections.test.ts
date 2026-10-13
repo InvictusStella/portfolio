@@ -33,6 +33,11 @@ describe('Hero', () => {
     expect(html).toMatch(/<h1[^>]*>\s*Ada Lovelace\s*<\/h1>/);
   });
 
+  it('hides the decorative sun from screen readers', async () => {
+    const html = await container.renderToString(Hero, { props: { profile, lang: 'en' } });
+    expect(html).toMatch(/class="[^"]*hero__sun[^"]*"[^>]*aria-hidden="true"|aria-hidden="true"[^>]*class="[^"]*hero__sun/);
+  });
+
   it('shows the tagline in the requested language', async () => {
     const html = await container.renderToString(Hero, { props: { profile, lang: 'en' } });
     expect(html).toContain('Engineer of engines');

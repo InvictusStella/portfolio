@@ -65,6 +65,6 @@ export const profile: Profile = {
   contact: {
     email: 'kaanuman_07@hotmail.com',
     github: 'https://github.com/InvictusStella',
-    // linkedin: 'https://www.linkedin.com/in/…', // add the URL to show the link
+    linkedin: 'https://www.linkedin.com/in/kaan-uman', // add the URL to show the link
   },
 };

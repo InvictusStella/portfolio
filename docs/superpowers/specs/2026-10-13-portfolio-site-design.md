@@ -36,8 +36,8 @@ A personal portfolio site for a newly graduated software engineer. It is three t
 
 A single continuous page. A fixed WebGL `<canvas>` sits behind all content; content is ordinary HTML that scrolls over it.
 
-1. **Hero** — name, one-line tagline, "scroll ↓" hint, over the sun. Plays the sunrise intro (§5.3).
-2. **About** — photo, about-me paragraph, skills (labelled chips, no percentage bars), hobbies, then an **experience timeline** (vertical line; each entry: role, place, dates, one sentence).
+1. **Hero** — a large sun centred in the viewport; name and one-line tagline centred on top of it over a soft, borderless dark haze (no box edges) so the text stays readable without hiding the sun; "scroll ↓" hint below. Plays the sunrise intro (§5.3).
+2. **About** — text floats directly in space (no card borders or backgrounds; a soft text shadow keeps it readable over the scene), in a column offset to the left of the page. Contains photo, about-me paragraph, skills (labelled chips, no percentage bars), hobbies, then an **experience timeline** (vertical line; each entry: role, place, dates, one sentence).
 3. **Star chart** — short heading, then the **journey constellation** (§4).
 4. **Edge footer** — contact links (GitHub, LinkedIn, email) and a one-line sign-off.
 
