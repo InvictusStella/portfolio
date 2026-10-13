@@ -97,7 +97,7 @@ The owner wants to **drop performance restrictions in favour of realism** for sp
 - [x] P1: Star chart as Scorpius (real coordinates, segments)
 - [x] P2: Sun surface from a real SDO image, animated
 - [x] P3: Bloom post-processing
-- [ ] P4: Prominences v2: varied, moving, more of them
+- [x] P4: Prominences v2: varied, moving, more of them
 - [ ] P5: Real photography: star field + nebula layers; brighter procedural stars
 - [ ] P6: Warp jumps rebuilt as triggered Star Wars / Mass Effect style sequences
 - [ ] P7: Credits line + docs/credits.md (added alongside P2 and P5, never shipping an uncredited image)

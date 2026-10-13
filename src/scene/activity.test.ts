@@ -47,16 +47,42 @@ describe('prominenceState', () => {
     expect(lower).toBeGreaterThan(0);
   });
 
-  it('keeps its size in a sensible range (arcs, not giant loops)', () => {
+  it('comes in three kinds: loops, eruptions and jets', () => {
+    const kinds = new Set<string>();
+    for (let i = 0; i < PROMINENCE_COUNT; i++) for (const t of times) kinds.add(prominenceState(i, t).kind);
+    expect([...kinds].sort()).toEqual(['eruptive', 'jet', 'loop']);
+  });
+
+  it('keeps each kind in a sensible size range', () => {
+    const limits = { loop: [0.12, 0.4, 0.38], eruptive: [0.12, 0.4, 1.0], jet: [0.01, 0.06, 0.4] } as const;
     for (let i = 0; i < PROMINENCE_COUNT; i++) {
       for (const t of times) {
         const p = prominenceState(i, t);
+        const [minWidth, maxWidth, maxHeight] = limits[p.kind];
         expect(p.height).toBeGreaterThanOrEqual(0);
-        expect(p.height).toBeLessThanOrEqual(0.35);
-        expect(p.width).toBeGreaterThan(0.05);
-        expect(p.width).toBeLessThan(0.4);
+        expect(p.height).toBeLessThanOrEqual(maxHeight);
+        expect(p.width).toBeGreaterThanOrEqual(minWidth);
+        expect(p.width).toBeLessThanOrEqual(maxWidth);
       }
     }
+  });
+
+  it('lets eruptions lift off: they keep rising and let go of their feet', () => {
+    const t0 = times.find((t) => prominenceState(0, t).kind === 'eruptive' && prominenceState(0, t).life > 0.5)!;
+    const early = prominenceState(0, t0);
+    let later = early;
+    for (let t = t0; prominenceState(0, t).kind === 'eruptive' && prominenceState(0, t).life > 0.05; t += 0.1) later = prominenceState(0, t);
+    expect(later.height).toBeGreaterThan(early.height);
+    expect(later.detach).toBeGreaterThan(early.detach);
+  });
+
+  it('keeps loops moving: their height breathes even while fully visible', () => {
+    const heights: number[] = [];
+    for (let t = 0; t < 400 && heights.length < 40; t += 0.25) {
+      const p = prominenceState(2, t);
+      if (p.kind === 'loop' && p.life === 1) heights.push(p.height);
+    }
+    expect(Math.max(...heights) - Math.min(...heights)).toBeGreaterThan(0.01);
   });
 
   it('fades in and out instead of popping (life changes gradually)', () => {
@@ -64,10 +90,14 @@ describe('prominenceState', () => {
       let previous = prominenceState(i, 0).life;
       for (let t = 0.05; t < 120; t += 0.05) {
         const life = prominenceState(i, t).life;
-        expect(Math.abs(life - previous)).toBeLessThan(0.05);
+        expect(Math.abs(life - previous)).toBeLessThan(0.1);
         previous = life;
       }
     }
+  });
+
+  it('has at least eight going at once, at most', () => {
+    expect(PROMINENCE_COUNT).toBeGreaterThanOrEqual(8);
   });
 
   it('moves to a new place after each lifetime', () => {

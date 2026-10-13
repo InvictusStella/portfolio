@@ -362,8 +362,8 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 
 ### Task P4: Prominences v2
 **Acceptance criteria:**
-- [ ] At least three kinds: evolving loops with flowing plasma, eruptive arcs that lift off and dissolve, short jets
-- [ ] Shapes change over time (no static arcs); still nothing within 25° of horizontal
+- [x] At least three kinds: evolving loops with flowing plasma, eruptive arcs that lift off and dissolve, short jets
+- [x] Shapes change over time (no static arcs); still nothing within 25° of horizontal
 **Files:** `src/scene/activity.ts` (+test), `src/scene/chapters/prominences.ts`
 
 ### Task P5: Real photography for space

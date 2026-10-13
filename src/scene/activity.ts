@@ -4,7 +4,7 @@
 
 import { smoothstep } from './director';
 
-export const PROMINENCE_COUNT = 5;
+export const PROMINENCE_COUNT = 8;
 export const FLARE_COUNT = 2;
 
 /** Nothing appears within this angle of horizontal: that's where the name and tagline sit. */
@@ -52,7 +52,15 @@ function cycleAt(time: number, duration: number, offset: number) {
   return { cycle, phase: t - cycle };
 }
 
+/**
+ * - loop: the classic arc; its height breathes and plasma knots slide along it.
+ * - eruptive: keeps rising, lets go of its feet and dissolves into space.
+ * - jet: a thin spike that shoots up and fades quickly.
+ */
+export type ProminenceKind = 'loop' | 'eruptive' | 'jet';
+
 export type Prominence = {
+  kind: ProminenceKind;
   /** Centre of the arc around the edge, radians. */
   angle: number;
   /** Half the angular span between the arc's two feet, radians. */
@@ -61,24 +69,61 @@ export type Prominence = {
   height: number;
   /** 0 (invisible) → 1 (fully visible). */
   life: number;
+  /** 0 = anchored at both feet → 1 = feet let go (eruptions only). */
+  detach: number;
   /** Per-arc random value for shader variation. */
   seed: number;
 };
 
-/** State of prominence `slot` at `time` seconds. */
+/** State of prominence `slot` at `time` seconds. A new kind and place each lifetime. */
 export function prominenceState(slot: number, time: number): Prominence {
-  const duration = 9 + 3 * slot;
+  const duration = 8 + (slot % 4) * 2;
   const { cycle, phase } = cycleAt(time, duration, slot * 0.37);
-  const width = 0.16 + 0.2 * hash(slot, cycle, 1);
-  const maxHeight = 0.15 + 0.18 * hash(slot, cycle, 2);
+  const pick = hash(slot, cycle, 7);
+  const seed = hash(slot, cycle, 4);
+  const r1 = hash(slot, cycle, 1);
+  const r2 = hash(slot, cycle, 2);
+  const placeU = hash(slot, cycle, 3);
+
+  if (pick >= 0.75) {
+    // Jet: shoots up over the first 15% of the cycle and is gone by 45%; then a gap.
+    const width = 0.015 + 0.03 * r1;
+    return {
+      kind: 'jet',
+      angle: allowedAngle(placeU, width),
+      width,
+      height: (0.18 + 0.2 * r2) * smoothstep(0, 0.15, phase),
+      life: smoothstep(0, 0.1, phase) * (1 - smoothstep(0.3, 0.45, phase)),
+      detach: 0,
+      seed,
+    };
+  }
+
+  if (pick >= 0.5) {
+    // Eruption: accelerates upward the whole time; the feet let go from about a third in.
+    const width = 0.14 + 0.2 * r1;
+    return {
+      kind: 'eruptive',
+      angle: allowedAngle(placeU, width),
+      width,
+      height: 0.12 + 0.85 * phase * phase,
+      life: smoothstep(0, 0.15, phase) * (1 - smoothstep(0.65, 0.9, phase)),
+      detach: smoothstep(0.35, 0.85, phase),
+      seed,
+    };
+  }
+
+  // Loop: rises out of the surface, then its height keeps breathing gently.
+  const width = 0.16 + 0.2 * r1;
+  const breathing = 1 + 0.08 * Math.sin(time * 0.9 + seed * 6.2832);
   return {
-    angle: allowedAngle(hash(slot, cycle, 3), width),
+    kind: 'loop',
+    angle: allowedAngle(placeU, width),
     width,
-    // Rises out of the surface over the first 40% of its life.
-    height: maxHeight * smoothstep(0, 0.4, phase),
-    // Fades in, holds, fades out — then a short gap before it reappears elsewhere.
+    height: (0.15 + 0.18 * r2) * smoothstep(0, 0.4, phase) * breathing,
     life: smoothstep(0, 0.2, phase) * (1 - smoothstep(0.7, 0.9, phase)),
-    seed: hash(slot, cycle, 4),
+    detach: 0,
+    seed,
   };
 }
 
