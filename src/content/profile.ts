@@ -56,10 +56,19 @@ export const profile: Profile = {
       'veri odaklı uygulamalar, gömülü ve etkileşimli sistemler.',
   },
   skillGroups: [
-    { label: { en: 'Languages', tr: 'Diller' }, skills: ['Go', 'Python', 'C#', 'Java', 'C++'] },
+    {
+      label: { en: 'Languages', tr: 'Diller' },
+      skills: ['Go', 'Python', 'C#', 'Java', 'C++'],
+    },
     {
       label: { en: 'Backend', tr: 'Backend' },
-      skills: ['REST APIs', 'Microservices', 'Distributed systems', 'gRPC', 'OAuth / JWT'],
+      skills: [
+        'REST APIs',
+        'Microservices',
+        'Distributed systems',
+        'gRPC',
+        'OAuth / JWT',
+      ],
     },
     {
       label: { en: 'Databases', tr: 'Veritabanları' },
@@ -67,20 +76,42 @@ export const profile: Profile = {
     },
     {
       label: { en: 'Cloud & infra', tr: 'Bulut ve altyapı' },
-      skills: ['Azure Container Apps', 'Azure App Service', 'Azure Functions', 'Azure Monitor', 'Docker'],
+      skills: [
+        'Azure Container Apps',
+        'Azure App Service',
+        'Azure Functions',
+        'Azure Monitor',
+        'Docker',
+      ],
     },
     {
       label: { en: 'AI & ML', tr: 'Yapay zekâ ve ML' },
-      skills: ['Gemini API', 'LLM integration', 'TensorFlow / Keras', 'MediaPipe', 'OpenCV', 'Claude', 'AI Assisted Development'],
+      skills: [
+        'Gemini API',
+        'LLM integration',
+        'TensorFlow / Keras',
+        'MediaPipe',
+        'OpenCV',
+        'Claude',
+        'AI Assisted Development',
+      ],
     },
-    { label: { en: 'Tools', tr: 'Araçlar' }, skills: ['Git', 'Postman', 'Ollama'] },
+    {
+      label: { en: 'Tools', tr: 'Araçlar' },
+      skills: ['Git', 'Postman', 'Ollama'],
+    },
   ],
-  hobbies: [{ en: 'Space & astronomy', tr: 'Uzay ve astronomi' }, {en: 'Bodybuilding', tr: 'Vücut Geliştirme'},
-    {en: 'Video Games', tr:'Video Oyunları'}
+  hobbies: [
+    { en: 'Space & astronomy', tr: 'Uzay ve astronomi' },
+    { en: 'Bodybuilding', tr: 'Vücut Geliştirme' },
+    { en: 'Video Games', tr: 'Video Oyunları' },
   ],
   experience: [
     {
-      role: { en: 'Backend Development Intern', tr: 'Backend Geliştirme Stajyeri' },
+      role: {
+        en: 'Backend Development Intern',
+        tr: 'Backend Geliştirme Stajyeri',
+      },
       company: 'Revlo AI',
       place: 'Antalya',
       start: '2025-10',
@@ -96,7 +127,10 @@ export const profile: Profile = {
       },
     },
     {
-      role: { en: 'Software Engineering Intern', tr: 'Yazılım Mühendisliği Stajyeri' },
+      role: {
+        en: 'Software Engineering Intern',
+        tr: 'Yazılım Mühendisliği Stajyeri',
+      },
       company: 'Talya Bilişim',
       place: 'Antalya',
       start: '2024-07',

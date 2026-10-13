@@ -33,7 +33,9 @@ describe('generateStars', () => {
   });
 
   it('is identical on every visit (seeded)', () => {
-    expect(generateStars(100, 3, bounds)).toEqual(generateStars(100, 3, bounds));
+    expect(generateStars(100, 3, bounds)).toEqual(
+      generateStars(100, 3, bounds),
+    );
   });
 
   it('keeps every star inside the bounds', () => {

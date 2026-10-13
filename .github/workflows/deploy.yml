@@ -39,6 +39,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Code must be formatted (npm run format fixes it).
+      - name: Formatting
+        run: npm run format:check
+
       - name: Type check
         run: npm run check
 

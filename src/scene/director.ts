@@ -10,11 +10,15 @@ export function smoothstep(edge0: number, edge1: number, x: number): number {
 }
 
 /**
- * How far through the hero's departure zone we are (0 → 1).
- * The zone is the extra scroll a pinned hero adds: its height minus one screen.
- * `heroTop` is the hero's top relative to the viewport (getBoundingClientRect().top).
+ * How far through the hero's departure zone we are (0 → 1). The zone is the
+ * extra scroll a pinned hero adds: its height minus one screen. `heroTop` is
+ * the hero's top relative to the viewport (getBoundingClientRect().top).
  */
-export function departureProgress(heroTop: number, heroHeight: number, viewportHeight: number): number {
+export function departureProgress(
+  heroTop: number,
+  heroHeight: number,
+  viewportHeight: number,
+): number {
   const zone = heroHeight - viewportHeight;
   if (zone <= 0) return 0;
   return clamp01(-heroTop / zone);
@@ -25,12 +29,18 @@ export function textOpacity(progress: number): number {
   return 1 - smoothstep(0, 0.3, progress);
 }
 
-/** How much further away the camera is at the end of the departure (distance = start × (1 + RECEDE·p²)). */
+/**
+ * How much further away the camera is at the end of the departure (distance =
+ * start × (1 + RECEDE·p²)).
+ */
 const RECEDE = 3;
 /** The sun's glow reaches this many sun-radii from its centre. */
 const GLOW_REACH = 2.3;
 
-/** On-screen size of the sun relative to the start (1 → about a quarter). Eases in: lingers, then falls away. */
+/**
+ * On-screen size of the sun relative to the start (1 → about a quarter). Eases
+ * in: lingers, then falls away.
+ */
 export function sunScale(progress: number): number {
   return 1 / (1 + RECEDE * progress * progress);
 }
@@ -41,46 +51,69 @@ export function sunScale(progress: number): number {
  * faster at the end — and is fully off the top edge, glow included, exactly as
  * the departure ends.
  */
-export function sunScreenY(progress: number, startY: number, startDiameter: number): number {
+export function sunScreenY(
+  progress: number,
+  startY: number,
+  startDiameter: number,
+): number {
   const exitY = -(startDiameter / 2) * sunScale(1) * GLOW_REACH * 1.05; // 5% margin: clearly gone
   const t = clamp01((progress - 0.35) / 0.65);
   return startY + (exitY - startY) * t * t; // ease-in: lingers, then leaves
 }
 
 /** Whether any part of the sun, glow included, is still inside the screen. */
-export function sunOnScreen(progress: number, startY: number, startDiameter: number): boolean {
+export function sunOnScreen(
+  progress: number,
+  startY: number,
+  startDiameter: number,
+): boolean {
   const reach = (startDiameter / 2) * sunScale(progress) * GLOW_REACH;
   return sunScreenY(progress, startY, startDiameter) + reach > 0;
 }
 
 /**
  * Strength of the warm light bleeding in from the top once the sun has left.
- * Off while the sun is visible; then slowly dims deeper into the page, but never vanishes.
- * `pageProgress` is 0 at the top of the page and 1 at the bottom.
+ * Off while the sun is visible; then slowly dims deeper into the page, but
+ * never vanishes. `pageProgress` is 0 at the top of the page and 1 at the
+ * bottom.
  */
-export function sunlightOpacity(departure: number, pageProgress: number): number {
+export function sunlightOpacity(
+  departure: number,
+  pageProgress: number,
+): number {
   // Comes in while the sun is leaving through the top, so there is no dark gap.
   const sunGone = smoothstep(0.75, 1, departure);
   const depth = 1 - 0.7 * smoothstep(0.35, 1, pageProgress);
   return sunGone * depth;
 }
 
-/** Deep-space stars: a faint sky around the sun, full strength once it has mostly gone. */
+/**
+ * Deep-space stars: a faint sky around the sun, full strength once it has
+ * mostly gone.
+ */
 export function deepSpaceOpacity(departure: number): number {
   return 0.15 + 0.85 * smoothstep(0.25, 0.8, departure);
 }
 
 /**
- * How settled the sky is for the star chart (0 → 1): it calms as the projects section
- * scrolls in, from its top at the bottom of the screen to its top at 20% from the top.
- * `sectionTop` is relative to the viewport (getBoundingClientRect().top).
+ * How settled the sky is for the star chart (0 → 1): it calms as the projects
+ * section scrolls in, from its top at the bottom of the screen to its top at
+ * 20% from the top. `sectionTop` is relative to the viewport
+ * (getBoundingClientRect().top).
  */
 export function chartCalm(sectionTop: number, viewportHeight: number): number {
   return smoothstep(viewportHeight, viewportHeight * 0.2, sectionTop);
 }
 
-/** The sun's surface animates every frame only when someone can actually see it move. */
-export function shouldAnimate(state: { reducedMotion: boolean; hidden: boolean; sunOnScreen: boolean }): boolean {
+/**
+ * The sun's surface animates every frame only when someone can actually see it
+ * move.
+ */
+export function shouldAnimate(state: {
+  reducedMotion: boolean;
+  hidden: boolean;
+  sunOnScreen: boolean;
+}): boolean {
   return !state.reducedMotion && !state.hidden && state.sunOnScreen;
 }
 
@@ -89,7 +122,12 @@ export function shouldAnimate(state: { reducedMotion: boolean; hidden: boolean; 
  * of time you end up in the same place whether you render at 30 or 144 fps.
  * Higher `lambda` = snappier.
  */
-export function damp(current: number, target: number, lambda: number, dt: number): number {
+export function damp(
+  current: number,
+  target: number,
+  lambda: number,
+  dt: number,
+): number {
   return target + (current - target) * Math.exp(-lambda * dt);
 }
 

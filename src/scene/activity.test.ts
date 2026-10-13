@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { FLARE_COUNT, flareState, PROMINENCE_COUNT, prominenceState } from './activity';
+import {
+  FLARE_COUNT,
+  flareState,
+  PROMINENCE_COUNT,
+  prominenceState,
+} from './activity';
 
 /** Angle (radians) measured from the nearest horizontal direction, 0..π/2. */
 const fromHorizontal = (angle: number) => {
@@ -10,7 +15,9 @@ const KEEP_OUT = (25 * Math.PI) / 180;
 /** Angle (radians) from straight down, 0..π. */
 const fromBottom = (angle: number) => {
   const a = Math.atan2(Math.sin(angle), Math.cos(angle)); // -π..π
-  return Math.abs(a + Math.PI / 2) > Math.PI ? 2 * Math.PI - Math.abs(a + Math.PI / 2) : Math.abs(a + Math.PI / 2);
+  return Math.abs(a + Math.PI / 2) > Math.PI
+    ? 2 * Math.PI - Math.abs(a + Math.PI / 2)
+    : Math.abs(a + Math.PI / 2);
 };
 const HINT_KEEP_OUT = (30 * Math.PI) / 180;
 const times = Array.from({ length: 2000 }, (_, i) => i * 0.37); // ~12 minutes of samples
@@ -24,7 +31,10 @@ describe('prominenceState', () => {
     for (let i = 0; i < PROMINENCE_COUNT; i++) {
       for (const t of times) {
         const p = prominenceState(i, t);
-        if (p.life > 0) expect(fromHorizontal(p.angle)).toBeGreaterThanOrEqual(KEEP_OUT - 1e-9);
+        if (p.life > 0)
+          expect(fromHorizontal(p.angle)).toBeGreaterThanOrEqual(
+            KEEP_OUT - 1e-9,
+          );
       }
     }
   });
@@ -43,18 +53,25 @@ describe('prominenceState', () => {
   });
 
   it('still appears on the lower half sometimes (not only on top)', () => {
-    const lower = times.filter((t) => Math.sin(prominenceState(1, t).angle) < 0).length;
+    const lower = times.filter(
+      (t) => Math.sin(prominenceState(1, t).angle) < 0,
+    ).length;
     expect(lower).toBeGreaterThan(0);
   });
 
   it('comes in three kinds: loops, eruptions and jets', () => {
     const kinds = new Set<string>();
-    for (let i = 0; i < PROMINENCE_COUNT; i++) for (const t of times) kinds.add(prominenceState(i, t).kind);
+    for (let i = 0; i < PROMINENCE_COUNT; i++)
+      for (const t of times) kinds.add(prominenceState(i, t).kind);
     expect([...kinds].sort()).toEqual(['eruptive', 'jet', 'loop']);
   });
 
   it('keeps each kind in a sensible size range', () => {
-    const limits = { loop: [0.12, 0.4, 0.38], eruptive: [0.12, 0.4, 1.0], jet: [0.01, 0.06, 0.4] } as const;
+    const limits = {
+      loop: [0.12, 0.4, 0.38],
+      eruptive: [0.12, 0.4, 1.0],
+      jet: [0.01, 0.06, 0.4],
+    } as const;
     for (let i = 0; i < PROMINENCE_COUNT; i++) {
       for (const t of times) {
         const p = prominenceState(i, t);
@@ -68,10 +85,20 @@ describe('prominenceState', () => {
   });
 
   it('lets eruptions lift off: they keep rising and let go of their feet', () => {
-    const t0 = times.find((t) => prominenceState(0, t).kind === 'eruptive' && prominenceState(0, t).life > 0.5)!;
+    const t0 = times.find(
+      (t) =>
+        prominenceState(0, t).kind === 'eruptive' &&
+        prominenceState(0, t).life > 0.5,
+    )!;
     const early = prominenceState(0, t0);
     let later = early;
-    for (let t = t0; prominenceState(0, t).kind === 'eruptive' && prominenceState(0, t).life > 0.05; t += 0.1) later = prominenceState(0, t);
+    for (
+      let t = t0;
+      prominenceState(0, t).kind === 'eruptive' &&
+      prominenceState(0, t).life > 0.05;
+      t += 0.1
+    )
+      later = prominenceState(0, t);
     expect(later.height).toBeGreaterThan(early.height);
     expect(later.detach).toBeGreaterThan(early.detach);
   });
@@ -101,7 +128,9 @@ describe('prominenceState', () => {
   });
 
   it('moves to a new place after each lifetime', () => {
-    const angles = new Set(times.map((t) => prominenceState(0, t).angle.toFixed(3)));
+    const angles = new Set(
+      times.map((t) => prominenceState(0, t).angle.toFixed(3)),
+    );
     expect(angles.size).toBeGreaterThan(5);
   });
 });
@@ -109,7 +138,9 @@ describe('prominenceState', () => {
 describe('flareState', () => {
   it('is quiet most of the time (flares are occasional)', () => {
     for (let i = 0; i < FLARE_COUNT; i++) {
-      const active = times.filter((t) => flareState(i, t).strength > 0.05).length;
+      const active = times.filter(
+        (t) => flareState(i, t).strength > 0.05,
+      ).length;
       expect(active / times.length).toBeLessThan(0.3);
     }
   });
@@ -124,8 +155,12 @@ describe('flareState', () => {
       for (const t of times) {
         const f = flareState(i, t);
         if (f.strength > 0) {
-          expect(fromHorizontal(f.angle)).toBeGreaterThanOrEqual(KEEP_OUT - 1e-9);
-          expect(fromBottom(f.angle)).toBeGreaterThanOrEqual(HINT_KEEP_OUT - 1e-9);
+          expect(fromHorizontal(f.angle)).toBeGreaterThanOrEqual(
+            KEEP_OUT - 1e-9,
+          );
+          expect(fromBottom(f.angle)).toBeGreaterThanOrEqual(
+            HINT_KEEP_OUT - 1e-9,
+          );
         }
       }
     }

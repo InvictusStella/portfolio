@@ -1,75 +1,80 @@
 ---
-// "Return to Sun": appears once you've left the hero. A plain link to the top; when the
-// 3D scene is running it becomes a warp journey back (see SceneCanvas.astro).
+// "Return to Sun": appears once you've left the hero. A plain link to the top;
+// when the 3D scene is running it becomes a warp journey back (see
+// SceneCanvas.astro).
 import { ui, type Lang } from '../i18n/ui';
 
 interface Props {
-	lang: Lang;
+  lang: Lang;
 }
 
 const { lang } = Astro.props;
 ---
 
 <a class="return-to-sun" href="#top" data-travel="top">
-	<span aria-hidden="true">↑</span>
-	{ui.returnToSun[lang]}
+  <span aria-hidden="true">↑</span>
+  {ui.returnToSun[lang]}
 </a>
 
 <script>
-	// Show the button only once the hero has (mostly) scrolled away.
-	const button = document.querySelector<HTMLElement>('.return-to-sun');
-	const hero = document.querySelector<HTMLElement>('.hero');
-	if (button && hero) {
-		const update = () => button.classList.toggle('is-shown', scrollY > hero.offsetHeight - innerHeight * 0.5);
-		addEventListener('scroll', update, { passive: true });
-		addEventListener('resize', update);
-		update();
-	}
+  // Show the button only once the hero has (mostly) scrolled away.
+  const button = document.querySelector<HTMLElement>('.return-to-sun');
+  const hero = document.querySelector<HTMLElement>('.hero');
+  if (button && hero) {
+    const update = () =>
+      button.classList.toggle(
+        'is-shown',
+        scrollY > hero.offsetHeight - innerHeight * 0.5,
+      );
+    addEventListener('scroll', update, { passive: true });
+    addEventListener('resize', update);
+    update();
+  }
 </script>
 
 <style>
-	.return-to-sun {
-		position: fixed;
-		left: clamp(0.75rem, 3vw, 1.5rem);
-		bottom: clamp(0.75rem, 3vw, 1.5rem);
-		z-index: 10;
-		display: inline-flex;
-		align-items: center;
-		gap: 0.4rem;
-		padding: 0.55rem 1rem;
-		border-radius: 999px;
-		font-size: 0.9rem;
-		font-weight: 600;
-		color: var(--text);
-		text-decoration: none;
-		background: rgba(3, 4, 12, 0.6);
-		border: 1px solid rgba(255, 170, 90, 0.55);
-		box-shadow: 0 0 18px rgba(255, 140, 50, 0.25);
-		opacity: 0;
-		visibility: hidden;
-		translate: 0 0.5rem;
-		transition:
-			opacity 0.25s ease,
-			translate 0.25s ease,
-			visibility 0.25s;
-	}
+  .return-to-sun {
+    position: fixed;
+    left: clamp(0.75rem, 3vw, 1.5rem);
+    bottom: clamp(0.75rem, 3vw, 1.5rem);
+    z-index: 10;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.55rem 1rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
+    text-decoration: none;
+    background: rgba(3, 4, 12, 0.6);
+    border: 1px solid rgba(255, 170, 90, 0.55);
+    box-shadow: 0 0 18px rgba(255, 140, 50, 0.25);
+    opacity: 0;
+    visibility: hidden;
+    translate: 0 0.5rem;
+    transition:
+      opacity 0.25s ease,
+      translate 0.25s ease,
+      visibility 0.25s;
+  }
 
-	.return-to-sun.is-shown,
-	.return-to-sun:focus-visible {
-		opacity: 1;
-		visibility: visible;
-		translate: 0 0;
-	}
+  .return-to-sun.is-shown,
+  .return-to-sun:focus-visible {
+    opacity: 1;
+    visibility: visible;
+    translate: 0 0;
+  }
 
-	.return-to-sun:hover {
-		color: #fff;
-		border-color: rgba(255, 190, 110, 0.9);
-		box-shadow: 0 0 24px rgba(255, 150, 60, 0.45);
-	}
+  .return-to-sun:hover {
+    color: #fff;
+    border-color: rgba(255, 190, 110, 0.9);
+    box-shadow: 0 0 24px rgba(255, 150, 60, 0.45);
+  }
 
-	@media (prefers-reduced-motion: reduce) {
-		.return-to-sun {
-			transition: none;
-		}
-	}
+  @media (prefers-reduced-motion: reduce) {
+    .return-to-sun {
+      transition: none;
+    }
+  }
 </style>

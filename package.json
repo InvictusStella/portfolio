@@ -13,7 +13,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "astro": "astro",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "astro": "^7.3.8",
@@ -24,6 +26,8 @@
     "@playwright/test": "^1.64.0",
     "@types/node": "^24.19.2",
     "@types/three": "^0.186.0",
+    "prettier": "^3.9.10",
+    "prettier-plugin-astro": "^1.1.1",
     "typescript": "^6.0.3",
     "vitest": "^5.0.4"
   }

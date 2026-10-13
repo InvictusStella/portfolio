@@ -69,7 +69,8 @@ export const simplexNoise3D = /* glsl */ `
 		return 105.0 * dot(m * m, vec4(dot(p0, x0), dot(p1, x1), dot(p2, x2), dot(p3, x3)));
 	}
 
-	// Several octaves of noise added together: big shapes with finer detail on top.
+	// Several octaves of noise added together: big shapes with finer detail on
+	// top.
 	float fbm(vec3 p) {
 		float sum = 0.0;
 		float amplitude = 0.5;

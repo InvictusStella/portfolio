@@ -1,5 +1,6 @@
 // Credits for imagery used on the site (details and licences: docs/credits.md).
-// `credit` is the wording the source requires, so it stays as-is in both languages.
+// `credit` is the wording the source requires, so it stays as-is in both
+// languages.
 
 import type { Localized } from './profile';
 
@@ -14,7 +15,10 @@ export type Credit = {
   changes?: Localized;
 };
 
-const CC_BY = { name: 'CC BY 4.0', url: 'https://creativecommons.org/licenses/by/4.0/' };
+const CC_BY = {
+  name: 'CC BY 4.0',
+  url: 'https://creativecommons.org/licenses/by/4.0/',
+};
 const CHANGED: Localized = {
   en: 'cropped, resized and colour-adjusted',
   tr: 'kırpıldı, yeniden boyutlandırıldı ve renk ayarı yapıldı',

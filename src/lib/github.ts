@@ -31,7 +31,10 @@ export type Project = {
   url: string;
 };
 
-/** "SignLanguageRecognition" / "cpu_emu" / "Aegis-Predictive-Sentry" → words with capitals. */
+/**
+ * "SignLanguageRecognition" / "cpu_emu" / "Aegis-Predictive-Sentry" → words
+ * with capitals.
+ */
 export function prettifyName(name: string): string {
   return name
     .replace(/[-_]+/g, ' ')
@@ -63,12 +66,20 @@ export function toProjects(repos: GitHubRepo[]): Project[] {
 type FetchLike = (
   url: string,
   init?: { headers?: Record<string, string> },
-) => Promise<{ ok: boolean; status: number; statusText: string; json(): Promise<unknown> }>;
+) => Promise<{
+  ok: boolean;
+  status: number;
+  statusText: string;
+  json(): Promise<unknown>;
+}>;
 
 /** Every public repo of `user`, following pages of 100 until the last one. */
 export async function fetchRepos(
   user: string,
-  { token, fetch: fetchFn = fetch as unknown as FetchLike }: { token?: string; fetch?: FetchLike } = {},
+  {
+    token,
+    fetch: fetchFn = fetch as unknown as FetchLike,
+  }: { token?: string; fetch?: FetchLike } = {},
 ): Promise<GitHubRepo[]> {
   const headers: Record<string, string> = {
     Accept: 'application/vnd.github+json',
@@ -80,7 +91,10 @@ export async function fetchRepos(
   for (let page = 1; ; page++) {
     const url = `https://api.github.com/users/${user}/repos?type=owner&per_page=100&page=${page}`;
     const response = await fetchFn(url, { headers });
-    if (!response.ok) throw new Error(`GitHub API ${response.status} ${response.statusText} for ${url}`);
+    if (!response.ok)
+      throw new Error(
+        `GitHub API ${response.status} ${response.statusText} for ${url}`,
+      );
     const repos = (await response.json()) as GitHubRepo[];
     all.push(...repos);
     if (repos.length < 100) return all;

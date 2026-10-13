@@ -1,382 +1,411 @@
 ---
-// The projects as the constellation Scorpius: each project is a star (a real link) taking
-// the next star of the figure, from the stinger up to the claws. Hover, focus or tap a
-// star to see its card.
+// The projects as the constellation Scorpius: each project is a star (a real
+// link) taking the next star of the figure, from the stinger up to the claws.
+// Hover, focus or tap a star to see its card.
 import { ui, type Lang } from '../i18n/ui';
 import { layoutConstellation, SCORPIUS, toPercent } from '../lib/constellation';
 import type { Project } from '../lib/github';
 
 interface Props {
-	projects: Project[];
-	lang: Lang;
+  projects: Project[];
+  lang: Lang;
 }
 
 const { projects, lang } = Astro.props;
 const { points, segments, box } = layoutConstellation(projects.length);
 const latest = projects.length - 1;
-const placed = projects.map((project, i) => ({ project, ...toPercent(points[i], box) }));
+const placed = projects.map((project, i) => ({
+  project,
+  ...toPercent(points[i], box),
+}));
 ---
 
 <section class="chart-section" id="projects" aria-labelledby="projects-heading">
-	<h2 id="projects-heading">{ui.projectsHeading[lang]}</h2>
-	{
-		projects.length === 0 ? (
-			<div class="chart chart--empty">
-				<span class="star star--placeholder" aria-hidden="true" />
-				<p>{ui.projectsComingSoon[lang]}</p>
-			</div>
-		) : (
-			<>
-				<p class="chart-section__caption">{ui.chartCaption[lang]}</p>
-				<div class="chart" style={`--aspect: ${(box.width / box.height).toFixed(4)}`} data-chart>
-					<svg
-						class="chart__lines"
-						viewBox={`${box.x} ${box.y} ${box.width} ${box.height}`}
-						preserveAspectRatio="none"
-						aria-hidden="true"
-					>
-						{segments.map(([a, b], i) => (
-							<line
-								x1={points[a].x.toFixed(4)}
-								y1={points[a].y.toFixed(4)}
-								x2={points[b].x.toFixed(4)}
-								y2={points[b].y.toFixed(4)}
-								pathLength="1"
-								vector-effect="non-scaling-stroke"
-								style={`--i: ${i}`}
-							/>
-						))}
-					</svg>
-					<ol class="chart__stars">
-						{placed.map(({ project: p, left, top }, i) => (
-							<li
-								class="chart__item"
-								style={`left: ${left.toFixed(2)}%; top: ${top.toFixed(2)}%`}
-								data-side={left > 55 ? 'left' : 'right'}
-								data-latest={i === latest ? '' : undefined}
-							>
-								<a class="star" href={p.url} aria-describedby={`card-${p.repo}`}>
-									<span class="visually-hidden">{p.title}</span>
-								</a>
-								<div class="card" id={`card-${p.repo}`}>
-									<h3 class="card__title">
-										{p.title}
-										{i === latest && <span class="card__badge">{ui.latestProject[lang]}</span>}
-									</h3>
-									{SCORPIUS[i] && <p class="card__star">{SCORPIUS[i].name}</p>}
-									{p.description && <p class="card__description">{p.description}</p>}
-									<p class="card__meta">
-										{p.language && <span>{p.language}</span>}
-										<span aria-label={`${p.stars} GitHub stars`}>★ {p.stars}</span>
-									</p>
-									<p class="card__links">
-										<a href={p.url}>{ui.viewCode[lang]}</a>
-										{p.homepage && <a href={p.homepage}>{ui.liveSite[lang]}</a>}
-									</p>
-								</div>
-							</li>
-						))}
-					</ol>
-				</div>
-			</>
-		)
-	}
+  <h2 id="projects-heading">{ui.projectsHeading[lang]}</h2>
+  {projects.length === 0 ? (
+    <div class="chart chart--empty">
+      <span class="star star--placeholder" aria-hidden="true" />
+      <p>{ui.projectsComingSoon[lang]}</p>
+    </div>
+  ) : (
+    <>
+      <p class="chart-section__caption">{ui.chartCaption[lang]}</p>
+      <div
+        class="chart"
+        style={`--aspect: ${(box.width / box.height).toFixed(4)}`}
+        data-chart
+      >
+        <svg
+          class="chart__lines"
+          viewBox={`${box.x} ${box.y} ${box.width} ${box.height}`}
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          {segments.map(([a, b], i) => (
+            <line
+              x1={points[a].x.toFixed(4)}
+              y1={points[a].y.toFixed(4)}
+              x2={points[b].x.toFixed(4)}
+              y2={points[b].y.toFixed(4)}
+              pathLength="1"
+              vector-effect="non-scaling-stroke"
+              style={`--i: ${i}`}
+            />
+          ))}
+        </svg>
+        <ol class="chart__stars">
+          {placed.map(({ project: p, left, top }, i) => (
+            <li
+              class="chart__item"
+              style={`left: ${left.toFixed(2)}%; top: ${top.toFixed(2)}%`}
+              data-side={left > 55 ? 'left' : 'right'}
+              data-latest={i === latest ? '' : undefined}
+            >
+              <a class="star" href={p.url} aria-describedby={`card-${p.repo}`}>
+                <span class="visually-hidden">{p.title}</span>
+              </a>
+              <div class="card" id={`card-${p.repo}`}>
+                <h3 class="card__title">
+                  {p.title}
+                  {i === latest && (
+                    <span class="card__badge">{ui.latestProject[lang]}</span>
+                  )}
+                </h3>
+                {SCORPIUS[i] && <p class="card__star">{SCORPIUS[i].name}</p>}
+                {p.description && (
+                  <p class="card__description">{p.description}</p>
+                )}
+                <p class="card__meta">
+                  {p.language && <span>{p.language}</span>}
+                  <span aria-label={`${p.stars} GitHub stars`}>
+                    ★ {p.stars}
+                  </span>
+                </p>
+                <p class="card__links">
+                  <a href={p.url}>{ui.viewCode[lang]}</a>
+                  {p.homepage && <a href={p.homepage}>{ui.liveSite[lang]}</a>}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </>
+  )}
 </section>
 
 <script>
-	// 1) Touch screens have no hover: the first tap opens a star's card, the second follows it.
-	// 2) Escape hides an open card without moving focus (WCAG 1.4.13).
-	// 3) The line draws itself when the chart scrolls into view.
-	const noHover = matchMedia('(hover: none)');
-	const items = () => document.querySelectorAll<HTMLElement>('.chart__item');
-	const closeAll = (except?: Element) =>
-		items().forEach((item) => item !== except && item.classList.remove('is-open'));
+  // 1) Touch screens have no hover: the first tap opens a star's card, the
+  // second follows it. 2) Escape hides an open card without moving focus (WCAG
+  // 1.4.13). 3) The line draws itself when the chart scrolls into view.
+  const noHover = matchMedia('(hover: none)');
+  const items = () => document.querySelectorAll<HTMLElement>('.chart__item');
+  const closeAll = (except?: Element) =>
+    items().forEach(
+      (item) => item !== except && item.classList.remove('is-open'),
+    );
 
-	// Only real project stars (the empty-state placeholder is also a .star, but has no card).
-	for (const star of document.querySelectorAll<HTMLAnchorElement>('.chart__item > a.star')) {
-		const item = star.closest<HTMLElement>('.chart__item')!;
-		star.addEventListener('click', (event) => {
-			if (!noHover.matches || item.classList.contains('is-open')) return;
-			event.preventDefault();
-			closeAll(item);
-			item.classList.add('is-open');
-		});
-		item.addEventListener('mouseleave', () => item.classList.remove('is-dismissed'));
-		item.addEventListener('focusout', (event) => {
-			if (!item.contains(event.relatedTarget as Node)) item.classList.remove('is-dismissed', 'is-open');
-		});
-	}
-	document.addEventListener('click', (event) => {
-		if (!(event.target as Element).closest('.chart__item')) closeAll();
-	});
-	document.addEventListener('keydown', (event) => {
-		if (event.key !== 'Escape') return;
-		items().forEach((item) => {
-			if (item.matches(':hover, :focus-within, .is-open')) item.classList.add('is-dismissed');
-			item.classList.remove('is-open');
-		});
-	});
+  // Only real project stars (the empty-state placeholder is also a .star, but
+  // has no card).
+  for (const star of document.querySelectorAll<HTMLAnchorElement>(
+    '.chart__item > a.star',
+  )) {
+    const item = star.closest<HTMLElement>('.chart__item')!;
+    star.addEventListener('click', (event) => {
+      if (!noHover.matches || item.classList.contains('is-open')) return;
+      event.preventDefault();
+      closeAll(item);
+      item.classList.add('is-open');
+    });
+    item.addEventListener('mouseleave', () =>
+      item.classList.remove('is-dismissed'),
+    );
+    item.addEventListener('focusout', (event) => {
+      if (!item.contains(event.relatedTarget as Node))
+        item.classList.remove('is-dismissed', 'is-open');
+    });
+  }
+  document.addEventListener('click', (event) => {
+    if (!(event.target as Element).closest('.chart__item')) closeAll();
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    items().forEach((item) => {
+      if (item.matches(':hover, :focus-within, .is-open'))
+        item.classList.add('is-dismissed');
+      item.classList.remove('is-open');
+    });
+  });
 
-	const chart = document.querySelector<HTMLElement>('[data-chart]');
-	if (chart && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-		chart.classList.add('chart--will-draw');
-		new IntersectionObserver(
-			(entries, observer) => {
-				if (!entries[0].isIntersecting) return;
-				chart.classList.add('chart--drawn');
-				observer.disconnect();
-			},
-			{ threshold: 0.35 },
-		).observe(chart);
-	}
+  const chart = document.querySelector<HTMLElement>('[data-chart]');
+  if (chart && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    chart.classList.add('chart--will-draw');
+    new IntersectionObserver(
+      (entries, observer) => {
+        if (!entries[0].isIntersecting) return;
+        chart.classList.add('chart--drawn');
+        observer.disconnect();
+      },
+      { threshold: 0.35 },
+    ).observe(chart);
+  }
 </script>
 
 <style>
-	.chart-section {
-		max-width: 64rem;
-		margin: 0 auto;
-		padding: 6rem var(--gutter);
-		text-shadow: 0 1px 14px rgba(3, 4, 12, 0.9);
-	}
+  .chart-section {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 6rem var(--gutter);
+    text-shadow: 0 1px 14px rgba(3, 4, 12, 0.9);
+  }
 
-	h2 {
-		font-size: clamp(1.75rem, 4vw, 2.25rem);
-		margin: 0 0 0.5rem;
-	}
+  h2 {
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    margin: 0 0 0.5rem;
+  }
 
-	.chart-section__caption {
-		margin: 0 0 2rem;
-		color: var(--text-muted);
-	}
+  .chart-section__caption {
+    margin: 0 0 2rem;
+    color: var(--text-muted);
+  }
 
-	/* Keeps the constellation's shape; never taller than 70% of the screen, so it's seen whole. */
-	.chart {
-		position: relative;
-		aspect-ratio: var(--aspect);
-		width: min(100%, calc(70svh * var(--aspect)));
-		margin: 0 auto;
-	}
+  /*
+   * Keeps the constellation's shape; never taller than 70% of the screen, so
+   * it's seen whole.
+   */
+  .chart {
+    position: relative;
+    aspect-ratio: var(--aspect);
+    width: min(100%, calc(70svh * var(--aspect)));
+    margin: 0 auto;
+  }
 
-	.chart__lines {
-		position: absolute;
-		inset: 0;
-		width: 100%;
-		height: 100%;
-		overflow: visible;
-	}
+  .chart__lines {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
 
-	.chart__lines line {
-		stroke: rgba(170, 190, 255, 0.45);
-		stroke-width: 1.25;
-		stroke-linecap: round;
-	}
+  .chart__lines line {
+    stroke: rgba(170, 190, 255, 0.45);
+    stroke-width: 1.25;
+    stroke-linecap: round;
+  }
 
-	/* The figure draws itself line by line, stinger first (only when JS runs and motion
-	   is allowed; otherwise it's just there). */
-	.chart--will-draw .chart__lines line {
-		stroke-dasharray: 1;
-		stroke-dashoffset: 1;
-		transition: stroke-dashoffset 0.35s ease-out;
-		transition-delay: calc(var(--i) * 0.18s);
-	}
+  /* The figure draws itself line by line, stinger first (only when JS runs and motion
+     is allowed; otherwise it's just there). */
+  .chart--will-draw .chart__lines line {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset 0.35s ease-out;
+    transition-delay: calc(var(--i) * 0.18s);
+  }
 
-	.chart--drawn .chart__lines line {
-		stroke-dashoffset: 0;
-	}
+  .chart--drawn .chart__lines line {
+    stroke-dashoffset: 0;
+  }
 
-	.card__star {
-		margin: -0.2rem 0 0.4rem;
-		font-size: 0.75rem;
-		font-style: italic;
-		color: var(--text-muted);
-	}
+  .card__star {
+    margin: -0.2rem 0 0.4rem;
+    font-size: 0.75rem;
+    font-style: italic;
+    color: var(--text-muted);
+  }
 
-	.chart__stars {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-	}
+  .chart__stars {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
 
-	/* Each item is a zero-size point; the star and its card hang off it. */
-	.chart__item {
-		position: absolute;
-		width: 0;
-		height: 0;
-	}
+  /* Each item is a zero-size point; the star and its card hang off it. */
+  .chart__item {
+    position: absolute;
+    width: 0;
+    height: 0;
+  }
 
-	.star {
-		position: absolute;
-		left: 0;
-		top: 0;
-		width: 2.5rem;
-		height: 2.5rem;
-		translate: -50% -50%;
-		border-radius: 50%;
-		display: grid;
-		place-items: center;
-	}
+  .star {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+    translate: -50% -50%;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+  }
 
-	/* The visible star: a small bright dot with a glow, inside the bigger tap target. */
-	.star::before {
-		content: '';
-		width: 0.55rem;
-		height: 0.55rem;
-		border-radius: 50%;
-		background: #f2f5ff;
-		box-shadow:
-			0 0 6px 2px rgba(200, 215, 255, 0.85),
-			0 0 18px 6px rgba(140, 170, 255, 0.35);
-		transition: transform 0.2s ease;
-	}
+  /*
+   * The visible star: a small bright dot with a glow, inside the bigger tap
+   * target.
+   */
+  .star::before {
+    content: '';
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: #f2f5ff;
+    box-shadow:
+      0 0 6px 2px rgba(200, 215, 255, 0.85),
+      0 0 18px 6px rgba(140, 170, 255, 0.35);
+    transition: transform 0.2s ease;
+  }
 
-	.star:hover::before,
-	.star:focus-visible::before,
-	.is-open .star::before {
-		transform: scale(1.5);
-	}
+  .star:hover::before,
+  .star:focus-visible::before,
+  .is-open .star::before {
+    transform: scale(1.5);
+  }
 
-	[data-latest] .star::before {
-		width: 0.75rem;
-		height: 0.75rem;
-		background: #fff8e6;
-	}
+  [data-latest] .star::before {
+    width: 0.75rem;
+    height: 0.75rem;
+    background: #fff8e6;
+  }
 
-	/* "You are here": a soft ring pulsing around the latest star. */
-	[data-latest] .star::after {
-		content: '';
-		position: absolute;
-		width: 1.6rem;
-		height: 1.6rem;
-		border-radius: 50%;
-		border: 1px solid rgba(255, 236, 200, 0.55);
-	}
+  /* "You are here": a soft ring pulsing around the latest star. */
+  [data-latest] .star::after {
+    content: '';
+    position: absolute;
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 236, 200, 0.55);
+  }
 
-	@media (prefers-reduced-motion: no-preference) {
-		[data-latest] .star::after {
-			animation: pulse 2.6s ease-out infinite;
-		}
-	}
+  @media (prefers-reduced-motion: no-preference) {
+    [data-latest] .star::after {
+      animation: pulse 2.6s ease-out infinite;
+    }
+  }
 
-	@keyframes pulse {
-		from {
-			transform: scale(0.6);
-			opacity: 1;
-		}
-		to {
-			transform: scale(1.8);
-			opacity: 0;
-		}
-	}
+  @keyframes pulse {
+    from {
+      transform: scale(0.6);
+      opacity: 1;
+    }
+    to {
+      transform: scale(1.8);
+      opacity: 0;
+    }
+  }
 
-	.card {
-		position: absolute;
-		top: 0;
-		left: 1.25rem;
-		translate: 0 -50%;
-		z-index: 2;
-		width: min(17rem, 70vw);
-		padding: 0.9rem 1rem;
-		border-radius: 0.75rem;
-		background: rgba(8, 11, 30, 0.92);
-		border: 1px solid var(--line);
-		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-		text-shadow: none;
-		visibility: hidden;
-		opacity: 0;
-		transition:
-			opacity 0.15s ease,
-			visibility 0.15s;
-	}
+  .card {
+    position: absolute;
+    top: 0;
+    left: 1.25rem;
+    translate: 0 -50%;
+    z-index: 2;
+    width: min(17rem, 70vw);
+    padding: 0.9rem 1rem;
+    border-radius: 0.75rem;
+    background: rgba(8, 11, 30, 0.92);
+    border: 1px solid var(--line);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    text-shadow: none;
+    visibility: hidden;
+    opacity: 0;
+    transition:
+      opacity 0.15s ease,
+      visibility 0.15s;
+  }
 
-	[data-side='left'] .card {
-		left: auto;
-		right: 1.25rem;
-	}
+  [data-side='left'] .card {
+    left: auto;
+    right: 1.25rem;
+  }
 
-	.chart__item:hover .card,
-	.chart__item:focus-within .card,
-	.chart__item.is-open .card {
-		visibility: visible;
-		opacity: 1;
-	}
+  .chart__item:hover .card,
+  .chart__item:focus-within .card,
+  .chart__item.is-open .card {
+    visibility: visible;
+    opacity: 1;
+  }
 
-	/* Phones: no room beside a star, so the card becomes a panel along the bottom of the screen. */
-	@media (max-width: 40rem) {
-		.card,
-		[data-side='left'] .card {
-			position: fixed;
-			left: 1rem;
-			right: 1rem;
-			top: auto;
-			bottom: 4.5rem; /* above the CV button */
-			width: auto;
-			translate: none;
-		}
-	}
+  /*
+   * Phones: no room beside a star, so the card becomes a panel along the bottom
+   * of the screen.
+   */
+  @media (max-width: 40rem) {
+    .card,
+    [data-side='left'] .card {
+      position: fixed;
+      left: 1rem;
+      right: 1rem;
+      top: auto;
+      bottom: 4.5rem; /* above the CV button */
+      width: auto;
+      translate: none;
+    }
+  }
 
-	.chart__item.is-dismissed .card {
-		visibility: hidden;
-		opacity: 0;
-	}
+  .chart__item.is-dismissed .card {
+    visibility: hidden;
+    opacity: 0;
+  }
 
-	.chart__item:hover,
-	.chart__item:focus-within,
-	.chart__item.is-open {
-		z-index: 3;
-	}
+  .chart__item:hover,
+  .chart__item:focus-within,
+  .chart__item.is-open {
+    z-index: 3;
+  }
 
-	.card__title {
-		font-size: 1rem;
-		margin: 0 0 0.35rem;
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		flex-wrap: wrap;
-	}
+  .card__title {
+    font-size: 1rem;
+    margin: 0 0 0.35rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
 
-	.card__badge {
-		font-size: 0.7rem;
-		font-weight: 600;
-		text-transform: uppercase;
-		letter-spacing: 0.08em;
-		padding: 0.1rem 0.45rem;
-		border-radius: 999px;
-		color: #fff1d6;
-		border: 1px solid rgba(255, 236, 200, 0.45);
-	}
+  .card__badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.1rem 0.45rem;
+    border-radius: 999px;
+    color: #fff1d6;
+    border: 1px solid rgba(255, 236, 200, 0.45);
+  }
 
-	.card__description {
-		margin: 0 0 0.5rem;
-		font-size: 0.9rem;
-		line-height: 1.5;
-	}
+  .card__description {
+    margin: 0 0 0.5rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
 
-	.card__meta {
-		display: flex;
-		gap: 0.9rem;
-		margin: 0 0 0.5rem;
-		font-size: 0.8rem;
-		color: var(--text-muted);
-	}
+  .card__meta {
+    display: flex;
+    gap: 0.9rem;
+    margin: 0 0 0.5rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
 
-	.card__links {
-		display: flex;
-		gap: 1rem;
-		margin: 0;
-		font-size: 0.9rem;
-	}
+  .card__links {
+    display: flex;
+    gap: 1rem;
+    margin: 0;
+    font-size: 0.9rem;
+  }
 
-	.chart--empty {
-		display: flex;
-		align-items: center;
-		gap: 1.25rem;
-		color: var(--text-muted);
-	}
+  .chart--empty {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    color: var(--text-muted);
+  }
 
-	.star--placeholder {
-		position: relative;
-		translate: none;
-		width: 1rem;
-		height: 1rem;
-	}
+  .star--placeholder {
+    position: relative;
+    translate: none;
+    width: 1rem;
+    height: 1rem;
+  }
 </style>

@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { fetchRepos, prettifyName, toProjects, type GitHubRepo } from './github';
+import {
+  fetchRepos,
+  prettifyName,
+  toProjects,
+  type GitHubRepo,
+} from './github';
 
 // Only the fields we read; the real API returns many more.
 const repo = (overrides: Partial<GitHubRepo>): GitHubRepo => ({
@@ -17,12 +22,16 @@ const repo = (overrides: Partial<GitHubRepo>): GitHubRepo => ({
 
 describe('prettifyName', () => {
   it('splits CamelCase into words', () => {
-    expect(prettifyName('SignLanguageRecognitionAndTranslation')).toBe('Sign Language Recognition And Translation');
+    expect(prettifyName('SignLanguageRecognitionAndTranslation')).toBe(
+      'Sign Language Recognition And Translation',
+    );
   });
 
   it('turns dashes and underscores into spaces and capitalises', () => {
     expect(prettifyName('cpu_emu')).toBe('Cpu Emu');
-    expect(prettifyName('Aegis-Predictive-Sentry')).toBe('Aegis Predictive Sentry');
+    expect(prettifyName('Aegis-Predictive-Sentry')).toBe(
+      'Aegis Predictive Sentry',
+    );
   });
 
   it('keeps acronyms together', () => {
@@ -32,7 +41,10 @@ describe('prettifyName', () => {
 
 describe('toProjects', () => {
   it('keeps only repos tagged "portfolio"', () => {
-    const projects = toProjects([repo({ name: 'shown' }), repo({ name: 'hidden', topics: ['other'] })]);
+    const projects = toProjects([
+      repo({ name: 'shown' }),
+      repo({ name: 'hidden', topics: ['other'] }),
+    ]);
     expect(projects.map((p) => p.repo)).toEqual(['shown']);
   });
 
@@ -68,7 +80,9 @@ describe('toProjects', () => {
   });
 
   it('treats missing or empty description, language and homepage as absent', () => {
-    const [p] = toProjects([repo({ description: null, language: null, homepage: '' })]);
+    const [p] = toProjects([
+      repo({ description: null, language: null, homepage: '' }),
+    ]);
     expect(p.description).toBeUndefined();
     expect(p.language).toBeUndefined();
     expect(p.homepage).toBeUndefined();
@@ -80,10 +94,14 @@ describe('toProjects', () => {
 });
 
 describe('fetchRepos', () => {
-  // A fake fetch that serves pages from memory, so tests never touch the network.
+  // A fake fetch that serves pages from memory, so tests never touch the
+  // network.
   const fakeFetch = (pages: GitHubRepo[][], status = 200) => {
     const calls: { url: string; headers: Record<string, string> }[] = [];
-    const fn = async (url: string, init?: { headers?: Record<string, string> }) => {
+    const fn = async (
+      url: string,
+      init?: { headers?: Record<string, string> },
+    ) => {
       calls.push({ url, headers: init?.headers ?? {} });
       const page = Number(new URL(url).searchParams.get('page'));
       return {
@@ -112,6 +130,8 @@ describe('fetchRepos', () => {
 
   it('throws a clear error when GitHub answers with an error', async () => {
     const { fn } = fakeFetch([], 503);
-    await expect(fetchRepos('someone', { fetch: fn })).rejects.toThrow(/GitHub API 503/);
+    await expect(fetchRepos('someone', { fetch: fn })).rejects.toThrow(
+      /GitHub API 503/,
+    );
   });
 });

@@ -1,13 +1,16 @@
 // Solar activity schedule: where prominences and flares are at a given moment.
-// Pure functions of time (no randomness at runtime), so they're testable and the
-// same moment always looks the same.
+// Pure functions of time (no randomness at runtime), so they're testable and
+// the same moment always looks the same.
 
 import { smoothstep } from './director';
 
 export const PROMINENCE_COUNT = 8;
 export const FLARE_COUNT = 2;
 
-/** Nothing appears within this angle of horizontal: that's where the name and tagline sit. */
+/**
+ * Nothing appears within this angle of horizontal: that's where the name and
+ * tagline sit.
+ */
 const KEEP_OUT = (25 * Math.PI) / 180;
 
 /** Repeatable pseudo-random number in [0, 1) for a given (slot, cycle) pair. */
@@ -16,12 +19,16 @@ function hash(slot: number, cycle: number, salt: number): number {
   return x - Math.floor(x);
 }
 
-/** Nothing appears within this angle of straight down: the scroll hint sits just below the sun. */
+/**
+ * Nothing appears within this angle of straight down: the scroll hint sits just
+ * below the sun.
+ */
 const HINT_KEEP_OUT = (30 * Math.PI) / 180;
 
 /**
- * Stretches of the sun's edge where activity may appear (0 = right, π/2 = top): the whole
- * top, and two shorter stretches at the bottom either side of the gap above the scroll hint.
+ * Stretches of the sun's edge where activity may appear (0 = right, π/2 = top):
+ * the whole top, and two shorter stretches at the bottom either side of the gap
+ * above the scroll hint.
  */
 const ALLOWED: [number, number][] = [
   [KEEP_OUT, Math.PI - KEEP_OUT],
@@ -30,12 +37,14 @@ const ALLOWED: [number, number][] = [
 ];
 
 /**
- * An angle whose whole span (± margin) fits inside an allowed stretch. Stretches too short
- * for the span are skipped (wide arcs then always go on top); the rest are picked in
- * proportion to their length.
+ * An angle whose whole span (± margin) fits inside an allowed stretch.
+ * Stretches too short for the span are skipped (wide arcs then always go on
+ * top); the rest are picked in proportion to their length.
  */
 function allowedAngle(u: number, margin: number): number {
-  const fits = ALLOWED.map(([a, b]) => [a + margin, b - margin] as const).filter(([a, b]) => b > a);
+  const fits = ALLOWED.map(
+    ([a, b]) => [a + margin, b - margin] as const,
+  ).filter(([a, b]) => b > a);
   const total = fits.reduce((sum, [a, b]) => sum + (b - a), 0);
   let along = u * total;
   for (const [a, b] of fits) {
@@ -75,7 +84,10 @@ export type Prominence = {
   seed: number;
 };
 
-/** State of prominence `slot` at `time` seconds. A new kind and place each lifetime. */
+/**
+ * State of prominence `slot` at `time` seconds. A new kind and place each
+ * lifetime.
+ */
 export function prominenceState(slot: number, time: number): Prominence {
   const duration = 8 + (slot % 4) * 2;
   const { cycle, phase } = cycleAt(time, duration, slot * 0.37);
@@ -86,7 +98,8 @@ export function prominenceState(slot: number, time: number): Prominence {
   const placeU = hash(slot, cycle, 3);
 
   if (pick >= 0.75) {
-    // Jet: shoots up over the first 15% of the cycle and is gone by 45%; then a gap.
+    // Jet: shoots up over the first 15% of the cycle and is gone by 45%; then a
+    // gap.
     const width = 0.015 + 0.03 * r1;
     return {
       kind: 'jet',
@@ -100,7 +113,8 @@ export function prominenceState(slot: number, time: number): Prominence {
   }
 
   if (pick >= 0.5) {
-    // Eruption: accelerates upward the whole time; the feet let go from about a third in.
+    // Eruption: accelerates upward the whole time; the feet let go from about a
+    // third in.
     const width = 0.14 + 0.2 * r1;
     return {
       kind: 'eruptive',
@@ -134,13 +148,18 @@ export type Flare = {
   strength: number;
 };
 
-/** State of flare `slot` at `time` seconds: a quick flash that decays over a couple of seconds. */
+/**
+ * State of flare `slot` at `time` seconds: a quick flash that decays over a
+ * couple of seconds.
+ */
 export function flareState(slot: number, time: number): Flare {
   const duration = 11 + 6 * slot;
   const { cycle, phase } = cycleAt(time, duration, 0.5 + slot * 0.21);
   const start = 0.1 + 0.6 * hash(slot, cycle, 5); // when in the cycle it goes off
   const since = (phase - start) * duration; // seconds since it went off
   const strength =
-    since < 0 ? 0 : smoothstep(0, 0.4, since) * Math.exp(-Math.max(0, since - 0.4) / 0.8);
+    since < 0
+      ? 0
+      : smoothstep(0, 0.4, since) * Math.exp(-Math.max(0, since - 0.4) / 0.8);
   return { angle: allowedAngle(hash(slot, cycle, 6), 0), strength };
 }

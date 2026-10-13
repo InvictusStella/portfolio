@@ -1,0 +1,9 @@
+# Generated or not ours to format
+dist/
+.astro/
+node_modules/
+package-lock.json
+public/
+.superpowers/
+# Prose: kept as written
+*.md

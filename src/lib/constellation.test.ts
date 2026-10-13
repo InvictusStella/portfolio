@@ -74,7 +74,9 @@ describe('layoutConstellation (Scorpius)', () => {
       const scale = Math.max(box.width, box.height);
       for (let i = 0; i < points.length; i++) {
         for (let j = i + 1; j < points.length; j++) {
-          const d = Math.hypot(points[i].x - points[j].x, points[i].y - points[j].y) / scale;
+          const d =
+            Math.hypot(points[i].x - points[j].x, points[i].y - points[j].y) /
+            scale;
           expect(d).toBeGreaterThan(0.045);
         }
       }

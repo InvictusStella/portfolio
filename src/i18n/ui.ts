@@ -1,9 +1,13 @@
-// Interface labels (not personal content — that lives in src/content/profile.ts).
+// Interface labels (not personal content — that lives in
+// src/content/profile.ts).
 
 export type Lang = 'en' | 'tr';
 
 export const ui = {
-  scrollHint: { en: 'Scroll to begin the journey', tr: 'Yolculuğa başlamak için kaydır' },
+  scrollHint: {
+    en: 'Scroll to begin the journey',
+    tr: 'Yolculuğa başlamak için kaydır',
+  },
   aboutHeading: { en: 'About me', tr: 'Hakkımda' },
   photoAlt: { en: 'Photo of {name}', tr: '{name} fotoğrafı' },
   skillsHeading: { en: 'Skills', tr: 'Yetenekler' },
@@ -12,7 +16,10 @@ export const ui = {
   downloadCv: { en: 'Download CV (PDF)', tr: 'CV’yi indir (PDF)' },
   cvShort: { en: 'CV', tr: 'CV' },
   projectsHeading: { en: 'Projects', tr: 'Projeler' },
-  projectsComingSoon: { en: 'First project coming soon.', tr: 'İlk proje yakında.' },
+  projectsComingSoon: {
+    en: 'First project coming soon.',
+    tr: 'İlk proje yakında.',
+  },
   chartCaption: {
     en: 'Each project lights up the next star of Scorpius, from the stinger to the claws.',
     tr: 'Her proje Akrep takımyıldızının bir sonraki yıldızını yakar: iğneden kıskaçlara.',

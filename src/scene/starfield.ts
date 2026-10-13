@@ -1,7 +1,10 @@
-// Random-looking but repeatable star fields: the same seed always gives the same sky,
-// so the page looks identical on every visit (and the generator is testable).
+// Random-looking but repeatable star fields: the same seed always gives the
+// same sky, so the page looks identical on every visit (and the generator is
+// testable).
 
-/** Mulberry32: a tiny, fast pseudo-random generator. Returns numbers in [0, 1). */
+/**
+ * Mulberry32: a tiny, fast pseudo-random generator. Returns numbers in [0, 1).
+ */
 export function seededRandom(seed: number): () => number {
   let a = seed >>> 0;
   return () => {
@@ -16,7 +19,9 @@ export function seededRandom(seed: number): () => number {
 type Range = readonly [number, number];
 export type Bounds = { x: Range; y: Range; z: Range };
 
-/** Star tints: mostly white and blue-white, some warm, like real star colours. */
+/**
+ * Star tints: mostly white and blue-white, some warm, like real star colours.
+ */
 const TINTS = [
   [1.0, 1.0, 1.0],
   [0.8, 0.87, 1.0],
@@ -43,7 +48,8 @@ export function generateStars(count: number, seed: number, bounds: Bounds) {
 
     let pick = random();
     let tint = 0;
-    while (tint < TINTS.length - 1 && pick > TINT_WEIGHTS[tint]) pick -= TINT_WEIGHTS[tint++];
+    while (tint < TINTS.length - 1 && pick > TINT_WEIGHTS[tint])
+      pick -= TINT_WEIGHTS[tint++];
     colors[i * 3] = TINTS[tint][0];
     colors[i * 3 + 1] = TINTS[tint][1];
     colors[i * 3 + 2] = TINTS[tint][2];

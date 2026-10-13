@@ -15,19 +15,31 @@ import {
 
 describe('shouldAnimate', () => {
   it('animates while the sun is on screen', () => {
-    expect(shouldAnimate({ reducedMotion: false, hidden: false, sunOnScreen: true })).toBe(true);
+    expect(
+      shouldAnimate({ reducedMotion: false, hidden: false, sunOnScreen: true }),
+    ).toBe(true);
   });
 
   it('stops once the sun has left the screen (saves battery)', () => {
-    expect(shouldAnimate({ reducedMotion: false, hidden: false, sunOnScreen: false })).toBe(false);
+    expect(
+      shouldAnimate({
+        reducedMotion: false,
+        hidden: false,
+        sunOnScreen: false,
+      }),
+    ).toBe(false);
   });
 
   it('never animates with reduced motion', () => {
-    expect(shouldAnimate({ reducedMotion: true, hidden: false, sunOnScreen: true })).toBe(false);
+    expect(
+      shouldAnimate({ reducedMotion: true, hidden: false, sunOnScreen: true }),
+    ).toBe(false);
   });
 
   it('never animates in a hidden tab', () => {
-    expect(shouldAnimate({ reducedMotion: false, hidden: true, sunOnScreen: true })).toBe(false);
+    expect(
+      shouldAnimate({ reducedMotion: false, hidden: true, sunOnScreen: true }),
+    ).toBe(false);
   });
 });
 
@@ -58,7 +70,8 @@ describe('sunScreenY', () => {
 
   it('rises slowly at first, then faster', () => {
     const early = startY - sunScreenY(0.5, startY, diameter);
-    const late = sunScreenY(0.85, startY, diameter) - sunScreenY(1, startY, diameter);
+    const late =
+      sunScreenY(0.85, startY, diameter) - sunScreenY(1, startY, diameter);
     expect(early).toBeGreaterThan(0);
     expect(late).toBeGreaterThan(early);
   });
@@ -145,7 +158,8 @@ describe('sunlightOpacity', () => {
 });
 
 describe('departureProgress', () => {
-  // Hero is 2 screens tall (1600px) in an 800px viewport, so there is 800px of pinned scrolling.
+  // Hero is 2 screens tall (1600px) in an 800px viewport, so there is 800px of
+  // pinned scrolling.
   const heroHeight = 1600;
   const viewport = 800;
 

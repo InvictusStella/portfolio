@@ -16,7 +16,10 @@ const profile: Profile = {
   name: 'Ada Lovelace',
   initials: 'AL',
   tagline: { en: 'Engineer of engines', tr: 'Motor mühendisi' },
-  bio: { en: 'I write programs for machines.', tr: 'Makineler için program yazarım.' },
+  bio: {
+    en: 'I write programs for machines.',
+    tr: 'Makineler için program yazarım.',
+  },
   skillGroups: [
     { label: { en: 'Languages', tr: 'Diller' }, skills: ['Go', 'Python'] },
     { label: { en: 'Cloud', tr: 'Bulut' }, skills: ['Azure'] },
@@ -29,7 +32,10 @@ const profile: Profile = {
       place: 'London',
       start: '2025-10',
       end: '2026-02',
-      summary: { en: 'Built the analytical engine API.', tr: 'Analitik motor API’sini geliştirdim.' },
+      summary: {
+        en: 'Built the analytical engine API.',
+        tr: 'Analitik motor API’sini geliştirdim.',
+      },
     },
     {
       role: { en: 'Software intern', tr: 'Yazılım stajyeri' },
@@ -37,7 +43,10 @@ const profile: Profile = {
       place: 'Manchester',
       start: '2024-07',
       end: '2024-08',
-      summary: { en: 'Automated punch cards.', tr: 'Delikli kartları otomatikleştirdim.' },
+      summary: {
+        en: 'Automated punch cards.',
+        tr: 'Delikli kartları otomatikleştirdim.',
+      },
     },
   ],
   contact: {
@@ -53,22 +62,34 @@ beforeEach(async () => {
 
 describe('Hero', () => {
   it('shows the name as the page heading', async () => {
-    const html = await container.renderToString(Hero, { props: { profile, lang: 'en' } });
+    const html = await container.renderToString(Hero, {
+      props: { profile, lang: 'en' },
+    });
     expect(html).toMatch(/<h1[^>]*>\s*Ada Lovelace\s*<\/h1>/);
   });
 
   it('hides the decorative sun from screen readers', async () => {
-    const html = await container.renderToString(Hero, { props: { profile, lang: 'en' } });
-    expect(html).toMatch(/class="[^"]*hero__sun[^"]*"[^>]*aria-hidden="true"|aria-hidden="true"[^>]*class="[^"]*hero__sun/);
+    const html = await container.renderToString(Hero, {
+      props: { profile, lang: 'en' },
+    });
+    expect(html).toMatch(
+      /class="[^"]*hero__sun[^"]*"[^>]*aria-hidden="true"|aria-hidden="true"[^>]*class="[^"]*hero__sun/,
+    );
   });
 
   it('wraps sun and text in a stage that can be pinned during the departure', async () => {
-    const html = await container.renderToString(Hero, { props: { profile, lang: 'en' } });
-    expect(html).toMatch(/class="[^"]*hero__stage[^"]*"[\s\S]*hero__sun[\s\S]*<h1/);
+    const html = await container.renderToString(Hero, {
+      props: { profile, lang: 'en' },
+    });
+    expect(html).toMatch(
+      /class="[^"]*hero__stage[^"]*"[\s\S]*hero__sun[\s\S]*<h1/,
+    );
   });
 
   it('shows the tagline in the requested language', async () => {
-    const html = await container.renderToString(Hero, { props: { profile, lang: 'en' } });
+    const html = await container.renderToString(Hero, {
+      props: { profile, lang: 'en' },
+    });
     expect(html).toContain('Engineer of engines');
     expect(html).not.toContain('Motor mühendisi');
   });
@@ -76,28 +97,39 @@ describe('Hero', () => {
 
 describe('About', () => {
   it('shows the bio', async () => {
-    const html = await container.renderToString(About, { props: { profile, lang: 'en' } });
+    const html = await container.renderToString(About, {
+      props: { profile, lang: 'en' },
+    });
     expect(html).toContain('I write programs for machines.');
   });
 
   it('shows every skill group with its skills', async () => {
-    const html = await container.renderToString(About, { props: { profile, lang: 'en' } });
+    const html = await container.renderToString(About, {
+      props: { profile, lang: 'en' },
+    });
     for (const label of ['Languages', 'Cloud']) expect(html).toContain(label);
-    for (const skill of ['Go', 'Python', 'Azure']) expect(html).toContain(`>${skill}<`);
+    for (const skill of ['Go', 'Python', 'Azure'])
+      expect(html).toContain(`>${skill}<`);
   });
 
   it('shows hobbies', async () => {
-    const html = await container.renderToString(About, { props: { profile, lang: 'en' } });
+    const html = await container.renderToString(About, {
+      props: { profile, lang: 'en' },
+    });
     expect(html).toContain('Astronomy');
   });
 
   it('shows an initials placeholder when there is no photo', async () => {
-    const html = await container.renderToString(About, { props: { profile, lang: 'en' } });
+    const html = await container.renderToString(About, {
+      props: { profile, lang: 'en' },
+    });
     expect(html).toMatch(/class="[^"]*avatar[^"]*"[^>]*>[\s\S]*?AL/);
   });
 
   it('uses h2 for the section heading, keeping heading order below the h1', async () => {
-    const html = await container.renderToString(About, { props: { profile, lang: 'en' } });
+    const html = await container.renderToString(About, {
+      props: { profile, lang: 'en' },
+    });
     expect(html).toMatch(/<h2[^>]*>/);
     expect(html).not.toMatch(/<h1[^>]*>/);
   });
@@ -105,13 +137,17 @@ describe('About', () => {
 
 describe('Experience timeline', () => {
   it('lists every entry in the given order, newest first', async () => {
-    const html = await container.renderToString(About, { props: { profile, lang: 'en' } });
+    const html = await container.renderToString(About, {
+      props: { profile, lang: 'en' },
+    });
     expect(html.indexOf('Engine Works')).toBeGreaterThan(-1);
     expect(html.indexOf('Engine Works')).toBeLessThan(html.indexOf('Loom Ltd'));
   });
 
   it('shows role, place, dates and summary for an entry', async () => {
-    const html = await container.renderToString(About, { props: { profile, lang: 'en' } });
+    const html = await container.renderToString(About, {
+      props: { profile, lang: 'en' },
+    });
     expect(html).toContain('Backend intern');
     expect(html).toContain('London');
     expect(html).toContain('Oct 2025 – Feb 2026');
@@ -119,52 +155,70 @@ describe('Experience timeline', () => {
   });
 
   it('uses the Turkish texts on the Turkish page', async () => {
-    const html = await container.renderToString(About, { props: { profile, lang: 'tr' } });
+    const html = await container.renderToString(About, {
+      props: { profile, lang: 'tr' },
+    });
     expect(html).toContain('Backend stajyeri');
     expect(html).toContain('Eki 2025 – Şub 2026');
   });
 
   it('marks dates with machine-readable <time> elements', async () => {
-    const html = await container.renderToString(About, { props: { profile, lang: 'en' } });
+    const html = await container.renderToString(About, {
+      props: { profile, lang: 'en' },
+    });
     expect(html).toMatch(/<time[^>]*datetime="2025-10"/);
   });
 });
 
 describe('CV button', () => {
   it('links to the CV PDF and asks the browser to download it', async () => {
-    const html = await container.renderToString(CvButton, { props: { lang: 'en' } });
+    const html = await container.renderToString(CvButton, {
+      props: { lang: 'en' },
+    });
     expect(html).toMatch(/href="[^"]*cv\.pdf"/);
     expect(html).toMatch(/\sdownload(=|\s|>)/);
   });
 
   it('keeps the visible text inside the accessible label in both languages (voice control)', async () => {
     for (const lang of ['en', 'tr'] as const) {
-      const html = await container.renderToString(CvButton, { props: { lang } });
+      const html = await container.renderToString(CvButton, {
+        props: { lang },
+      });
       const label = html.match(/aria-label="([^"]*)"/)?.[1] ?? '';
       expect(label).toContain('CV');
     }
   });
 
   it('has an accessible label saying what it does', async () => {
-    const html = await container.renderToString(CvButton, { props: { lang: 'en' } });
+    const html = await container.renderToString(CvButton, {
+      props: { lang: 'en' },
+    });
     expect(html).toContain('aria-label="Download CV (PDF)"');
   });
 });
 
 describe('Language toggle', () => {
   it('on the English page, links to the Turkish page', async () => {
-    const html = await container.renderToString(LangToggle, { props: { lang: 'en' } });
-    expect(html).toMatch(/<a[^>]*href="[^"]*\/tr\/"[^>]*hreflang="tr"|<a[^>]*hreflang="tr"[^>]*href="[^"]*\/tr\/"/);
+    const html = await container.renderToString(LangToggle, {
+      props: { lang: 'en' },
+    });
+    expect(html).toMatch(
+      /<a[^>]*href="[^"]*\/tr\/"[^>]*hreflang="tr"|<a[^>]*hreflang="tr"[^>]*href="[^"]*\/tr\/"/,
+    );
   });
 
   it('on the Turkish page, links back to the English page', async () => {
-    const html = await container.renderToString(LangToggle, { props: { lang: 'tr' } });
+    const html = await container.renderToString(LangToggle, {
+      props: { lang: 'tr' },
+    });
     expect(html).toMatch(/hreflang="en"/);
     expect(html).not.toMatch(/href="[^"]*\/tr\/"/);
   });
 
   it('marks the current language and does not link to it', async () => {
-    const html = await container.renderToString(LangToggle, { props: { lang: 'en' } });
+    const html = await container.renderToString(LangToggle, {
+      props: { lang: 'en' },
+    });
     expect(html).toMatch(/aria-current="true"[^>]*>\s*EN\s*</);
     expect(html).not.toMatch(/hreflang="en"/);
   });
@@ -173,15 +227,38 @@ describe('Language toggle', () => {
 describe('Scene canvas', () => {
   it('renders a decorative canvas hidden from screen readers', async () => {
     const html = await container.renderToString(SceneCanvas);
-    expect(html).toMatch(/<canvas[^>]*class="[^"]*scene-canvas[^"]*"[^>]*aria-hidden="true"|<canvas[^>]*aria-hidden="true"[^>]*class="[^"]*scene-canvas/);
+    expect(html).toMatch(
+      /<canvas[^>]*class="[^"]*scene-canvas[^"]*"[^>]*aria-hidden="true"|<canvas[^>]*aria-hidden="true"[^>]*class="[^"]*scene-canvas/,
+    );
   });
 });
 
 describe('Star chart', () => {
   const projects: Project[] = [
-    { repo: 'first', title: 'First', description: 'The first one', language: 'Go', stars: 2, createdAt: '2024-01-01', url: 'https://github.com/x/first' },
-    { repo: 'second', title: 'Second', stars: 0, createdAt: '2025-01-01', url: 'https://github.com/x/second', homepage: 'https://second.example.com' },
-    { repo: 'third', title: 'Third', stars: 5, createdAt: '2026-01-01', url: 'https://github.com/x/third' },
+    {
+      repo: 'first',
+      title: 'First',
+      description: 'The first one',
+      language: 'Go',
+      stars: 2,
+      createdAt: '2024-01-01',
+      url: 'https://github.com/x/first',
+    },
+    {
+      repo: 'second',
+      title: 'Second',
+      stars: 0,
+      createdAt: '2025-01-01',
+      url: 'https://github.com/x/second',
+      homepage: 'https://second.example.com',
+    },
+    {
+      repo: 'third',
+      title: 'Third',
+      stars: 5,
+      createdAt: '2026-01-01',
+      url: 'https://github.com/x/third',
+    },
   ];
   const render = (list: Project[], lang: 'en' | 'tr' = 'en') =>
     container.renderToString(StarChart, { props: { projects: list, lang } });
@@ -189,7 +266,11 @@ describe('Star chart', () => {
   it('makes every project a star link to its repo, named after the project', async () => {
     const html = await render(projects);
     for (const p of projects) {
-      expect(html).toMatch(new RegExp(`<a[^>]*class="[^"]*star[^"]*"[^>]*href="${p.url}"|<a[^>]*href="${p.url}"[^>]*class="[^"]*star`));
+      expect(html).toMatch(
+        new RegExp(
+          `<a[^>]*class="[^"]*star[^"]*"[^>]*href="${p.url}"|<a[^>]*href="${p.url}"[^>]*class="[^"]*star`,
+        ),
+      );
     }
     expect(html).toMatch(/class="[^"]*visually-hidden[^"]*"[^>]*>\s*First\s*</);
   });
@@ -226,7 +307,9 @@ describe('Star chart', () => {
 
   it('marks the latest project', async () => {
     const html = await render(projects);
-    expect(html).toMatch(/data-latest[^>]*>[\s\S]*x\/third|x\/third[\s\S]{0,400}data-latest/);
+    expect(html).toMatch(
+      /data-latest[^>]*>[\s\S]*x\/third|x\/third[\s\S]{0,400}data-latest/,
+    );
   });
 
   it('shows a single placeholder star when nothing is tagged yet', async () => {
@@ -244,62 +327,93 @@ describe('Star chart', () => {
 
 describe('Return to Sun', () => {
   it('is a link back to the top that asks the scene for a warp journey', async () => {
-    const html = await container.renderToString(ReturnToSun, { props: { lang: 'en' } });
+    const html = await container.renderToString(ReturnToSun, {
+      props: { lang: 'en' },
+    });
     expect(html).toMatch(/<a[^>]*href="#top"/);
     expect(html).toContain('data-travel="top"');
     expect(html).toContain('Return to Sun');
   });
 
   it('speaks Turkish on the Turkish page', async () => {
-    const html = await container.renderToString(ReturnToSun, { props: { lang: 'tr' } });
+    const html = await container.renderToString(ReturnToSun, {
+      props: { lang: 'tr' },
+    });
     expect(html).toContain('Güneşe dön');
   });
 });
 
 describe('Scroll hint', () => {
   it('still links to About, and asks the scene for a warp journey', async () => {
-    const html = await container.renderToString(Hero, { props: { profile, lang: 'en' } });
-    expect(html).toMatch(/<a[^>]*href="#about"[^>]*data-travel="about"|<a[^>]*data-travel="about"[^>]*href="#about"/);
+    const html = await container.renderToString(Hero, {
+      props: { profile, lang: 'en' },
+    });
+    expect(html).toMatch(
+      /<a[^>]*href="#about"[^>]*data-travel="about"|<a[^>]*data-travel="about"[^>]*href="#about"/,
+    );
   });
 });
 
 describe('Footer', () => {
   it('links to email and GitHub', async () => {
-    const html = await container.renderToString(Footer, { props: { profile, lang: 'en' } });
+    const html = await container.renderToString(Footer, {
+      props: { profile, lang: 'en' },
+    });
     expect(html).toContain('href="mailto:ada@example.com"');
     expect(html).toContain('href="https://github.com/ada"');
   });
 
   it('credits the imagery with the exact required wording, on both language pages', async () => {
     for (const lang of ['en', 'tr'] as const) {
-      const html = await container.renderToString(Footer, { props: { profile, lang } });
-      expect(html).toContain('Courtesy of NASA/SDO and the AIA, EVE, and HMI science teams.');
+      const html = await container.renderToString(Footer, {
+        props: { profile, lang },
+      });
+      expect(html).toContain(
+        'Courtesy of NASA/SDO and the AIA, EVE, and HMI science teams.',
+      );
     }
-    const tr = await container.renderToString(Footer, { props: { profile, lang: 'tr' } });
+    const tr = await container.renderToString(Footer, {
+      props: { profile, lang: 'tr' },
+    });
     expect(tr).toContain('Güneş');
   });
 
   it('credits each space photo with its exact credit, a link, its licence and the changes made', async () => {
-    const html = await container.renderToString(Footer, { props: { profile, lang: 'en' } });
+    const html = await container.renderToString(Footer, {
+      props: { profile, lang: 'en' },
+    });
     expect(html).toContain('ESO/S. Brunier');
-    expect(html).toContain('NASA, ESA, CSA, STScI, and the Webb ERO Production Team');
+    expect(html).toContain(
+      'NASA, ESA, CSA, STScI, and the Webb ERO Production Team',
+    );
     expect(html).toContain('ESA/Webb, NASA, CSA, M. Barlow, N. Cox, R. Wesson');
-    expect(html).toContain('href="https://www.eso.org/public/images/eso0932a/"');
-    expect(html).toContain('href="https://creativecommons.org/licenses/by/4.0/"');
+    expect(html).toContain(
+      'href="https://www.eso.org/public/images/eso0932a/"',
+    );
+    expect(html).toContain(
+      'href="https://creativecommons.org/licenses/by/4.0/"',
+    );
     expect(html).toMatch(/cropped, resized and colour-adjusted/);
   });
 
   it('omits LinkedIn when no URL is set', async () => {
-    const html = await container.renderToString(Footer, { props: { profile, lang: 'en' } });
+    const html = await container.renderToString(Footer, {
+      props: { profile, lang: 'en' },
+    });
     expect(html).not.toContain('LinkedIn');
   });
 
   it('shows LinkedIn when a URL is set', async () => {
     const withLinkedIn: Profile = {
       ...profile,
-      contact: { ...profile.contact, linkedin: 'https://www.linkedin.com/in/ada' },
+      contact: {
+        ...profile.contact,
+        linkedin: 'https://www.linkedin.com/in/ada',
+      },
     };
-    const html = await container.renderToString(Footer, { props: { profile: withLinkedIn, lang: 'en' } });
+    const html = await container.renderToString(Footer, {
+      props: { profile: withLinkedIn, lang: 'en' },
+    });
     expect(html).toContain('href="https://www.linkedin.com/in/ada"');
   });
 });

@@ -4,90 +4,88 @@ import { ui, type Lang } from '../i18n/ui';
 import { formatPeriod } from '../lib/dates';
 
 interface Props {
-	experience: Experience[];
-	lang: Lang;
+  experience: Experience[];
+  lang: Lang;
 }
 
 const { experience, lang } = Astro.props;
 ---
 
 <div class="panel">
-	<h3>{ui.experienceHeading[lang]}</h3>
-	<ol class="timeline">
-		{
-			experience.map((item) => (
-				<li class="timeline__item">
-					<time class="timeline__period" datetime={item.start}>
-						{formatPeriod(item.start, item.end, lang)}
-					</time>
-					<h4 class="timeline__role">{item.role[lang]}</h4>
-					<p class="timeline__where">
-						{item.company} · {item.place}
-					</p>
-					<p class="timeline__summary">{item.summary[lang]}</p>
-				</li>
-			))
-		}
-	</ol>
+  <h3>{ui.experienceHeading[lang]}</h3>
+  <ol class="timeline">
+    {experience.map((item) => (
+      <li class="timeline__item">
+        <time class="timeline__period" datetime={item.start}>
+          {formatPeriod(item.start, item.end, lang)}
+        </time>
+        <h4 class="timeline__role">{item.role[lang]}</h4>
+        <p class="timeline__where">
+          {item.company} · {item.place}
+        </p>
+        <p class="timeline__summary">{item.summary[lang]}</p>
+      </li>
+    ))}
+  </ol>
 </div>
 
 <style>
-	h3 {
-		font-size: 1.25rem;
-		margin: 0 0 1.25rem;
-	}
+  h3 {
+    font-size: 1.25rem;
+    margin: 0 0 1.25rem;
+  }
 
-	.timeline {
-		list-style: none;
-		margin: 0;
-		padding: 0 0 0 1.5rem;
-		/* The line the entries hang from. */
-		border-left: 1px solid var(--line);
-	}
+  .timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 1.5rem;
+    /* The line the entries hang from. */
+    border-left: 1px solid var(--line);
+  }
 
-	.timeline__item {
-		position: relative;
-		padding-bottom: 2rem;
-	}
+  .timeline__item {
+    position: relative;
+    padding-bottom: 2rem;
+  }
 
-	.timeline__item:last-child {
-		padding-bottom: 0;
-	}
+  .timeline__item:last-child {
+    padding-bottom: 0;
+  }
 
-	/* Each entry is marked by a small star on the line. */
-	.timeline__item::before {
-		content: '';
-		position: absolute;
-		left: calc(-1.5rem - 4px);
-		top: 0.45rem;
-		width: 7px;
-		height: 7px;
-		border-radius: 50%;
-		background: var(--text);
-		box-shadow: 0 0 10px 2px rgba(160, 185, 255, 0.6);
-	}
+  /* Each entry is marked by a small star on the line. */
+  .timeline__item::before {
+    content: '';
+    position: absolute;
+    left: calc(-1.5rem - 4px);
+    top: 0.45rem;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--text);
+    box-shadow: 0 0 10px 2px rgba(160, 185, 255, 0.6);
+  }
 
-	.timeline__period {
-		display: block;
-		font-size: 0.8rem;
-		font-weight: 600;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-		color: var(--text-muted);
-	}
+  .timeline__period {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+  }
 
-	.timeline__role {
-		font-size: 1.1rem;
-		margin: 0.25rem 0 0;
-	}
+  .timeline__role {
+    font-size: 1.1rem;
+    margin: 0.25rem 0 0;
+  }
 
-	.timeline__where {
-		margin: 0;
-		color: var(--accent);
-	}
+  .timeline__where {
+    margin: 0;
+    color: var(--accent);
+  }
 
-	.timeline__summary {
-		margin: 0.5rem 0 0;
-		max-width: 40rem;
-	}
+  .timeline__summary {
+    margin: 0.5rem 0 0;
+    max-width: 40rem;
+  }
 </style>

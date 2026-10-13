@@ -4,8 +4,8 @@ import type { Profile } from '../content/profile';
 import { ui, type Lang } from '../i18n/ui';
 
 interface Props {
-	profile: Profile;
-	lang: Lang;
+  profile: Profile;
+  lang: Lang;
 }
 
 const { profile, lang } = Astro.props;
@@ -13,81 +13,83 @@ const { email, github, linkedin } = profile.contact;
 ---
 
 <footer class="footer" id="contact" aria-labelledby="contact-heading">
-	<h2 id="contact-heading">{ui.contactHeading[lang]}</h2>
-	<ul class="footer__links">
-		<li><a href={`mailto:${email}`}>{ui.email[lang]}</a></li>
-		<li><a href={github} rel="me">GitHub</a></li>
-		{
-			linkedin && (
-				<li>
-					<a href={linkedin} rel="me">
-						LinkedIn
-					</a>
-				</li>
-			)
-		}
-	</ul>
-	<p class="footer__signoff">{ui.signOff[lang]}</p>
-	<ul class="footer__credits">
-		{
-			credits.map((c) => (
-				<li>
-					{c.subject[lang]}: {c.url ? <a href={c.url}>{c.credit}</a> : c.credit}
-					{c.licence && (
-						<>
-							{' '}
-							(<a href={c.licence.url}>{c.licence.name}</a>
-							{c.changes && `; ${c.changes[lang]}`})
-						</>
-					)}
-				</li>
-			))
-		}
-	</ul>
+  <h2 id="contact-heading">{ui.contactHeading[lang]}</h2>
+  <ul class="footer__links">
+    <li>
+      <a href={`mailto:${email}`}>{ui.email[lang]}</a>
+    </li>
+    <li>
+      <a href={github} rel="me">
+        GitHub
+      </a>
+    </li>
+    {linkedin && (
+      <li>
+        <a href={linkedin} rel="me">
+          LinkedIn
+        </a>
+      </li>
+    )}
+  </ul>
+  <p class="footer__signoff">{ui.signOff[lang]}</p>
+  <ul class="footer__credits">
+    {credits.map((c) => (
+      <li>
+        {c.subject[lang]}: {c.url ? <a href={c.url}>{c.credit}</a> : c.credit}
+        {c.licence && (
+          <>
+            {' '}
+            (<a href={c.licence.url}>{c.licence.name}</a>
+            {c.changes && `; ${c.changes[lang]}`})
+          </>
+        )}
+      </li>
+    ))}
+  </ul>
 </footer>
 
 <style>
-	.footer {
-		text-align: center;
-		padding: 8rem var(--gutter) 6rem;
-	}
+  .footer {
+    text-align: center;
+    padding: 8rem var(--gutter) 6rem;
+  }
 
-	h2 {
-		font-size: clamp(1.75rem, 4vw, 2.25rem);
-		margin: 0 0 1.5rem;
-	}
+  h2 {
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    margin: 0 0 1.5rem;
+  }
 
-	.footer__links {
-		display: flex;
-		justify-content: center;
-		flex-wrap: wrap;
-		gap: 1rem 2rem;
-		list-style: none;
-		margin: 0 0 3rem;
-		padding: 0;
-	}
+  .footer__links {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem 2rem;
+    list-style: none;
+    margin: 0 0 3rem;
+    padding: 0;
+  }
 
-	.footer__links a {
-		font-size: 1.125rem;
-	}
+  .footer__links a {
+    font-size: 1.125rem;
+  }
 
-	.footer__credits {
-		margin: 1.5rem auto 0;
-		padding: 0;
-		list-style: none;
-		max-width: 44rem;
-		font-size: 0.75rem;
-		line-height: 1.7;
-		color: var(--text-muted);
-	}
+  .footer__credits {
+    margin: 1.5rem auto 0;
+    padding: 0;
+    list-style: none;
+    max-width: 44rem;
+    font-size: 0.75rem;
+    line-height: 1.7;
+    color: var(--text-muted);
+  }
 
-	.footer__credits a {
-		color: var(--text-muted);
-	}
+  .footer__credits a {
+    color: var(--text-muted);
+  }
 
-	.footer__signoff {
-		color: var(--text-muted);
-		font-size: 0.875rem;
-		margin: 0;
-	}
+  .footer__signoff {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    margin: 0;
+  }
 </style>

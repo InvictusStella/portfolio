@@ -16,69 +16,88 @@ import type { Lang } from '../i18n/ui';
 import '../styles/global.css';
 
 interface Props {
-	lang: Lang;
+  lang: Lang;
 }
 
 const { lang } = Astro.props;
-const projects = (await loadProjects()).map((p) => localizeProject(p, lang, projectOverrides));
+const projects = (await loadProjects()).map((p) =>
+  localizeProject(p, lang, projectOverrides),
+);
 const base = import.meta.env.BASE_URL;
 const absolute = (path: string) => new URL(path, Astro.site).href;
 ---
 
 <html lang={lang}>
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
-		<link rel="icon" href={`${base}favicon.ico`} />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<meta name="generator" content={Astro.generator} />
-		<meta name="description" content={profile.tagline[lang]} />
-		<title>{profile.name}</title>
-		<!--
-			Runs before the first paint: marks the page if WebGL is available, so the hero's
-			departure-zone layout is in place from the start (no jump when the 3D code loads).
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <link rel="icon" href={`${base}favicon.ico`} />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={profile.tagline[lang]} />
+    <title>{profile.name}</title>
+    <!--
+			Runs before the first paint: marks the page if WebGL is available, so the
+			hero's departure-zone layout is in place from the start (no jump when the 3D
+			code loads).
 		-->
-		<script is:inline>
-			(function () {
-				try {
-					var root = document.documentElement;
-					var gl = document.createElement('canvas').getContext('webgl2');
-					if (!gl) return;
-					root.classList.add('webgl');
-					var lose = gl.getExtension('WEBGL_lose_context');
-					if (lose) lose.loseContext();
+    <script is:inline>
+      (function () {
+        try {
+          var root = document.documentElement;
+          var gl = document.createElement('canvas').getContext('webgl2');
+          if (!gl) return;
+          root.classList.add('webgl');
+          var lose = gl.getExtension('WEBGL_lose_context');
+          if (lose) lose.loseContext();
 
-					// Sunrise intro: once per visit, only with motion allowed. Decided here so the
-					// sun and name start hidden instead of flashing. Key matches INTRO_PLAYED_KEY.
-					var played = false;
-					try {
-						played = sessionStorage.getItem('intro-played') === '1';
-					} catch (e) {}
-					if (played || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-					root.classList.add('intro');
-					// Safety net: if the 3D scene isn't up within 4s, show everything anyway.
-					setTimeout(function () {
-						if (!root.classList.contains('scene-ready')) root.classList.remove('intro');
-					}, 4000);
-				} catch (e) {}
-			})();
-		</script>
-		<!-- Tell search engines the two pages are translations of each other. -->
-		<link rel="canonical" href={absolute(localeUrl(lang, base))} />
-		<link rel="alternate" hreflang="en" href={absolute(localeUrl('en', base))} />
-		<link rel="alternate" hreflang="tr" href={absolute(localeUrl('tr', base))} />
-		<link rel="alternate" hreflang="x-default" href={absolute(localeUrl('en', base))} />
-	</head>
-	<body>
-		<SceneCanvas />
-		<LangToggle lang={lang} />
-		<Hero profile={profile} lang={lang} />
-		<main>
-			<About profile={profile} lang={lang} />
-			<StarChart projects={projects} lang={lang} />
-		</main>
-		<Footer profile={profile} lang={lang} />
-		<CvButton lang={lang} />
-		<ReturnToSun lang={lang} />
-	</body>
+          // Sunrise intro: once per visit, only with motion allowed. Decided
+          // here so the sun and name start hidden instead of flashing. Key
+          // matches INTRO_PLAYED_KEY.
+          var played = false;
+          try {
+            played = sessionStorage.getItem('intro-played') === '1';
+          } catch (e) {}
+          if (played || matchMedia('(prefers-reduced-motion: reduce)').matches)
+            return;
+          root.classList.add('intro');
+          // Safety net: if the 3D scene isn't up within 4s, show everything
+          // anyway.
+          setTimeout(function () {
+            if (!root.classList.contains('scene-ready'))
+              root.classList.remove('intro');
+          }, 4000);
+        } catch (e) {}
+      })();
+    </script>
+    <!-- Tell search engines the two pages are translations of each other. -->
+    <link rel="canonical" href={absolute(localeUrl(lang, base))} />
+    <link
+      rel="alternate"
+      hreflang="en"
+      href={absolute(localeUrl('en', base))}
+    />
+    <link
+      rel="alternate"
+      hreflang="tr"
+      href={absolute(localeUrl('tr', base))}
+    />
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href={absolute(localeUrl('en', base))}
+    />
+  </head>
+  <body>
+    <SceneCanvas />
+    <LangToggle lang={lang} />
+    <Hero profile={profile} lang={lang} />
+    <main>
+      <About profile={profile} lang={lang} />
+      <StarChart projects={projects} lang={lang} />
+    </main>
+    <Footer profile={profile} lang={lang} />
+    <CvButton lang={lang} />
+    <ReturnToSun lang={lang} />
+  </body>
 </html>

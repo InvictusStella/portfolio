@@ -34,13 +34,20 @@ describe('warpState', () => {
   });
 
   it('flashes near the end of the burst', () => {
-    const peak = Math.max(...[0.7, 0.75, 0.8, 0.85, 0.9].map((t) => warpState(t).flash));
+    const peak = Math.max(
+      ...[0.7, 0.75, 0.8, 0.85, 0.9].map((t) => warpState(t).flash),
+    );
     expect(peak).toBeGreaterThan(0.4);
     expect(warpState(0.3).flash).toBe(0);
   });
 
   it('settles back to nothing and reports done', () => {
-    expect(warpState(WARP.duration)).toEqual({ stretch: 0, fov: 0, flash: 0, done: true });
+    expect(warpState(WARP.duration)).toEqual({
+      stretch: 0,
+      fov: 0,
+      flash: 0,
+      done: true,
+    });
     expect(warpState(10).done).toBe(true);
   });
 

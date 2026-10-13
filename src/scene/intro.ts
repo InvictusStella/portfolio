@@ -1,5 +1,5 @@
-// The sunrise intro: on a visitor's first load, the sun rises into place, then the
-// name and tagline fade in. Pure timing, so it's testable.
+// The sunrise intro: on a visitor's first load, the sun rises into place, then
+// the name and tagline fade in. Pure timing, so it's testable.
 
 import { smoothstep } from './director';
 
@@ -8,7 +8,10 @@ export const INTRO_SECONDS = 2.2;
 /** The sun's rise takes this long; the text fades in over the rest. */
 const RISE_SECONDS = 1.8;
 
-/** Session storage key: the intro plays once per visit (survives reloads and language switches). */
+/**
+ * Session storage key: the intro plays once per visit (survives reloads and
+ * language switches).
+ */
 export const INTRO_PLAYED_KEY = 'intro-played';
 
 export type IntroState = {
