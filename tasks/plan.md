@@ -81,7 +81,7 @@ T10 needs only T3 (sections to observe), so the sun (T10–T11b) runs before the
 
 ### Phase 6 — Cinematic polish
 - [x] T14: Sunrise intro
-- [ ] T15: Lightspeed jumps (big hero → about, small about → projects)
+- [x] T15: Lightspeed jumps (big hero → about, small about → projects)
 - [ ] T16: Adaptive quality and performance pass
 
 ### Checkpoint 6 — Complete

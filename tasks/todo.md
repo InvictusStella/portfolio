@@ -305,12 +305,13 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 **Description:** Two lightspeed jumps (spec §5.4): a **big** one through the hero's departure zone (30–100%) into About, and a **small** one between About and the star chart. Particles stretch into streaks scaled by (capped) scroll velocity, with slight FOV widening and edge chromatic shift. Off under reduced motion.
 
 **Acceptance criteria:**
-- [ ] Hero → About jump is clearly bigger (longer, stronger streaks) than About → Star chart
-- [ ] Slow scroll = drift, fast flick = streaks; effect confined to the two jump zones
-- [ ] Streak length capped; nothing under reduced motion
+- [x] Hero → About jump is clearly bigger (longer, stronger streaks) than About → Star chart
+- [x] Slow scroll = drift, fast flick = streaks; effect confined to the two jump zones
+- [x] Streak length capped; nothing under reduced motion
 
 **Verification:**
-- [ ] Manual: trackpad, mouse wheel and phone swipe; Performance panel
+- [x] Manual: simulated fast/slow scrolls in Chrome (both zones)
+- [ ] Manual: trackpad, mouse wheel and a real phone swipe (needs you)
 
 **Dependencies:** T12, T13
 **Files likely touched:** `src/scene/effects/lightspeed.ts`, `src/scene/chapters/deepSpace.ts`, `src/scene/chapters/starField.ts`, `src/scene/director.ts`

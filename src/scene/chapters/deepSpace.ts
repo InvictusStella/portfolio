@@ -9,7 +9,7 @@ import { generateStars } from '../starfield';
 /** World units the field rises per pixel scrolled (≈ a quarter of scroll speed mid-depth). */
 export const RISE_PER_PX = 0.0105;
 
-const BOUNDS = { x: [-45, 45], y: [-95, 28], z: [-75, -8] } as const;
+export const BOUNDS = { x: [-45, 45], y: [-95, 28], z: [-75, -8] } as const;
 
 const vertexShader = /* glsl */ `
 	attribute float size;
