@@ -1,0 +1,82 @@
+---
+import { localeUrl } from '../i18n/routes';
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+	lang: Lang;
+}
+
+const { lang } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const langs: Lang[] = ['en', 'tr'];
+---
+
+<nav class="lang-toggle" aria-label="Language / Dil">
+	{
+		langs.map((l, i) => (
+			<>
+				{i > 0 && <span aria-hidden="true">|</span>}
+				{l === lang ? (
+					<span class="lang-toggle__current" aria-current="true">
+						{l.toUpperCase()}
+					</span>
+				) : (
+					<a href={localeUrl(l, base)} hreflang={l} lang={l} data-lang-switch>
+						{l.toUpperCase()}
+					</a>
+				)}
+			</>
+		))
+	}
+</nav>
+
+<script>
+	import { currentSectionId } from '../i18n/routes';
+
+	// Without this script the link still works; it just lands at the top of the page.
+	for (const link of document.querySelectorAll<HTMLAnchorElement>('[data-lang-switch]')) {
+		link.addEventListener('click', () => {
+			const sections = [...document.querySelectorAll<HTMLElement>('[id]')]
+				.filter((el) => el.matches('header, section, footer'))
+				.map((el) => {
+					const { top, bottom } = el.getBoundingClientRect();
+					return { id: el.id, top, bottom };
+				});
+			const id = currentSectionId(sections, window.innerHeight);
+			if (id && id !== 'top') link.hash = id;
+		});
+	}
+</script>
+
+<style>
+	.lang-toggle {
+		position: fixed;
+		top: clamp(0.75rem, 3vw, 1.5rem);
+		right: clamp(0.75rem, 3vw, 1.5rem);
+		z-index: 10;
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+		padding: 0.4rem 0.85rem;
+		border-radius: 999px;
+		font-size: 0.85rem;
+		font-weight: 600;
+		letter-spacing: 0.05em;
+		color: var(--text-muted);
+		background: rgba(3, 4, 12, 0.55);
+	}
+
+	.lang-toggle__current {
+		color: var(--text);
+	}
+
+	.lang-toggle a {
+		color: var(--text-muted);
+		text-decoration: none;
+	}
+
+	.lang-toggle a:hover {
+		color: var(--text);
+		text-decoration: underline;
+	}
+</style>

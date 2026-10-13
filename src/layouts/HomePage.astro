@@ -1,0 +1,45 @@
+---
+import About from '../components/About.astro';
+import CvButton from '../components/CvButton.astro';
+import Footer from '../components/Footer.astro';
+import Hero from '../components/Hero.astro';
+import LangToggle from '../components/LangToggle.astro';
+import { profile } from '../content/profile';
+import { localeUrl } from '../i18n/routes';
+import type { Lang } from '../i18n/ui';
+import '../styles/global.css';
+
+interface Props {
+	lang: Lang;
+}
+
+const { lang } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const absolute = (path: string) => new URL(path, Astro.site).href;
+---
+
+<html lang={lang}>
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+		<link rel="icon" href={`${base}favicon.ico`} />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="description" content={profile.tagline[lang]} />
+		<title>{profile.name}</title>
+		<!-- Tell search engines the two pages are translations of each other. -->
+		<link rel="canonical" href={absolute(localeUrl(lang, base))} />
+		<link rel="alternate" hreflang="en" href={absolute(localeUrl('en', base))} />
+		<link rel="alternate" hreflang="tr" href={absolute(localeUrl('tr', base))} />
+		<link rel="alternate" hreflang="x-default" href={absolute(localeUrl('en', base))} />
+	</head>
+	<body>
+		<LangToggle lang={lang} />
+		<Hero profile={profile} lang={lang} />
+		<main>
+			<About profile={profile} lang={lang} />
+		</main>
+		<Footer profile={profile} lang={lang} />
+		<CvButton lang={lang} />
+	</body>
+</html>

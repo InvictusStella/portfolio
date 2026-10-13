@@ -50,7 +50,7 @@ T10 needs only T3 (sections to observe). The 3D track (T10–T13) can run in par
 ### Phase 2 — Content (no 3D)
 - [x] T3: English page: hero, about, footer on a gradient background
 - [x] T4: Experience timeline and CV button
-- [ ] T5: Turkish version and language toggle
+- [x] T5: Turkish version and language toggle
 
 ### Checkpoint 2
 - [ ] Both languages live; full CV content readable; keyboard-navigable

@@ -9,7 +9,7 @@ export const ui = {
   skillsHeading: { en: 'Skills', tr: 'Yetenekler' },
   hobbiesHeading: { en: 'Hobbies', tr: 'Hobiler' },
   experienceHeading: { en: 'Experience', tr: 'Deneyim' },
-  downloadCv: { en: 'Download CV (PDF)', tr: 'Özgeçmişi indir (PDF)' },
+  downloadCv: { en: 'Download CV (PDF)', tr: 'CV’yi indir (PDF)' },
   cvShort: { en: 'CV', tr: 'CV' },
   contactHeading: { en: 'Get in touch', tr: 'İletişim' },
   email: { en: 'Email', tr: 'E-posta' },

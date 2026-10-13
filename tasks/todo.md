@@ -92,13 +92,13 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 **Description:** Enable Astro i18n routing (`en` default at `/`, `tr` at `/tr/`). Share one page layout across both; set `<html lang>`. Add the top-right `EN | TR` toggle, which keeps the current `#section`.
 
 **Acceptance criteria:**
-- [ ] `/` is English, `/tr/` is Turkish, each with the correct `lang` attribute
-- [ ] Removing a `tr` value from `profile.ts` makes `npm run check` fail
-- [ ] Toggling while on `#about` lands on `#about` in the other language
+- [x] `/` is English, `/tr/` is Turkish, each with the correct `lang` attribute
+- [x] Removing a `tr` value from `profile.ts` makes `npm run check` fail
+- [x] Toggling while on `#about` lands on `#about` in the other language
 
 **Verification:**
-- [ ] `npm run check && npm run build`; inspect `dist/` contains both pages
-- [ ] Manual toggle test in both directions
+- [x] `npm run check && npm run build`; inspect `dist/` contains both pages
+- [x] Manual toggle test in both directions
 
 **Dependencies:** T3
 **Files likely touched:** `astro.config.mjs`, `src/layouts/Page.astro`, `src/pages/index.astro`, `src/pages/tr/index.astro`, `src/components/LangToggle.astro`, `src/i18n/ui.ts`

@@ -4,6 +4,7 @@ import About from './About.astro';
 import CvButton from './CvButton.astro';
 import Footer from './Footer.astro';
 import Hero from './Hero.astro';
+import LangToggle from './LangToggle.astro';
 import type { Profile } from '../content/profile';
 
 // A small fixture, so these tests don't break whenever the real bio changes.
@@ -127,9 +128,36 @@ describe('CV button', () => {
     expect(html).toMatch(/\sdownload(=|\s|>)/);
   });
 
+  it('keeps the visible text inside the accessible label in both languages (voice control)', async () => {
+    for (const lang of ['en', 'tr'] as const) {
+      const html = await container.renderToString(CvButton, { props: { lang } });
+      const label = html.match(/aria-label="([^"]*)"/)?.[1] ?? '';
+      expect(label).toContain('CV');
+    }
+  });
+
   it('has an accessible label saying what it does', async () => {
     const html = await container.renderToString(CvButton, { props: { lang: 'en' } });
     expect(html).toContain('aria-label="Download CV (PDF)"');
+  });
+});
+
+describe('Language toggle', () => {
+  it('on the English page, links to the Turkish page', async () => {
+    const html = await container.renderToString(LangToggle, { props: { lang: 'en' } });
+    expect(html).toMatch(/<a[^>]*href="[^"]*\/tr\/"[^>]*hreflang="tr"|<a[^>]*hreflang="tr"[^>]*href="[^"]*\/tr\/"/);
+  });
+
+  it('on the Turkish page, links back to the English page', async () => {
+    const html = await container.renderToString(LangToggle, { props: { lang: 'tr' } });
+    expect(html).toMatch(/hreflang="en"/);
+    expect(html).not.toMatch(/href="[^"]*\/tr\/"/);
+  });
+
+  it('marks the current language and does not link to it', async () => {
+    const html = await container.renderToString(LangToggle, { props: { lang: 'en' } });
+    expect(html).toMatch(/aria-current="true"[^>]*>\s*EN\s*</);
+    expect(html).not.toMatch(/hreflang="en"/);
   });
 });
 
