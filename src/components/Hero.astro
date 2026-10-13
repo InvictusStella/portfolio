@@ -59,18 +59,18 @@ const { profile, lang } = Astro.props;
 	}
 
 	.hero__sun {
-		--size: min(78vw, 70svh, 40rem);
+		--size: min(90vw, 88svh, 56rem); /* +40% on large screens, as much as fits on laptops, +15% on phones */
 		position: absolute;
 		top: 50%;
 		left: 50%;
 		width: var(--size);
 		height: var(--size);
-		translate: -50% -55%;
+		translate: -50% -52%;
 		border-radius: 50%;
 		/* Bright centre, darker redder edge ("limb darkening") so it reads as a sphere. */
 		background: radial-gradient(
 			circle,
-			#fff4d6 0%,
+			#ffcc73 0%,
 			var(--sun-core) 35%,
 			#ff9a3c 62%,
 			#d9541a 82%,
@@ -87,20 +87,27 @@ const { profile, lang } = Astro.props;
 		opacity: 0;
 	}
 
-	/* Soft, borderless haze behind the text: dims the sun without boxing it in. */
+	/*
+	 * Soft, borderless shadow behind the text: a blurred dark shape the size of the
+	 * text block, so every letter gets the same backing and the edges melt into the sun.
+	 * 74% warm dark keeps the tagline at WCAG AA contrast over the sun's bright centre.
+	 */
 	.hero__text {
 		position: relative;
+		isolation: isolate;
 		max-width: 44rem;
 		padding: 4rem 4.5rem;
-		/* closest-side: fades out exactly at the edges of this box, so no visible bands. */
-		background: radial-gradient(
-			closest-side,
-			rgba(3, 4, 12, 0.55) 0%,
-			rgba(3, 4, 12, 0.55) 55%,
-			rgba(3, 4, 12, 0.28) 78%,
-			transparent 100%
-		);
-		text-shadow: 0 2px 18px rgba(3, 4, 12, 0.7);
+		text-shadow: 0 2px 18px rgba(28, 10, 4, 0.7);
+	}
+
+	.hero__text::before {
+		content: '';
+		position: absolute;
+		inset: 1.75rem 0.75rem;
+		z-index: -1;
+		border-radius: 4rem;
+		background: rgba(28, 10, 4, 0.7);
+		filter: blur(40px);
 	}
 
 	[data-departure-fade] {
@@ -127,8 +134,22 @@ const { profile, lang } = Astro.props;
 		align-items: center;
 		gap: 0.25rem;
 		font-size: 0.875rem;
-		color: var(--text-muted);
+		color: var(--text);
 		text-decoration: none;
+		/* It can sit over the sun's bright lower edge on laptop screens. */
+		isolation: isolate;
+		padding: 0.5rem 1rem;
+		text-shadow: 0 0 10px rgba(28, 10, 4, 0.9);
+	}
+
+	.hero__hint::before {
+		content: '';
+		position: absolute;
+		inset: -0.75rem -1.25rem;
+		z-index: -1;
+		border-radius: 2rem;
+		background: rgba(28, 10, 4, 0.75);
+		filter: blur(14px);
 	}
 
 	.hero__hint span {

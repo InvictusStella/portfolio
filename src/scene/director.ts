@@ -25,6 +25,38 @@ export function textOpacity(progress: number): number {
   return 1 - smoothstep(0, 0.3, progress);
 }
 
+/** How much further away the camera is at the end of the departure (distance = start × (1 + RECEDE·p²)). */
+const RECEDE = 3;
+/** The sun's glow reaches this many sun-radii from its centre. */
+const GLOW_REACH = 2.3;
+
+/** On-screen size of the sun relative to the start (1 → about a quarter). Eases in: lingers, then falls away. */
+export function sunScale(progress: number): number {
+  return 1 / (1 + RECEDE * progress * progress);
+}
+
+/**
+ * Vertical screen position (px from the top) of the sun's centre.
+ * It holds still while the name fades (0–30%), then rises and is fully off the
+ * top edge, glow included, by 85%.
+ */
+export function sunScreenY(progress: number, startY: number, startDiameter: number): number {
+  const exitY = -(startDiameter / 2) * sunScale(0.85) * GLOW_REACH;
+  return startY + (exitY - startY) * smoothstep(0.3, 0.85, progress);
+}
+
+/**
+ * Strength of the warm light bleeding in from the top once the sun has left.
+ * Off while the sun is visible; then slowly dims deeper into the page, but never vanishes.
+ * `pageProgress` is 0 at the top of the page and 1 at the bottom.
+ */
+export function sunlightOpacity(departure: number, pageProgress: number): number {
+  // Comes in while the sun is leaving through the top, so there is no dark gap.
+  const sunGone = smoothstep(0.55, 0.85, departure);
+  const depth = 1 - 0.7 * smoothstep(0.35, 1, pageProgress);
+  return sunGone * depth;
+}
+
 /**
  * Move `current` toward `target`, frame-rate independent: after the same amount
  * of time you end up in the same place whether you render at 30 or 144 fps.

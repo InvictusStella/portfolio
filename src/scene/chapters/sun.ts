@@ -25,8 +25,8 @@ const fragmentShader = /* glsl */ `
 		float mu = clamp(dot(normalize(vNormal), normalize(vViewDir)), 0.0, 1.0);
 
 		// Limb darkening: hot pale centre, deep orange-red edge.
-		vec3 core = vec3(1.0, 0.96, 0.84);
-		vec3 mid = vec3(1.0, 0.70, 0.30);
+		vec3 core = vec3(1.0, 0.80, 0.45);
+		vec3 mid = vec3(1.0, 0.62, 0.24);
 		vec3 edge = vec3(0.70, 0.22, 0.07);
 		vec3 color = mix(edge, mid, smoothstep(0.0, 0.55, mu));
 		color = mix(color, core, smoothstep(0.55, 1.0, mu));

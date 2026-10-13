@@ -4,6 +4,8 @@
 ---
 
 <canvas class="scene-canvas" aria-hidden="true"></canvas>
+<!-- Warm light from the sun once it has risen off the top of the screen. -->
+<div class="sunlight" aria-hidden="true"></div>
 
 <script>
 	const root = document.documentElement;
@@ -37,6 +39,21 @@
 
 	:global(.webgl) .scene-canvas {
 		display: block;
+	}
+
+	/* Its strength (--sunlight, 0–1) is set by the scene as you scroll. */
+	.sunlight {
+		position: fixed;
+		inset: 0;
+		z-index: -1;
+		pointer-events: none;
+		background: radial-gradient(
+			ellipse 80% 55% at 50% -10%,
+			rgba(255, 190, 110, 0.5),
+			rgba(255, 140, 60, 0.18) 45%,
+			transparent 78%
+		);
+		opacity: var(--sunlight, 0);
 	}
 
 	/* No flight under reduced motion: the canvas scrolls away with the hero instead. */

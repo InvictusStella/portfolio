@@ -1,5 +1,65 @@
 import { describe, expect, it } from 'vitest';
-import { cameraDistanceForDiameter, damp, departureProgress, textOpacity } from './director';
+import {
+  cameraDistanceForDiameter,
+  damp,
+  departureProgress,
+  sunlightOpacity,
+  sunScale,
+  sunScreenY,
+  textOpacity,
+} from './director';
+
+describe('sunScale', () => {
+  it('is full size at the start', () => {
+    expect(sunScale(0)).toBe(1);
+  });
+
+  it('shrinks steadily as we fly away', () => {
+    expect(sunScale(0.5)).toBeLessThan(sunScale(0.2));
+    expect(sunScale(1)).toBeLessThan(sunScale(0.5));
+  });
+
+  it('is still clearly visible when it leaves the screen (not a dot)', () => {
+    expect(sunScale(0.85)).toBeGreaterThan(0.25);
+  });
+});
+
+describe('sunScreenY', () => {
+  // Sun starts centred at y = 400px with a 700px diameter.
+  const startY = 400;
+  const diameter = 700;
+
+  it('stays put while the name fades (first 30%)', () => {
+    expect(sunScreenY(0, startY, diameter)).toBe(startY);
+    expect(sunScreenY(0.3, startY, diameter)).toBe(startY);
+  });
+
+  it('rises as the departure continues', () => {
+    expect(sunScreenY(0.6, startY, diameter)).toBeLessThan(startY);
+  });
+
+  it('is entirely above the top edge, glow included, by 85%', () => {
+    const y = sunScreenY(0.85, startY, diameter);
+    const glowRadius = (diameter / 2) * sunScale(0.85) * 2;
+    expect(y + glowRadius).toBeLessThan(0);
+  });
+});
+
+describe('sunlightOpacity', () => {
+  it('is off while the sun itself is on screen', () => {
+    expect(sunlightOpacity(0.5, 0)).toBe(0);
+  });
+
+  it('is fully on once the sun has left the screen', () => {
+    expect(sunlightOpacity(1, 0.3)).toBeGreaterThan(0.9);
+  });
+
+  it('fades as you go deeper, but never fully disappears', () => {
+    const atBottom = sunlightOpacity(1, 1);
+    expect(atBottom).toBeLessThan(sunlightOpacity(1, 0.3));
+    expect(atBottom).toBeGreaterThan(0.2);
+  });
+});
 
 describe('departureProgress', () => {
   // Hero is 2 screens tall (1600px) in an 800px viewport, so there is 800px of pinned scrolling.

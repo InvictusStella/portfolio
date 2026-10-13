@@ -1,11 +1,17 @@
 import * as THREE from 'three';
 import { createSun, SUN_RADIUS } from './chapters/sun';
-import { cameraDistanceForDiameter, damp, departureProgress, textOpacity } from './director';
+import {
+	cameraDistanceForDiameter,
+	damp,
+	departureProgress,
+	sunlightOpacity,
+	sunScale,
+	sunScreenY,
+	textOpacity,
+} from './director';
 
 const FOV = 45;
-/** At the end of the departure the camera is this many times further away than at the start. */
-const RECEDE = 25;
-/** How quickly the camera catches up with the scroll position (higher = snappier). */
+/** How quickly the scene catches up with the scroll position (higher = snappier). */
 const EASE = 5;
 
 export function startScene(canvas: HTMLCanvasElement) {
@@ -23,10 +29,11 @@ export function startScene(canvas: HTMLCanvasElement) {
 	const sun = createSun();
 	scene.add(sun.object);
 
+	// Where the CSS sun is drawn (in px, as if the hero were at the top of the page).
+	let start = { x: 0, y: 0, diameter: 1 };
 	let startDistance = 10;
-	let distance = startDistance;
+	let progress = 0;
 
-	/** Size the renderer and place the 3D sun exactly where the CSS sun is drawn. */
 	function layout() {
 		const width = canvas.clientWidth;
 		const height = canvas.clientHeight;
@@ -34,43 +41,54 @@ export function startScene(canvas: HTMLCanvasElement) {
 		camera.aspect = width / height;
 		camera.updateProjectionMatrix();
 
-		// Measure relative to the stage, so this works even if the page loads mid-scroll.
 		const sunBox = cssSun.getBoundingClientRect();
 		const stageBox = stage.getBoundingClientRect();
-		const centerX = sunBox.left + sunBox.width / 2;
-		const centerY = sunBox.top - stageBox.top + sunBox.height / 2;
-
-		const previousStart = startDistance;
-		startDistance = cameraDistanceForDiameter(SUN_RADIUS, FOV, height, sunBox.width);
-		distance *= startDistance / previousStart;
-
-		const pixelsPerUnit = height / 2 / (startDistance * Math.tan((FOV * Math.PI) / 360));
-		sun.object.position.set((centerX - width / 2) / pixelsPerUnit, -(centerY - height / 2) / pixelsPerUnit, 0);
+		start = {
+			x: sunBox.left + sunBox.width / 2,
+			y: sunBox.top - stageBox.top + sunBox.height / 2,
+			diameter: sunBox.width,
+		};
+		startDistance = cameraDistanceForDiameter(SUN_RADIUS, FOV, height, start.diameter);
 	}
 
-	function targetDistance() {
+	function targetProgress() {
 		const box = hero.getBoundingClientRect();
-		const progress = departureProgress(box.top, box.height, innerHeight);
-		stage.style.setProperty('--departure-fade', String(textOpacity(progress)));
-		// Ease in: the sun lingers at first, then falls away fast (the jump).
-		return startDistance * (1 + RECEDE * progress * progress);
+		return departureProgress(box.top, box.height, innerHeight);
 	}
 
+	/** Place camera and sun for a given departure progress, update the page, and render. */
 	function draw() {
+		const height = canvas.clientHeight;
+		const width = canvas.clientWidth;
+
+		// Flying away: the camera backs off so the sun appears sunScale() times its start size.
+		const distance = startDistance / sunScale(progress);
 		camera.position.set(0, 0, distance);
+
+		// Convert the sun's wanted screen position into world units at that distance.
+		const pixelsPerUnit = height / 2 / (distance * Math.tan((FOV * Math.PI) / 360));
+		const screenY = sunScreenY(progress, start.y, start.diameter);
+		sun.object.position.set((start.x - width / 2) / pixelsPerUnit, -(screenY - height / 2) / pixelsPerUnit, 0);
+		sun.object.visible = screenY + start.diameter * 2 > 0;
+
+		stage.style.setProperty('--departure-fade', String(textOpacity(progress)));
+		const pageProgress = scrollY / Math.max(1, root.scrollHeight - innerHeight);
+		root.style.setProperty('--sunlight', String(sunlightOpacity(progress, pageProgress)));
+
 		renderer.render(scene, camera);
 	}
 
-	// Render on demand: the loop runs only while the camera is still catching up.
+	// Render on demand: the loop runs only while the scene is still catching up.
 	let frame = 0;
 	let last = 0;
 	function tick(now: number) {
 		const dt = Math.min((now - last) / 1000, 0.1);
 		last = now;
-		const target = targetDistance();
-		distance = damp(distance, target, EASE, dt);
+		const target = targetProgress();
+		progress = damp(progress, target, EASE, dt);
+		if (Math.abs(progress - target) < 1e-4) progress = target;
 		draw();
-		frame = Math.abs(distance - target) > startDistance * 1e-4 && !document.hidden ? requestAnimationFrame(tick) : 0;
+		frame = progress !== target && !document.hidden ? requestAnimationFrame(tick) : 0;
 	}
 	function wake() {
 		if (reducedMotion || frame || document.hidden) return;
@@ -79,7 +97,7 @@ export function startScene(canvas: HTMLCanvasElement) {
 	}
 
 	layout();
-	distance = reducedMotion ? startDistance : targetDistance();
+	progress = reducedMotion ? 0 : targetProgress();
 	draw();
 	root.classList.add('scene-ready');
 
