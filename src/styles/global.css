@@ -1,0 +1,72 @@
+/* Colour tokens: change the palette here, everything else follows. */
+:root {
+	color-scheme: dark;
+	--bg-deep: #03040c;
+	--bg-mid: #0a0d24;
+	--sun-core: #ffd27a;
+	--sun-glow: rgba(255, 140, 50, 0.35);
+	--text: #e8ecff;
+	--text-muted: #a9b3d9;
+	--accent: #9fb8ff;
+	--line: rgba(160, 180, 255, 0.22);
+	--panel: rgba(6, 8, 22, 0.6);
+	--gutter: clamp(1rem, 5vw, 3rem);
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+}
+
+/*
+ * Deep-space background. The sun's glow sits at the top and the page darkens as
+ * you scroll away from it. This is also the fallback when WebGL is unavailable.
+ */
+body {
+	margin: 0;
+	min-height: 100vh;
+	font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+	font-size: 1.0625rem;
+	line-height: 1.6;
+	color: var(--text);
+	background-color: var(--bg-deep);
+	background-image:
+		radial-gradient(circle at 85% 0, var(--sun-core) 0, var(--sun-glow) 18rem, transparent 40rem),
+		linear-gradient(to bottom, #1a0f14 0, var(--bg-mid) 100vh, var(--bg-deep) 200vh);
+	background-repeat: no-repeat;
+	overflow-x: hidden;
+}
+
+a {
+	color: var(--accent);
+	text-underline-offset: 0.2em;
+}
+
+a:hover {
+	color: var(--text);
+}
+
+:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 3px;
+	border-radius: 4px;
+}
+
+/* Dark backing behind text blocks so they stay readable over the scene. */
+.panel {
+	background: var(--panel);
+	border: 1px solid var(--line);
+	border-radius: 1rem;
+	padding: clamp(1.25rem, 4vw, 2rem);
+}

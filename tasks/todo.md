@@ -59,13 +59,13 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 **Description:** Create `profile.ts` (typed, every text `{ en, tr }`, placeholders allowed) and `ui.ts` labels. Build the hero, about (photo, bio, skill chips, hobbies) and edge footer (contact links) as Astro components on a deep-space CSS gradient background. That background is also the no-WebGL fallback.
 
 **Acceptance criteria:**
-- [ ] Page renders all sections from `profile.ts`; photo optimised via `astro:assets`
-- [ ] Semantic heading order; text contrast passes (Lighthouse a11y ≥ 95)
-- [ ] Layout works from 360 px to wide desktop with no horizontal scroll
+- [x] Page renders all sections from `profile.ts`; photo optimised via `astro:assets`
+- [x] Semantic heading order; text contrast passes (Lighthouse a11y ≥ 95)
+- [x] Layout works from 360 px to wide desktop with no horizontal scroll
 
 **Verification:**
-- [ ] `npm run check && npm test && npm run build`
-- [ ] Manual: desktop + phone-width devtools; keyboard Tab through links
+- [x] `npm run check && npm test && npm run build`
+- [x] Manual: desktop + phone-width devtools; keyboard Tab through links
 
 **Dependencies:** T2
 **Files likely touched:** `src/content/profile.ts`, `src/i18n/ui.ts`, `src/components/Hero.astro`, `src/components/About.astro`, `src/components/Footer.astro`, `src/pages/index.astro`, `src/styles/global.css`

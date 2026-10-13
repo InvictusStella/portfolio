@@ -1,0 +1,139 @@
+---
+import type { Profile } from '../content/profile';
+import { ui, type Lang } from '../i18n/ui';
+
+interface Props {
+	profile: Profile;
+	lang: Lang;
+}
+
+const { profile, lang } = Astro.props;
+---
+
+<section class="about" id="about" aria-labelledby="about-heading">
+	<div class="panel about__intro">
+		<!-- Placeholder until a photo is added (see src/content/profile.ts). -->
+		<div class="avatar" role="img" aria-label={ui.photoAlt[lang].replace('{name}', profile.name)}>
+			<span aria-hidden="true">{profile.initials}</span>
+		</div>
+		<div>
+			<h2 id="about-heading">{ui.aboutHeading[lang]}</h2>
+			<p class="about__bio">{profile.bio[lang]}</p>
+		</div>
+	</div>
+
+	<div class="panel">
+		<h3>{ui.skillsHeading[lang]}</h3>
+		<div class="skills">
+			{
+				profile.skillGroups.map((group) => (
+					<div class="skills__group">
+						<h4>{group.label[lang]}</h4>
+						<ul class="chips">
+							{group.skills.map((skill) => (
+								<li>{skill}</li>
+							))}
+						</ul>
+					</div>
+				))
+			}
+		</div>
+	</div>
+
+	<div class="panel">
+		<h3>{ui.hobbiesHeading[lang]}</h3>
+		<ul class="chips">
+			{profile.hobbies.map((hobby) => <li>{hobby[lang]}</li>)}
+		</ul>
+	</div>
+</section>
+
+<style>
+	.about {
+		display: grid;
+		gap: 1.5rem;
+		max-width: 60rem;
+		margin: 0 auto;
+		padding: 6rem var(--gutter);
+	}
+
+	.about__intro {
+		display: grid;
+		gap: 1.5rem;
+		align-items: start;
+	}
+
+	@media (min-width: 40rem) {
+		.about__intro {
+			grid-template-columns: auto 1fr;
+		}
+	}
+
+	.avatar {
+		width: 8rem;
+		height: 8rem;
+		border-radius: 50%;
+		display: grid;
+		place-items: center;
+		font-size: 2.25rem;
+		font-weight: 600;
+		letter-spacing: 0.05em;
+		color: var(--text);
+		background: radial-gradient(circle at 35% 30%, #3b4a8a, #141a3a 70%);
+		box-shadow:
+			0 0 0 1px var(--line),
+			0 0 40px rgba(120, 150, 255, 0.25);
+	}
+
+	h2 {
+		font-size: clamp(1.75rem, 4vw, 2.25rem);
+		margin: 0 0 0.75rem;
+	}
+
+	h3 {
+		font-size: 1.25rem;
+		margin: 0 0 1rem;
+	}
+
+	h4 {
+		font-size: 0.8rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		color: var(--text-muted);
+		margin: 0 0 0.5rem;
+	}
+
+	.about__bio {
+		margin: 0;
+		line-height: 1.7;
+	}
+
+	.skills {
+		display: grid;
+		gap: 1.25rem;
+	}
+
+	@media (min-width: 40rem) {
+		.skills {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	.chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.chips li {
+		padding: 0.3rem 0.75rem;
+		border: 1px solid var(--line);
+		border-radius: 999px;
+		font-size: 0.875rem;
+		background: rgba(120, 150, 255, 0.08);
+	}
+</style>

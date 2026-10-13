@@ -48,7 +48,7 @@ T10 needs only T3 (sections to observe). The 3D track (T10–T13) can run in par
 - [x] "Hello" page live at https://invictusstella.github.io/portfolio/, deployed by Actions
 
 ### Phase 2 — Content (no 3D)
-- [ ] T3: English page: hero, about, footer on a gradient background
+- [x] T3: English page: hero, about, footer on a gradient background
 - [ ] T4: Experience timeline and CV button
 - [ ] T5: Turkish version and language toggle
 

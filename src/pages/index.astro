@@ -1,18 +1,29 @@
 ---
+import About from '../components/About.astro';
+import Footer from '../components/Footer.astro';
+import Hero from '../components/Hero.astro';
+import { profile } from '../content/profile';
+import '../styles/global.css';
+
+const lang = 'en';
 const base = import.meta.env.BASE_URL;
 ---
 
-<html lang="en">
+<html lang={lang}>
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
 		<link rel="icon" href={`${base}favicon.ico`} />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="generator" content={Astro.generator} />
-		<title>InvictusStella</title>
+		<meta name="description" content={profile.tagline[lang]} />
+		<title>{profile.name}</title>
 	</head>
 	<body>
-		<h1>Hello from InvictusStella</h1>
-		<p>Portfolio under construction.</p>
+		<Hero profile={profile} lang={lang} />
+		<main>
+			<About profile={profile} lang={lang} />
+		</main>
+		<Footer profile={profile} lang={lang} />
 	</body>
 </html>

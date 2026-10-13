@@ -1,0 +1,62 @@
+---
+import type { Profile } from '../content/profile';
+import { ui, type Lang } from '../i18n/ui';
+
+interface Props {
+	profile: Profile;
+	lang: Lang;
+}
+
+const { profile, lang } = Astro.props;
+const { email, github, linkedin } = profile.contact;
+---
+
+<footer class="footer" id="contact" aria-labelledby="contact-heading">
+	<h2 id="contact-heading">{ui.contactHeading[lang]}</h2>
+	<ul class="footer__links">
+		<li><a href={`mailto:${email}`}>{ui.email[lang]}</a></li>
+		<li><a href={github} rel="me">GitHub</a></li>
+		{
+			linkedin && (
+				<li>
+					<a href={linkedin} rel="me">
+						LinkedIn
+					</a>
+				</li>
+			)
+		}
+	</ul>
+	<p class="footer__signoff">{ui.signOff[lang]}</p>
+</footer>
+
+<style>
+	.footer {
+		text-align: center;
+		padding: 8rem var(--gutter) 4rem;
+	}
+
+	h2 {
+		font-size: clamp(1.75rem, 4vw, 2.25rem);
+		margin: 0 0 1.5rem;
+	}
+
+	.footer__links {
+		display: flex;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 1rem 2rem;
+		list-style: none;
+		margin: 0 0 3rem;
+		padding: 0;
+	}
+
+	.footer__links a {
+		font-size: 1.125rem;
+	}
+
+	.footer__signoff {
+		color: var(--text-muted);
+		font-size: 0.875rem;
+		margin: 0;
+	}
+</style>
