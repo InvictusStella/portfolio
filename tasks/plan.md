@@ -42,10 +42,10 @@ T10 needs only T3 (sections to observe). The 3D track (T10–T13) can run in par
 
 ### Phase 1 — Walking skeleton
 - [x] T1: Scaffold Astro + TypeScript + Vitest
-- [ ] T2: Deploy pipeline to GitHub Pages
+- [x] T2: Deploy pipeline to GitHub Pages
 
 ### Checkpoint 1
-- [ ] "Hello" page live at https://invictusstella.github.io/portfolio/, deployed by Actions
+- [x] "Hello" page live at https://invictusstella.github.io/portfolio/, deployed by Actions
 
 ### Phase 2 — Content (no 3D)
 - [ ] T3: English page: hero, about, footer on a gradient background

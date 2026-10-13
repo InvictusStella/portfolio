@@ -34,12 +34,12 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 **Description:** Add a GitHub Actions workflow that runs check → test → build → deploy to Pages on push to `main` and on manual trigger. Sets Astro `site` + `base: "/portfolio"` (repo is `InvictusStella/portfolio`). Human step: set Pages source to "GitHub Actions".
 
 **Acceptance criteria:**
-- [ ] Pushing to `main` deploys the Hello page to https://invictusstella.github.io/portfolio/
-- [ ] A failing test stops the deploy (verified once by intentionally breaking a test on a branch)
-- [ ] "Run workflow" button works
+- [x] Pushing to `main` deploys the Hello page to https://invictusstella.github.io/portfolio/
+- [x] A failing test stops the deploy (verified once by intentionally breaking a test on a branch)
+- [x] "Run workflow" button works
 
 **Verification:**
-- [ ] Actions tab shows a green run; the live URL shows the page
+- [x] Actions tab shows a green run; the live URL shows the page
 
 **Dependencies:** T1
 **Files likely touched:** `.github/workflows/deploy.yml`, `astro.config.mjs` (`site`)
@@ -47,7 +47,7 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 **You'll learn:** GitHub Actions workflows, jobs and steps; how Pages deploys.
 
 ## Checkpoint 1
-- [ ] Hello page live via Actions
+- [x] Hello page live via Actions
 - [ ] Review with human before proceeding
 
 ---
