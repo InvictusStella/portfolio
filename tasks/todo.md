@@ -290,11 +290,11 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 **Description:** On first load per session, the sun rises over ~2–2.5 s, then name and tagline fade in. Skipped by any scroll, click or key; skipped under reduced motion; not replayed on reload or language switch.
 
 **Acceptance criteria:**
-- [ ] Plays once per session; any input skips to the end state
-- [ ] Hero text is in the HTML from the start (visible with JS disabled)
+- [x] Plays once per session; any input skips to the end state
+- [x] Hero text is in the HTML from the start (visible with JS disabled)
 
 **Verification:**
-- [ ] Manual: first load, reload, language switch, reduced motion, JS disabled
+- [x] Manual: first load, reload, language switch, reduced motion, JS disabled
 
 **Dependencies:** T11
 **Files likely touched:** `src/scene/intro.ts`, `src/scene/chapters/sun.ts`, `src/components/Hero.astro`

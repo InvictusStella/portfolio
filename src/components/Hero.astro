@@ -85,7 +85,8 @@ const { profile, lang } = Astro.props;
 	}
 
 	/* Hidden (but still measurable) once the WebGL sun has drawn its first frame. */
-	:global(.scene-ready) .hero__sun {
+	:global(.scene-ready) .hero__sun,
+	:global(.intro) .hero__sun {
 		opacity: 0;
 	}
 
@@ -114,8 +115,14 @@ const { profile, lang } = Astro.props;
 		filter: blur(40px);
 	}
 
+	/* Faded by the departure (scrolling away) and, on a first visit, by the sunrise intro. */
 	[data-departure-fade] {
-		opacity: var(--departure-fade, 1);
+		opacity: calc(var(--departure-fade, 1) * var(--intro-text, 1));
+	}
+
+	/* Sunrise intro: everything starts hidden; the scene brings it in (set before first paint). */
+	:global(.intro) .hero__stage {
+		--intro-text: 0;
 	}
 
 	h1 {

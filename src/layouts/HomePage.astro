@@ -40,11 +40,25 @@ const absolute = (path: string) => new URL(path, Astro.site).href;
 		<script is:inline>
 			(function () {
 				try {
+					var root = document.documentElement;
 					var gl = document.createElement('canvas').getContext('webgl2');
 					if (!gl) return;
-					document.documentElement.classList.add('webgl');
+					root.classList.add('webgl');
 					var lose = gl.getExtension('WEBGL_lose_context');
 					if (lose) lose.loseContext();
+
+					// Sunrise intro: once per visit, only with motion allowed. Decided here so the
+					// sun and name start hidden instead of flashing. Key matches INTRO_PLAYED_KEY.
+					var played = false;
+					try {
+						played = sessionStorage.getItem('intro-played') === '1';
+					} catch (e) {}
+					if (played || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+					root.classList.add('intro');
+					// Safety net: if the 3D scene isn't up within 4s, show everything anyway.
+					setTimeout(function () {
+						if (!root.classList.contains('scene-ready')) root.classList.remove('intro');
+					}, 4000);
 				} catch (e) {}
 			})();
 		</script>

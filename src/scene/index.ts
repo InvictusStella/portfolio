@@ -14,6 +14,7 @@ import {
 	sunScreenY,
 	textOpacity,
 } from './director';
+import { INTRO_PLAYED_KEY, introState } from './intro';
 
 const FOV = 45;
 /** How quickly the scene catches up with the scroll position (higher = snappier). */
@@ -78,7 +79,9 @@ export function startScene(canvas: HTMLCanvasElement) {
 
 		// Convert the sun's wanted screen position into world units at that distance.
 		const pixelsPerUnit = height / 2 / (distance * Math.tan((FOV * Math.PI) / 360));
-		const screenY = sunScreenY(progress, start.y, start.diameter);
+		// During the sunrise intro the sun starts below the screen (corona included) and rises.
+		const below = height - start.y + start.diameter * 1.3;
+		const screenY = sunScreenY(progress, start.y, start.diameter) + (1 - introRise) * below;
 		sun.object.position.set((start.x - width / 2) / pixelsPerUnit, -(screenY - height / 2) / pixelsPerUnit, 0);
 		sun.object.visible = sunOnScreen(progress, start.y, start.diameter);
 
@@ -92,7 +95,37 @@ export function startScene(canvas: HTMLCanvasElement) {
 		renderer.render(scene, camera);
 	}
 
+	// Sunrise intro (first visit only; the page head decided, before first paint).
+	let introRunning = root.classList.contains('intro');
+	let introStart = performance.now();
+	let introRise = introRunning ? 0 : 1;
+	function finishIntro() {
+		introRunning = false;
+		introRise = 1;
+		root.classList.remove('intro');
+		stage.style.removeProperty('--intro-text');
+	}
+	function updateIntro(now: number) {
+		if (!introRunning) return;
+		const state = introState((now - introStart) / 1000);
+		introRise = state.rise;
+		stage.style.setProperty('--intro-text', String(state.text));
+		if (state.done) finishIntro();
+	}
+	if (introRunning) {
+		try {
+			sessionStorage.setItem(INTRO_PLAYED_KEY, '1'); // once per visit, even if skipped
+		} catch {}
+		// Never make anyone wait: any input skips straight to the end.
+		const skip = () => {
+			if (introRunning) introStart = -Infinity;
+		};
+		for (const type of ['wheel', 'touchstart', 'keydown', 'pointerdown', 'scroll'])
+			addEventListener(type, skip, { passive: true, once: true });
+	}
+
 	const animating = () =>
+		introRunning ||
 		shouldAnimate({ reducedMotion, hidden: document.hidden, sunOnScreen: sun.object.visible });
 
 	// The loop runs while the scene is catching up with the scroll, or while the sun's
@@ -107,6 +140,7 @@ export function startScene(canvas: HTMLCanvasElement) {
 		if (Math.abs(progress - target) < 1e-4) progress = target;
 		scrolled = damp(scrolled, scrollY, EASE, dt);
 		if (Math.abs(scrolled - scrollY) < 0.5) scrolled = scrollY;
+		updateIntro(now);
 		sun.update(now / 1000);
 		draw();
 		const settling = (progress !== target || scrolled !== scrollY) && !document.hidden;

@@ -18,7 +18,7 @@
 				.catch((error) => {
 					// Fall back to the CSS sun and a normal one-screen hero.
 					console.error('3D scene failed to start:', error);
-					root.classList.remove('webgl', 'scene-ready');
+					root.classList.remove('webgl', 'scene-ready', 'intro');
 				});
 
 		if (document.readyState === 'complete') start();
