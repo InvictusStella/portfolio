@@ -386,4 +386,6 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 
 ### Task P8: Re-check
 **Acceptance criteria:**
-- [ ] Hero and About contrast ≥ 4.5:1; Lighthouse accessibility/best practices/SEO 100; owner checks on a real phone
+- [x] Hero and About contrast ≥ 4.5:1 (hero 5.0–6.3:1, About 4.9–8.3:1, hint ≥ 10.6:1)
+- [x] Lighthouse accessibility/best practices/SEO 100 on / and /tr/ (performance 73–79: the accepted cost of realism; LCP is mostly the first-visit sunrise intro)
+- [ ] Owner checks on a real phone (needs you)

@@ -101,7 +101,7 @@ The owner wants to **drop performance restrictions in favour of realism** for sp
 - [x] P5: Real photography: star field + nebula layers; brighter procedural stars
 - [x] P6: Warp jumps rebuilt as triggered Star Wars / Mass Effect style sequences
 - [x] P7: Credits line + docs/credits.md (added alongside P2 and P5, never shipping an uncredited image)
-- [ ] P8: Contrast and performance re-check; real-device check
+- [x] P8: Contrast and performance re-check (real-device check pending: owner)
 
 ### Checkpoint 7
 - [ ] Owner happy with sun, space, warps and chart on desktop and phone
