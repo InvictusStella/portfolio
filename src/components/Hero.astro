@@ -41,8 +41,10 @@ const { profile, lang } = Astro.props;
 		justify-items: center;
 		align-items: center;
 		padding: var(--gutter);
-		padding-bottom: 2rem;
+		padding-bottom: 0.75rem;
 		text-align: center;
+		/* The soft text shadow may reach past the screen edge on phones; never scroll sideways. */
+		overflow-x: clip;
 	}
 
 	/* Departure zone: only with WebGL (class set before first paint) and motion allowed. */
@@ -65,7 +67,7 @@ const { profile, lang } = Astro.props;
 		left: 50%;
 		width: var(--size);
 		height: var(--size);
-		translate: -50% -52%;
+		translate: -50% -55%; /* sits a little high, leaving room for the scroll hint below it */
 		border-radius: 50%;
 		/* Bright centre, darker redder edge ("limb darkening") so it reads as a sphere. */
 		background: radial-gradient(
@@ -95,15 +97,17 @@ const { profile, lang } = Astro.props;
 	.hero__text {
 		position: relative;
 		isolation: isolate;
-		max-width: 44rem;
-		padding: 4rem 4.5rem;
+		--pad-x: clamp(1rem, 4vw, 3.5rem);
+		max-width: min(100%, 60rem);
+		padding: 4rem var(--pad-x);
 		text-shadow: 0 2px 18px rgba(28, 10, 4, 0.7);
 	}
 
 	.hero__text::before {
 		content: '';
 		position: absolute;
-		inset: 1.75rem 0.75rem;
+		/* Always reaches ~2.5rem past the text, so line ends stay readable on narrow screens. */
+		inset: 1.75rem calc(var(--pad-x) - 2.5rem);
 		z-index: -1;
 		border-radius: 4rem;
 		background: rgba(28, 10, 4, 0.7);
@@ -115,7 +119,9 @@ const { profile, lang } = Astro.props;
 	}
 
 	h1 {
-		font-size: clamp(2.5rem, 8vw, 5rem);
+		/* One line at every screen size: the size follows the screen width. */
+		font-size: clamp(1.2rem, 6.6vw, 4.5rem);
+		white-space: nowrap;
 		line-height: 1.05;
 		letter-spacing: -0.02em;
 		margin: 0 0 1rem;
@@ -134,22 +140,8 @@ const { profile, lang } = Astro.props;
 		align-items: center;
 		gap: 0.25rem;
 		font-size: 0.875rem;
-		color: var(--text);
+		color: var(--text-muted);
 		text-decoration: none;
-		/* It can sit over the sun's bright lower edge on laptop screens. */
-		isolation: isolate;
-		padding: 0.5rem 1rem;
-		text-shadow: 0 0 10px rgba(28, 10, 4, 0.9);
-	}
-
-	.hero__hint::before {
-		content: '';
-		position: absolute;
-		inset: -0.75rem -1.25rem;
-		z-index: -1;
-		border-radius: 2rem;
-		background: rgba(28, 10, 4, 0.75);
-		filter: blur(14px);
 	}
 
 	.hero__hint span {
