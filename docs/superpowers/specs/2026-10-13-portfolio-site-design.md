@@ -181,3 +181,31 @@ GitHub REST API ─► fetchProjects() ─► toProject() ─► layoutConstella
 - Replace non-hero chapters with separate cross-faded scenes.
 - Turkish CV (`cv-tr.pdf`) chosen by page language.
 - Custom domain.
+
+## 12. Realism polish (decided after the first full build)
+
+The owner chose **realism over performance limits**, and is happy to use real photography and footage. Adaptive quality (lowering detail on weak devices) is dropped for now.
+
+### 12.1 Sun from real imagery
+- The sun's face is a real **NASA SDO** extreme-ultraviolet image (304 Å look: fibrous red-orange texture, bright active regions, fuzzy limb), mapped onto the disc. The camera never orbits the sun, so a face-on image reads as fully real.
+- The shader keeps it alive: slow "boiling" flow distortion of the image, flickering active regions, limb darkening; existing corona and flares stay.
+- **Bloom** post-processing so bright regions glare.
+- Prominences become **varied and moving**: several kinds (looping arcs whose shape keeps evolving with plasma sliding along them, eruptive arcs that lift off and dissolve, short jets/spicules), more of them, never static.
+- Hero text contrast is re-measured and the text shadow re-tuned (≥ 4.5:1 tagline).
+
+### 12.2 Warp jumps (replace scroll-speed streaks, §5.4)
+- Two **triggered** warp moments, inspired by Star Wars hyperspace and Mass Effect relay jumps: crossing a point while scrolling down plays a short sequence regardless of scroll speed — stars stretch (anticipation), long blue-white streaks burst **outward from the centre**, a brief flash, then the new section settles.
+- Big jump leaving the sun (~1.6 s); small jump into the star chart (~0.9 s). Downward only; each fires once per crossing. Off under reduced motion.
+
+### 12.3 Real photography for space
+- A real deep-sky **star field** background and 2–3 real **nebula** photos (Hubble/JWST/ESO), as layers at different depths so they keep scroll parallax. Black-background astro photos are blended additively (black adds nothing).
+- Procedural foreground stars become brighter, the brightest with soft diffraction spikes, with a subtle twinkle.
+- Photos are dimmed where text sits; contrast is re-measured.
+
+### 12.4 Star chart: Scorpius
+- Replaces the spiral (§4). Projects fill the **15 main stars of Scorpius** (the owner's sign) in a fixed order from the tip of the stinger up to the claws: Lesath, Shaula, Girtab, ι¹ Sco, Sargas, η Sco, ζ² Sco, μ¹ Sco, ε Sco, τ Sco, **Antares** (11th — the heart), σ Sco, Dschubba, Acrab, Fang.
+- Positions come from the stars' real sky coordinates. Lines are **segments** from the traditional figure (the claws branch from Dschubba); a segment shows once both its stars exist.
+- Appending a project never moves existing stars; the frame zooms to fit. Beyond 15 projects, extra stars are placed near the figure by a seeded generator (and the build warns, as before).
+
+### 12.5 Credits
+- Every photo/footage file is checked for its licence before use and credited in a footer credits line (e.g. "Sun: NASA/SDO · Nebulae: NASA, ESA, CSA, STScI"). A `docs/credits.md` records each file's source and licence.

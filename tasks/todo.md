@@ -335,3 +335,55 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 ## Checkpoint 6 — Complete
 - [ ] All spec success criteria met (spec §1)
 - [ ] Ready to share
+
+---
+
+## Phase 7 — Realism polish (spec §12)
+
+### Task P1: Star chart as Scorpius
+**Acceptance criteria:**
+- [ ] Projects take Scorpius's 15 main stars in order (stinger → claws), positioned from real coordinates
+- [ ] Figure segments appear only when both stars exist; the claws branch from Dschubba
+- [ ] Appending never moves stars; more than 15 projects still lay out (seeded extras near the figure)
+**Verification:** unit tests (layout, segments); visual check at 4, 11 and 15 projects
+**Files:** `src/lib/constellation.ts` (+test), `src/components/StarChart.astro`
+
+### Task P2: Sun surface from a real SDO image
+**Acceptance criteria:**
+- [ ] A licence-checked SDO image textures the sun's face; credited (P7)
+- [ ] Animated: slow flow distortion, flickering active regions; never looks like a still photo
+- [ ] Hero text ≥ 4.5:1 contrast (re-measured)
+**Files:** `public/textures/`, `src/scene/chapters/sun.ts`, `src/components/Hero.astro`
+
+### Task P3: Bloom
+**Acceptance criteria:**
+- [ ] Bright regions, flares and stars glare softly; text unaffected (it's HTML)
+**Files:** `src/scene/index.ts`
+
+### Task P4: Prominences v2
+**Acceptance criteria:**
+- [ ] At least three kinds: evolving loops with flowing plasma, eruptive arcs that lift off and dissolve, short jets
+- [ ] Shapes change over time (no static arcs); still nothing within 25° of horizontal
+**Files:** `src/scene/activity.ts` (+test), `src/scene/chapters/prominences.ts`
+
+### Task P5: Real photography for space
+**Acceptance criteria:**
+- [ ] Licence-checked deep-sky star field and 2–3 nebula photos as parallax depth layers; credited
+- [ ] Procedural stars brighter, the brightest with diffraction spikes, subtle twinkle
+- [ ] About text contrast re-measured
+**Files:** `public/textures/`, `src/scene/chapters/deepSpace.ts`
+
+### Task P6: Warp jumps, triggered
+**Acceptance criteria:**
+- [ ] Crossing the departure point (down) plays a ~1.6 s warp; entering the chart plays a ~0.9 s one — at any scroll speed
+- [ ] Anticipation stretch → outward blue-white streak burst → flash → settle (Star Wars / Mass Effect feel)
+- [ ] Off with reduced motion; trigger and timing logic unit-tested
+**Files:** `src/scene/warp.ts` (+test), `src/scene/effects/streaks.ts`, `src/scene/index.ts`
+
+### Task P7: Credits
+**Acceptance criteria:**
+- [ ] Footer credits line in both languages; `docs/credits.md` lists each file's source URL and licence
+
+### Task P8: Re-check
+**Acceptance criteria:**
+- [ ] Hero and About contrast ≥ 4.5:1; Lighthouse accessibility/best practices/SEO 100; owner checks on a real phone

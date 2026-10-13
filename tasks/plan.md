@@ -91,9 +91,20 @@ T10 needs only T3 (sections to observe), so the sun (T10–T11b) runs before the
 
 The owner wants to **drop performance restrictions in favour of realism** for space and the sun — through more shader work, or pre-made animation/photos if that looks better. Revisit T16 (adaptive quality) in that light: it currently plans to *lower* detail on weak devices.
 
-Polish candidates noted so far:
-- Star chart spiral looks slightly hexagonal at ~15 stars (turn step ≈ 1/6 turn); try a less regular step.
-- Sun/space realism: more shader detail, or pre-made footage/photos.
+**Decided:** see spec §12. Tasks P1–P8 below.
+
+## Phase 7 — Realism polish (spec §12)
+- [ ] P1: Star chart as Scorpius (real coordinates, segments)
+- [ ] P2: Sun surface from a real SDO image, animated
+- [ ] P3: Bloom post-processing
+- [ ] P4: Prominences v2: varied, moving, more of them
+- [ ] P5: Real photography: star field + nebula layers; brighter procedural stars
+- [ ] P6: Warp jumps rebuilt as triggered Star Wars / Mass Effect style sequences
+- [ ] P7: Credits line + docs/credits.md (added alongside P2 and P5, never shipping an uncredited image)
+- [ ] P8: Contrast and performance re-check; real-device check
+
+### Checkpoint 7
+- [ ] Owner happy with sun, space, warps and chart on desktop and phone
 
 ## Risks and Mitigations
 
