@@ -104,11 +104,15 @@ export function createDeepSpace({ small }: { small: boolean }) {
 		setPixelRatio(ratio: number) {
 			pixelRatio.value = ratio;
 		},
-		/** `scrolledPx`: how far the page is scrolled; `strength`: 0..1 fade. */
-		update(scrolledPx: number, strength: number) {
+		/**
+		 * `scrolledPx`: how far the page is scrolled; `strength`: 0..1 fade-in;
+		 * `calm`: 0..1 — behind the star chart the sky settles (dimmer stars, almost no
+		 * nebula) so the project stars stand out.
+		 */
+		update(scrolledPx: number, strength: number, calm: number) {
 			group.position.y = scrolledPx * RISE_PER_PX;
-			opacity.value = strength;
-			for (const m of cloudMaterials) m.opacity = 0.35 * strength;
+			opacity.value = strength * (1 - 0.5 * calm);
+			for (const m of cloudMaterials) m.opacity = 0.35 * strength * (1 - 0.85 * calm);
 		},
 	};
 }

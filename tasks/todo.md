@@ -267,11 +267,11 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 **Description:** A sparser, calmer points sky behind the star chart, so the HTML project stars stand out.
 
 **Acceptance criteria:**
-- [ ] Smooth handover from deepSpace to starField while scrolling
-- [ ] Project stars and cards clearly stand out against it
+- [x] Smooth handover from deepSpace to starField while scrolling
+- [x] Project stars and cards clearly stand out against it
 
 **Verification:**
-- [ ] Manual visual check desktop + phone
+- [x] Manual visual check desktop + phone
 
 **Dependencies:** T10 (T12 for the handover)
 **Files likely touched:** `src/scene/chapters/starField.ts`, `src/scene/index.ts`

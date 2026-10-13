@@ -3,6 +3,7 @@ import { createDeepSpace } from './chapters/deepSpace';
 import { createSun, SUN_RADIUS } from './chapters/sun';
 import {
 	cameraDistanceForDiameter,
+	chartCalm,
 	damp,
 	deepSpaceOpacity,
 	departureProgress,
@@ -24,6 +25,7 @@ export function startScene(canvas: HTMLCanvasElement) {
 	const hero = document.querySelector<HTMLElement>('.hero')!;
 	const stage = hero.querySelector<HTMLElement>('.hero__stage')!;
 	const cssSun = hero.querySelector<HTMLElement>('.hero__sun')!;
+	const projects = document.getElementById('projects');
 
 	const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
 	renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
@@ -83,7 +85,9 @@ export function startScene(canvas: HTMLCanvasElement) {
 		stage.style.setProperty('--departure-fade', String(textOpacity(progress)));
 		const pageProgress = scrollY / Math.max(1, root.scrollHeight - innerHeight);
 		root.style.setProperty('--sunlight', String(sunlightOpacity(progress, pageProgress)));
-		deepSpace.update(scrolled, deepSpaceOpacity(progress));
+		// Where the projects section is at the eased scroll position (not the raw one).
+		const projectsTop = projects ? projects.getBoundingClientRect().top + (scrollY - scrolled) : Infinity;
+		deepSpace.update(scrolled, deepSpaceOpacity(progress), chartCalm(projectsTop, height));
 
 		renderer.render(scene, camera);
 	}

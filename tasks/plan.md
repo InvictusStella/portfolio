@@ -74,7 +74,7 @@ T10 needs only T3 (sections to observe), so the sun (T10–T11b) runs before the
 
 ### Phase 5 — The rest of the flight
 - [x] T12: deepSpace chapter
-- [ ] T13: starField chapter
+- [x] T13: starField chapter
 
 ### Checkpoint 5
 - [ ] Full flight sun → deep space → star chart works on desktop and phone; fallbacks verified

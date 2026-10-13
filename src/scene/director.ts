@@ -70,6 +70,15 @@ export function deepSpaceOpacity(departure: number): number {
   return 0.15 + 0.85 * smoothstep(0.25, 0.8, departure);
 }
 
+/**
+ * How settled the sky is for the star chart (0 → 1): it calms as the projects section
+ * scrolls in, from its top at the bottom of the screen to its top at 20% from the top.
+ * `sectionTop` is relative to the viewport (getBoundingClientRect().top).
+ */
+export function chartCalm(sectionTop: number, viewportHeight: number): number {
+  return smoothstep(viewportHeight, viewportHeight * 0.2, sectionTop);
+}
+
 /** The sun's surface animates every frame only when someone can actually see it move. */
 export function shouldAnimate(state: { reducedMotion: boolean; hidden: boolean; sunOnScreen: boolean }): boolean {
   return !state.reducedMotion && !state.hidden && state.sunOnScreen;

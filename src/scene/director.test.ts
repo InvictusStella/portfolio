@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   cameraDistanceForDiameter,
+  chartCalm,
   damp,
   deepSpaceOpacity,
   departureProgress,
@@ -104,6 +105,25 @@ describe('deepSpaceOpacity', () => {
   it('is fully there once the sun has mostly gone', () => {
     expect(deepSpaceOpacity(0.85)).toBe(1);
     expect(deepSpaceOpacity(1)).toBe(1);
+  });
+});
+
+describe('chartCalm', () => {
+  const viewport = 800;
+
+  it('is 0 while the projects section is still below the screen', () => {
+    expect(chartCalm(900, viewport)).toBe(0);
+  });
+
+  it('is 1 once the projects section fills the screen', () => {
+    expect(chartCalm(100, viewport)).toBe(1);
+    expect(chartCalm(-2000, viewport)).toBe(1);
+  });
+
+  it('changes gradually as the section scrolls in (smooth handover)', () => {
+    const mid = chartCalm(500, viewport);
+    expect(mid).toBeGreaterThan(0);
+    expect(mid).toBeLessThan(1);
   });
 });
 
