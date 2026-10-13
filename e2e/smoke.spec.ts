@@ -43,6 +43,24 @@ test('the CV button downloads the PDF', async ({ page, request }) => {
 	expect(response.headers()['content-type']).toContain('pdf');
 });
 
+test('the name can be selected while visible, but not once it has faded away', async ({ page }) => {
+	await page.goto('./');
+	const name = page.getByRole('heading', { level: 1 });
+	await expect(name).toHaveCSS('user-select', 'auto');
+	const scene = await page.evaluate(() => document.documentElement.classList.contains('webgl'));
+	test.skip(!scene, 'The fade comes from the 3D scene, which needs WebGL');
+	await page.waitForFunction(() => document.documentElement.classList.contains('scene-ready'));
+	// Halfway through the departure: the name has fully faded by 30%.
+	await page.evaluate(() => {
+		const hero = document.querySelector<HTMLElement>('.hero')!;
+		window.scrollTo({ top: (hero.offsetHeight - innerHeight) * 0.5, behavior: 'instant' });
+	});
+	await expect(name).toHaveCSS('user-select', 'none');
+	await expect(name).toHaveCSS('pointer-events', 'none');
+	// Still a heading for screen readers.
+	await expect(page.getByRole('heading', { level: 1 })).toBeAttached();
+});
+
 test('the page loads without errors', async ({ page }) => {
 	const errors: string[] = [];
 	page.on('pageerror', (error) => errors.push(error.message));

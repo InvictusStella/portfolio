@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { crossedDown, WARPS, warpState } from './warp';
+import { crossedDown, scrollDrive, WARP_ZONES, warpProgress, WARPS, warpState, warpStateAt } from './warp';
 
 describe('warpState', () => {
   it('starts calm', () => {
@@ -55,6 +55,51 @@ describe('warpState', () => {
         previous = now;
       }
     }
+  });
+});
+
+describe('warpProgress', () => {
+  it('follows the clock when you scroll slowly', () => {
+    expect(warpProgress(0.6, 0.2)).toBe(0.6);
+  });
+
+  it('is pushed along by the scroll when you scroll fast, so it ends as the next section arrives', () => {
+    expect(warpProgress(0.2, 0.9)).toBe(0.9);
+  });
+
+  it('never goes past the end', () => {
+    expect(warpProgress(3, 2)).toBe(1);
+  });
+});
+
+describe('scrollDrive', () => {
+  it('maps the stretch of scroll the warp lives in onto 0..1', () => {
+    expect(scrollDrive(0.35, 0.35, 0.95)).toBe(0);
+    expect(scrollDrive(0.65, 0.35, 0.95)).toBeCloseTo(0.5, 6);
+    expect(scrollDrive(0.95, 0.35, 0.95)).toBe(1);
+  });
+
+  it('stays within 0..1 outside that stretch', () => {
+    expect(scrollDrive(0.1, 0.35, 0.95)).toBe(0);
+    expect(scrollDrive(1.4, 0.35, 0.95)).toBe(1);
+  });
+});
+
+describe('warpStateAt (progress-based)', () => {
+  it('matches the timed version at the same point', () => {
+    expect(warpStateAt('big', 0.5)).toEqual(warpState('big', WARPS.big.duration * 0.5));
+  });
+
+  it('is done at 1', () => {
+    expect(warpStateAt('small', 1).done).toBe(true);
+  });
+});
+
+describe('WARP_ZONES', () => {
+  it('starts the big warp right after the name has faded (30%) and ends it before About', () => {
+    expect(WARP_ZONES.big.start).toBeGreaterThanOrEqual(0.3);
+    expect(WARP_ZONES.big.start).toBeLessThan(0.4);
+    expect(WARP_ZONES.big.end).toBeLessThan(1);
   });
 });
 

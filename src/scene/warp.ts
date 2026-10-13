@@ -32,9 +32,38 @@ export type WarpState = {
   done: boolean;
 };
 
+/**
+ * The stretch of scroll each warp lives in. Big: from just after the name has faded (30%)
+ * to just before About arrives, as departure progress. Small: as the projects section comes
+ * up the screen (0 = its top at the bottom edge, 1 = at the top edge).
+ */
+export const WARP_ZONES: Record<WarpKind, { start: number; end: number }> = {
+  big: { start: 0.35, end: 0.95 },
+  small: { start: 0.25, end: 0.75 },
+};
+
+/** Where `value` is within [start, end], as 0..1. */
+export function scrollDrive(value: number, start: number, end: number): number {
+  return Math.min(1, Math.max(0, (value - start) / (end - start)));
+}
+
+/**
+ * How far through the warp we are: whichever is further along, the clock or the scroll.
+ * Scroll slowly and it plays at its own pace; scroll fast and the scroll pushes it, so it
+ * always finishes as the next section arrives — never behind it.
+ */
+export function warpProgress(timeProgress: number, scrollProgress: number): number {
+  return Math.min(1, Math.max(timeProgress, scrollProgress));
+}
+
+/** Warp state after `seconds` (timed only). */
 export function warpState(kind: WarpKind, seconds: number): WarpState {
+  return warpStateAt(kind, seconds / WARPS[kind].duration);
+}
+
+/** Warp state at progress `u` (0..1) through the sequence. */
+export function warpStateAt(kind: WarpKind, u: number): WarpState {
   const config = WARPS[kind];
-  const u = seconds / config.duration;
   if (u >= 1) return { stretch: 0, fov: 0, flash: 0, done: true };
 
   const settle = 1 - smoothstep(SETTLE, 1, u);

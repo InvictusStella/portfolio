@@ -36,7 +36,7 @@ A personal portfolio site for a newly graduated software engineer. It is three t
 
 A single continuous page. A fixed WebGL `<canvas>` sits behind all content; content is ordinary HTML that scrolls over it.
 
-1. **Hero** — the sun is the **centrepiece of the site**: large, whole (never cropped), centred, and alive (§5.2). Name and one-line tagline centred on top of it over a soft, blurred warm-dark shadow (meets WCAG AA for all hero text); "scroll ↓" hint below. Plays the sunrise intro (§5.3). With WebGL and motion allowed, the hero is ~2 screens tall: a **pinned stage** holds the sun in place while the extra screen of scrolling is the **departure zone** that flies you away from it (§5.4). Otherwise it is a normal one-screen section.
+1. **Hero** — the sun is the **centrepiece of the site**: large, whole (never cropped), centred, and alive (§5.2). Name and one-line tagline centred on top of it over a soft, blurred warm-dark shadow (meets WCAG AA for all hero text); "scroll ↓" hint below. Plays the sunrise intro (§5.3). With WebGL and motion allowed, the hero is 2.5 screens tall: a **pinned stage** holds the sun in place while the extra screen of scrolling is the **departure zone** that flies you away from it (§5.4). Otherwise it is a normal one-screen section.
 2. **About** — text floats directly in space (no card borders or backgrounds; a soft text shadow keeps it readable over the scene), in a column offset to the left of the page. Contains photo, about-me paragraph, skills (labelled chips, no percentage bars), hobbies, then an **experience timeline** (vertical line; each entry: role, place, dates, one sentence).
 3. **Star chart** — short heading, then the **journey constellation** (§4).
 4. **Edge footer** — contact links (GitHub, LinkedIn, email) and a one-line sign-off.
@@ -196,6 +196,8 @@ The owner chose **realism over performance limits**, and is happy to use real ph
 ### 12.2 Warp jumps (replace scroll-speed streaks, §5.4)
 - Two **triggered** warp moments, inspired by Star Wars hyperspace and Mass Effect relay jumps: crossing a point while scrolling down plays a short sequence regardless of scroll speed — stars stretch (anticipation), long blue-white streaks burst **outward from the centre**, a brief flash, then the new section settles.
 - Big jump leaving the sun (~1.6 s); small jump into the star chart (~0.9 s). Downward only; each fires once per crossing. Off under reduced motion.
+- The big warp starts at 35% of the departure (just after the name has faded) and the small one as the projects are a quarter of the way up the screen. Each advances by **the clock or the scroll, whichever is further**: slow scrolling plays it at its own pace, fast scrolling pushes it so it always completes (by 95% of the departure / three quarters of the way up) **before the next section arrives**.
+- Faded hero text is not selectable or clickable (it stays in the accessibility tree as the page's main heading).
 
 ### 12.3 Real photography for space
 - A real deep-sky **star field** background and 2–3 real **nebula** photos (Hubble/JWST/ESO), as layers at different depths so they keep scroll parallax. Black-background astro photos are blended additively (black adds nothing).

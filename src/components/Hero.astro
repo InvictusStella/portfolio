@@ -50,7 +50,7 @@ const { profile, lang } = Astro.props;
 	/* Departure zone: only with WebGL (class set before first paint) and motion allowed. */
 	@media (prefers-reduced-motion: no-preference) {
 		:global(.webgl) .hero {
-			height: 200svh;
+			height: 250svh; /* 1.5 extra screens: room for the departure and the big warp */
 		}
 
 		:global(.webgl) .hero__stage {
@@ -118,6 +118,15 @@ const { profile, lang } = Astro.props;
 	/* Faded by the departure (scrolling away) and, on a first visit, by the sunrise intro. */
 	[data-departure-fade] {
 		opacity: calc(var(--departure-fade, 1) * var(--intro-text, 1));
+	}
+
+	/*
+	 * Faded text is invisible but still on the page: stop the cursor selecting or clicking it.
+	 * It stays in the accessibility tree — the name is the page's main heading.
+	 */
+	.hero__stage[data-faded] [data-departure-fade] {
+		user-select: none;
+		pointer-events: none;
 	}
 
 	/* Sunrise intro: everything starts hidden; the scene brings it in (set before first paint). */

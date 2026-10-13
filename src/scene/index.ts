@@ -19,7 +19,7 @@ import {
 } from './director';
 import { createStreaks } from './effects/streaks';
 import { INTRO_PLAYED_KEY, introState } from './intro';
-import { crossedDown, warpState, type WarpKind, type WarpState } from './warp';
+import { crossedDown, scrollDrive, WARP_ZONES, WARPS, warpProgress, warpStateAt, type WarpKind, type WarpState } from './warp';
 
 const FOV = 45;
 /** How quickly the scene catches up with the scroll position (higher = snappier). */
@@ -133,6 +133,8 @@ export async function startScene(canvas: HTMLCanvasElement) {
 		sun.object.visible = sunOnScreen(progress, start.y, start.diameter);
 
 		stage.style.setProperty('--departure-fade', String(textOpacity(progress)));
+		// Once faded, the name and hint stop being selectable or clickable (see Hero.astro).
+		stage.toggleAttribute('data-faded', textOpacity(progress) < 0.05);
 		const pageProgress = scrollY / Math.max(1, root.scrollHeight - innerHeight);
 		root.style.setProperty('--sunlight', String(sunlightOpacity(progress, pageProgress)));
 		deepSpace.update(scrolled, deepSpaceOpacity(progress), chartCalm(projectsTop, height), performance.now() / 1000);
@@ -190,16 +192,24 @@ export async function startScene(canvas: HTMLCanvasElement) {
 		progress = damp(progress, target, EASE, dt);
 		if (Math.abs(progress - target) < 1e-4) progress = target;
 		scrolled = damp(scrolled, scrollY, EASE, dt);
-		// Start a warp when a trigger point is crossed going down (one at a time).
+		// Start a warp when its zone is entered going down (one at a time). It then advances by
+		// the clock or the scroll, whichever is further, so it always ends before the next section.
 		const entry = chartEntry();
 		if (!reducedMotion && !warp) {
-			if (crossedDown(lastDeparture, target, 0.5)) warp = { kind: 'big', start: now };
-			else if (crossedDown(lastChartEntry, entry, 0.4)) warp = { kind: 'small', start: now };
+			if (crossedDown(lastDeparture, target, WARP_ZONES.big.start)) warp = { kind: 'big', start: now };
+			else if (crossedDown(lastChartEntry, entry, WARP_ZONES.small.start)) warp = { kind: 'small', start: now };
 		}
 		lastDeparture = target;
 		lastChartEntry = entry;
-		warpNow = warp ? warpState(warp.kind, (now - warp.start) / 1000) : IDLE;
-		if (warpNow.done) warp = null;
+		if (warp) {
+			const zone = WARP_ZONES[warp.kind];
+			const byTime = (now - warp.start) / 1000 / WARPS[warp.kind].duration;
+			const byScroll = scrollDrive(warp.kind === 'big' ? target : entry, zone.start, zone.end);
+			warpNow = warpStateAt(warp.kind, warpProgress(byTime, byScroll));
+			if (warpNow.done) warp = null;
+		} else {
+			warpNow = IDLE;
+		}
 		if (Math.abs(scrolled - scrollY) < 0.5) scrolled = scrollY;
 		updateIntro(now);
 		sun.update(now / 1000);
