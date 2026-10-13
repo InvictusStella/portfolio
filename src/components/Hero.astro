@@ -140,8 +140,12 @@ const { profile, lang } = Astro.props;
 		align-items: center;
 		gap: 0.25rem;
 		font-size: 0.875rem;
-		color: var(--text-muted);
+		color: var(--text);
 		text-decoration: none;
+		/* A tight dark outline around the letters (not a box): the corona can glow behind it. */
+		text-shadow:
+			0 0 3px rgba(28, 10, 4, 0.95),
+			0 0 8px rgba(28, 10, 4, 0.8);
 	}
 
 	.hero__hint span {

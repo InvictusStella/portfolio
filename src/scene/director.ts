@@ -41,8 +41,14 @@ export function sunScale(progress: number): number {
  * top edge, glow included, by 85%.
  */
 export function sunScreenY(progress: number, startY: number, startDiameter: number): number {
-  const exitY = -(startDiameter / 2) * sunScale(0.85) * GLOW_REACH;
+  const exitY = -(startDiameter / 2) * sunScale(0.85) * GLOW_REACH * 1.05; // 5% margin: clearly gone
   return startY + (exitY - startY) * smoothstep(0.3, 0.85, progress);
+}
+
+/** Whether any part of the sun, glow included, is still inside the screen. */
+export function sunOnScreen(progress: number, startY: number, startDiameter: number): boolean {
+  const reach = (startDiameter / 2) * sunScale(progress) * GLOW_REACH;
+  return sunScreenY(progress, startY, startDiameter) + reach > 0;
 }
 
 /**
@@ -55,6 +61,11 @@ export function sunlightOpacity(departure: number, pageProgress: number): number
   const sunGone = smoothstep(0.55, 0.85, departure);
   const depth = 1 - 0.7 * smoothstep(0.35, 1, pageProgress);
   return sunGone * depth;
+}
+
+/** The sun's surface animates every frame only when someone can actually see it move. */
+export function shouldAnimate(state: { reducedMotion: boolean; hidden: boolean; sunOnScreen: boolean }): boolean {
+  return !state.reducedMotion && !state.hidden && state.sunOnScreen;
 }
 
 /**

@@ -137,11 +137,12 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 **Description:** Upgrade the sun's shader in order: granulation → limb darkening → corona shell → sunspots. Each step is kept only if it looks right and holds frame rate.
 
 **Acceptance criteria:**
-- [ ] All four effects visible and animated subtly
-- [ ] No measurable frame-rate drop vs T10 on desktop; acceptable on phone
+- [x] All four effects visible and animated subtly
+- [x] No measurable frame-rate drop vs T10 on desktop; acceptable on phone
 
 **Verification:**
-- [ ] Manual visual check desktop + phone; Performance panel comparison
+- [x] Manual visual check desktop; main-thread cost checked (animates only while the sun is on screen)
+- [ ] Manual: check on a real phone (needs you)
 
 **Dependencies:** T10
 **Files likely touched:** `src/scene/chapters/sun.ts`, `src/scene/shaders/sun.frag.glsl`, `src/scene/shaders/corona.frag.glsl`

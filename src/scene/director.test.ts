@@ -3,11 +3,31 @@ import {
   cameraDistanceForDiameter,
   damp,
   departureProgress,
+  shouldAnimate,
+  sunOnScreen,
   sunlightOpacity,
   sunScale,
   sunScreenY,
   textOpacity,
 } from './director';
+
+describe('shouldAnimate', () => {
+  it('animates while the sun is on screen', () => {
+    expect(shouldAnimate({ reducedMotion: false, hidden: false, sunOnScreen: true })).toBe(true);
+  });
+
+  it('stops once the sun has left the screen (saves battery)', () => {
+    expect(shouldAnimate({ reducedMotion: false, hidden: false, sunOnScreen: false })).toBe(false);
+  });
+
+  it('never animates with reduced motion', () => {
+    expect(shouldAnimate({ reducedMotion: true, hidden: false, sunOnScreen: true })).toBe(false);
+  });
+
+  it('never animates in a hidden tab', () => {
+    expect(shouldAnimate({ reducedMotion: false, hidden: true, sunOnScreen: true })).toBe(false);
+  });
+});
 
 describe('sunScale', () => {
   it('is full size at the start', () => {
@@ -42,6 +62,24 @@ describe('sunScreenY', () => {
     const y = sunScreenY(0.85, startY, diameter);
     const glowRadius = (diameter / 2) * sunScale(0.85) * 2;
     expect(y + glowRadius).toBeLessThan(0);
+  });
+});
+
+describe('sunOnScreen', () => {
+  const startY = 400;
+  const diameter = 700;
+
+  it('is on screen at the start', () => {
+    expect(sunOnScreen(0, startY, diameter)).toBe(true);
+  });
+
+  it('is on screen while it rises', () => {
+    expect(sunOnScreen(0.6, startY, diameter)).toBe(true);
+  });
+
+  it('is off screen once it has left through the top', () => {
+    expect(sunOnScreen(0.85, startY, diameter)).toBe(false);
+    expect(sunOnScreen(1, startY, diameter)).toBe(false);
   });
 });
 

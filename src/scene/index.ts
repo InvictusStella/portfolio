@@ -4,6 +4,8 @@ import {
 	cameraDistanceForDiameter,
 	damp,
 	departureProgress,
+	shouldAnimate,
+	sunOnScreen,
 	sunlightOpacity,
 	sunScale,
 	sunScreenY,
@@ -69,7 +71,7 @@ export function startScene(canvas: HTMLCanvasElement) {
 		const pixelsPerUnit = height / 2 / (distance * Math.tan((FOV * Math.PI) / 360));
 		const screenY = sunScreenY(progress, start.y, start.diameter);
 		sun.object.position.set((start.x - width / 2) / pixelsPerUnit, -(screenY - height / 2) / pixelsPerUnit, 0);
-		sun.object.visible = screenY + start.diameter * 2 > 0;
+		sun.object.visible = sunOnScreen(progress, start.y, start.diameter);
 
 		stage.style.setProperty('--departure-fade', String(textOpacity(progress)));
 		const pageProgress = scrollY / Math.max(1, root.scrollHeight - innerHeight);
@@ -78,7 +80,11 @@ export function startScene(canvas: HTMLCanvasElement) {
 		renderer.render(scene, camera);
 	}
 
-	// Render on demand: the loop runs only while the scene is still catching up.
+	const animating = () =>
+		shouldAnimate({ reducedMotion, hidden: document.hidden, sunOnScreen: sun.object.visible });
+
+	// The loop runs while the scene is catching up with the scroll, or while the sun's
+	// surface is animating on screen. Otherwise nothing is drawn until the next scroll.
 	let frame = 0;
 	let last = 0;
 	function tick(now: number) {
@@ -87,8 +93,10 @@ export function startScene(canvas: HTMLCanvasElement) {
 		const target = targetProgress();
 		progress = damp(progress, target, EASE, dt);
 		if (Math.abs(progress - target) < 1e-4) progress = target;
+		sun.update(now / 1000);
 		draw();
-		frame = progress !== target && !document.hidden ? requestAnimationFrame(tick) : 0;
+		const settling = progress !== target && !document.hidden;
+		frame = settling || animating() ? requestAnimationFrame(tick) : 0;
 	}
 	function wake() {
 		if (reducedMotion || frame || document.hidden) return;
@@ -98,7 +106,9 @@ export function startScene(canvas: HTMLCanvasElement) {
 
 	layout();
 	progress = reducedMotion ? 0 : targetProgress();
+	sun.update(reducedMotion ? 30 : performance.now() / 1000);
 	draw();
+	wake();
 	root.classList.add('scene-ready');
 
 	addEventListener('scroll', wake, { passive: true });
