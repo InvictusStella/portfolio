@@ -48,7 +48,16 @@ export async function startScene(canvas: HTMLCanvasElement) {
 	const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.55, 0.45, 0.72);
 	composer.addPass(bloom);
 	const small = innerWidth < 640;
-	const deepSpace = createDeepSpace({ small });
+	// Its photos load in the background; draw again as each one arrives — but only once the
+	// scene has drawn its first frame (a photo can arrive while start-up is still running).
+	let started = false;
+	const deepSpace = createDeepSpace({
+		small,
+		base: import.meta.env.BASE_URL,
+		onLoad: () => {
+			if (started) draw();
+		},
+	});
 	scene.add(deepSpace.object);
 	// Lightspeed streaks live inside the deep-space group, so they drift with it.
 	const streaks = createStreaks({ small, bounds: BOUNDS });
@@ -122,7 +131,7 @@ export async function startScene(canvas: HTMLCanvasElement) {
 		stage.style.setProperty('--departure-fade', String(textOpacity(progress)));
 		const pageProgress = scrollY / Math.max(1, root.scrollHeight - innerHeight);
 		root.style.setProperty('--sunlight', String(sunlightOpacity(progress, pageProgress)));
-		deepSpace.update(scrolled, deepSpaceOpacity(progress), chartCalm(projectsTop, height));
+		deepSpace.update(scrolled, deepSpaceOpacity(progress), chartCalm(projectsTop, height), performance.now() / 1000);
 		streaks.update(jump.strength, jump.radial, velocity, deepSpaceOpacity(progress));
 
 		composer.render();
@@ -160,11 +169,15 @@ export async function startScene(canvas: HTMLCanvasElement) {
 	const animating = () =>
 		introRunning ||
 		shouldAnimate({ reducedMotion, hidden: document.hidden, sunOnScreen: sun.object.visible });
+	// Stars twinkle wherever deep space is showing. A slow twinkle doesn't need 60 fps,
+	// so frames drawn only for the twinkle run at half rate.
+	const twinkling = () => !reducedMotion && !document.hidden && deepSpaceOpacity(progress) > 0.2;
 
-	// The loop runs while the scene is catching up with the scroll, or while the sun's
-	// surface is animating on screen. Otherwise nothing is drawn until the next scroll.
+	// The loop runs while the scene is catching up with the scroll, while the sun's surface
+	// is animating on screen, or (at half rate) while stars twinkle.
 	let frame = 0;
 	let last = 0;
+	let twinkleFrame = 0;
 	function tick(now: number) {
 		const dt = Math.min((now - last) / 1000, 0.1);
 		last = now;
@@ -178,9 +191,11 @@ export async function startScene(canvas: HTMLCanvasElement) {
 		if (Math.abs(scrolled - scrollY) < 0.5) scrolled = scrollY;
 		updateIntro(now);
 		sun.update(now / 1000);
-		draw();
 		const settling = (progress !== target || scrolled !== scrollY || velocity !== 0) && !document.hidden;
-		frame = settling || animating() ? requestAnimationFrame(tick) : 0;
+		const busy = settling || animating();
+		const twinkle = twinkling();
+		if (busy || (twinkle && ++twinkleFrame % 2 === 0)) draw();
+		frame = busy || twinkle ? requestAnimationFrame(tick) : 0;
 	}
 	function wake() {
 		if (reducedMotion || frame || document.hidden) return;
@@ -197,6 +212,7 @@ export async function startScene(canvas: HTMLCanvasElement) {
 	scrolled = reducedMotion ? 0 : scrollY;
 	sun.update(reducedMotion ? 30 : performance.now() / 1000);
 	draw();
+	started = true;
 	wake();
 	root.classList.add('scene-ready');
 

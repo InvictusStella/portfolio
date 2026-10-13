@@ -28,16 +28,22 @@ const { email, github, linkedin } = profile.contact;
 		}
 	</ul>
 	<p class="footer__signoff">{ui.signOff[lang]}</p>
-	<p class="footer__credits">
+	<ul class="footer__credits">
 		{
-			credits.map((c, i) => (
-				<>
-					{i > 0 && ' · '}
-					{c.subject[lang]}: {c.credit}
-				</>
+			credits.map((c) => (
+				<li>
+					{c.subject[lang]}: {c.url ? <a href={c.url}>{c.credit}</a> : c.credit}
+					{c.licence && (
+						<>
+							{' '}
+							(<a href={c.licence.url}>{c.licence.name}</a>
+							{c.changes && `; ${c.changes[lang]}`})
+						</>
+					)}
+				</li>
 			))
 		}
-	</p>
+	</ul>
 </footer>
 
 <style>
@@ -67,8 +73,15 @@ const { email, github, linkedin } = profile.contact;
 
 	.footer__credits {
 		margin: 1.5rem auto 0;
-		max-width: 40rem;
+		padding: 0;
+		list-style: none;
+		max-width: 44rem;
 		font-size: 0.75rem;
+		line-height: 1.7;
+		color: var(--text-muted);
+	}
+
+	.footer__credits a {
 		color: var(--text-muted);
 	}
 

@@ -368,9 +368,9 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 
 ### Task P5: Real photography for space
 **Acceptance criteria:**
-- [ ] Licence-checked deep-sky star field and 2–3 nebula photos as parallax depth layers; credited
-- [ ] Procedural stars brighter, the brightest with diffraction spikes, subtle twinkle
-- [ ] About text contrast re-measured
+- [x] Licence-checked deep-sky star field and 2–3 nebula photos as parallax depth layers; credited
+- [x] Procedural stars brighter, the brightest with diffraction spikes, subtle twinkle
+- [x] About text contrast re-measured
 **Files:** `public/textures/`, `src/scene/chapters/deepSpace.ts`
 
 ### Task P6: Warp jumps, triggered
@@ -382,7 +382,7 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 
 ### Task P7: Credits
 **Acceptance criteria:**
-- [ ] Footer credits line in both languages; `docs/credits.md` lists each file's source URL and licence
+- [x] Footer credits line in both languages; `docs/credits.md` lists each file's source URL and licence
 
 ### Task P8: Re-check
 **Acceptance criteria:**

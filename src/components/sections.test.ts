@@ -257,6 +257,16 @@ describe('Footer', () => {
     expect(tr).toContain('Güneş');
   });
 
+  it('credits each space photo with its exact credit, a link, its licence and the changes made', async () => {
+    const html = await container.renderToString(Footer, { props: { profile, lang: 'en' } });
+    expect(html).toContain('ESO/S. Brunier');
+    expect(html).toContain('NASA, ESA, CSA, STScI, and the Webb ERO Production Team');
+    expect(html).toContain('ESA/Webb, NASA, CSA, M. Barlow, N. Cox, R. Wesson');
+    expect(html).toContain('href="https://www.eso.org/public/images/eso0932a/"');
+    expect(html).toContain('href="https://creativecommons.org/licenses/by/4.0/"');
+    expect(html).toMatch(/cropped, resized and colour-adjusted/);
+  });
+
   it('omits LinkedIn when no URL is set', async () => {
     const html = await container.renderToString(Footer, { props: { profile, lang: 'en' } });
     expect(html).not.toContain('LinkedIn');
