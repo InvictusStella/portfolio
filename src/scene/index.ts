@@ -22,7 +22,7 @@ const FOV = 45;
 /** How quickly the scene catches up with the scroll position (higher = snappier). */
 const EASE = 5;
 
-export function startScene(canvas: HTMLCanvasElement) {
+export async function startScene(canvas: HTMLCanvasElement) {
 	const root = document.documentElement;
 	const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 	const hero = document.querySelector<HTMLElement>('.hero')!;
@@ -172,6 +172,10 @@ export function startScene(canvas: HTMLCanvasElement) {
 	}
 
 	layout();
+	// Compile every shader (including hidden ones, like the streaks) without blocking the
+	// page: the GPU driver works in the background while the page stays responsive.
+	await renderer.compileAsync(scene, camera);
+	introStart = performance.now(); // the intro starts when the sun can actually be drawn
 	progress = reducedMotion ? 0 : targetProgress();
 	scrolled = reducedMotion ? 0 : scrollY;
 	sun.update(reducedMotion ? 30 : performance.now() / 1000);

@@ -322,11 +322,11 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 **Description:** Lower particle counts when frame rate drops; Lighthouse audit of both languages and fix what it finds.
 
 **Acceptance criteria:**
-- [ ] Throttled CPU (4× in devtools) still scrolls without obvious jank
-- [ ] Lighthouse (mobile): Performance ≥ 85, Accessibility ≥ 95, Best Practices ≥ 95, SEO ≥ 95
+- [ ] Throttled CPU (4× in devtools) still scrolls without obvious jank — DEFERRED with adaptive quality: owner prefers realism over performance limits; decide in the polish discussion
+- [x] Lighthouse (mobile): Performance ≥ 85, Accessibility ≥ 95, Best Practices ≥ 95, SEO ≥ 95 (measured: / 95–97 · 100 · 100 · 100; /tr/ 99 · 100 · 100 · 100)
 
 **Verification:**
-- [ ] Lighthouse reports for `/` and `/tr/`; full test suite green
+- [x] Lighthouse reports for `/` and `/tr/`; full test suite green
 
 **Dependencies:** T11, T11b, T12–T15
 **Files likely touched:** `src/scene/quality.ts`, `src/scene/index.ts`, plus whatever Lighthouse flags
