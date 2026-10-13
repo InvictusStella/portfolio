@@ -3,8 +3,9 @@ import { FLARE_COUNT, flareState } from '../activity';
 import { simplexNoise3D } from '../shaders/noise';
 import { createProminences } from './prominences';
 
-// The sun: a churning surface (granulation, convection, sunspots, limb darkening),
-// a flickering corona hugging its edge, prominences and flares, and a soft glow.
+// The sun: its face is a real NASA SDO image (AIA 304 Å), repainted with the site's palette
+// and kept alive by a slow warp, moving granulation and flickering active regions; plus a
+// flickering corona, prominences and flares, and a soft glow.
 
 export const SUN_RADIUS = 1;
 
@@ -24,6 +25,8 @@ const surfaceVertex = /* glsl */ `
 
 const surfaceFragment = /* glsl */ `
 	uniform float uTime;
+	uniform sampler2D uMap;      // real SDO/AIA 304 Å image of the sun, as brightness
+	uniform float uDiscRadius;   // the disc's radius in the texture, as a fraction of its width
 	uniform float uFlareAngle[${FLARE_COUNT}];    // where on the edge (radians, 0 = right, π/2 = top)
 	uniform float uFlareStrength[${FLARE_COUNT}]; // 0..1
 	varying vec3 vNormal;
@@ -32,46 +35,46 @@ const surfaceFragment = /* glsl */ `
 
 	${simplexNoise3D}
 
+	// Repaint the image's brightness with the site's palette: deep red in the dark lanes,
+	// orange across the surface, yellow-white glare in the active regions.
+	vec3 palette(float x) {
+		vec3 c = mix(vec3(0.3, 0.05, 0.01), vec3(0.92, 0.32, 0.05), smoothstep(0.0, 0.35, x));
+		c = mix(c, vec3(1.0, 0.56, 0.12), smoothstep(0.3, 0.6, x));
+		c = mix(c, vec3(1.0, 0.8, 0.42), smoothstep(0.58, 0.82, x));
+		return mix(c, vec3(1.0, 0.96, 0.85), smoothstep(0.82, 1.0, x));
+	}
+
 	void main() {
+		vec3 n = normalize(vNormal);
 		// 1 at the centre of the disc (facing us), 0 at the edge.
-		float mu = clamp(dot(normalize(vNormal), normalize(vViewDir)), 0.0, 1.0);
-
-		// Limb darkening: golden centre, deep orange-red edge.
-		vec3 core = vec3(1.0, 0.80, 0.45);
-		vec3 mid = vec3(1.0, 0.62, 0.24);
-		vec3 edge = vec3(0.70, 0.22, 0.07);
-		vec3 color = mix(edge, mid, smoothstep(0.0, 0.55, mu));
-		color = mix(color, core, smoothstep(0.55, 1.0, mu));
-
+		float mu = clamp(dot(n, normalize(vViewDir)), 0.0, 1.0);
 		vec3 p = vPosition;
 
-		// Large, slow convection swells.
-		float convection = fbm(p * 2.2 + vec3(0.0, uTime * 0.02, uTime * 0.015));
+		// The camera always faces the sun, so the view-space normal's x/y is exactly where
+		// this point sits on the face-on photo.
+		vec2 uv = 0.5 + n.xy * uDiscRadius;
 
-		// Granulation: very fine boiling cells. Ridged noise (1 - |n|) gives bright cell
-		// walls; a second, offset layer breaks up the regular pattern.
-		float grainA = 1.0 - abs(snoise(p * 38.0 + vec3(uTime * 0.18, -uTime * 0.13, uTime * 0.11)));
-		float grainB = snoise(p * 21.0 - vec3(uTime * 0.07, uTime * 0.05, -uTime * 0.09));
-		float grain = grainA * grainA * (0.75 + 0.25 * grainB);
+		// "Boiling": a slow, gentle warp of the photo so it never looks still.
+		vec2 warp = vec2(
+			snoise(p * 4.0 + vec3(0.0, 0.0, uTime * 0.05)),
+			snoise(p * 4.0 + vec3(17.0, 3.0, uTime * 0.05))
+		);
+		uv += warp * 0.0035;
+		float x = texture2D(uMap, uv).r;
 
-		// Brightness varies around 1; it darkens slightly more than it brightens,
-		// so the text over the centre keeps its contrast.
-		float brightness = 0.93 + 0.07 * grain + 0.07 * convection;
+		// Fine moving granulation on top of the photo's own texture.
+		float grain = 1.0 - abs(snoise(p * 42.0 + vec3(uTime * 0.2, -uTime * 0.15, uTime * 0.12)));
+		x *= 0.94 + 0.08 * grain * grain;
 
-		// Sunspots: rare dark patches where very low-frequency noise peaks.
-		// Like the real sun, spots only appear in two belts either side of the equator.
-		float latitude = abs(normalize(p).y);
-		float belts = smoothstep(0.12, 0.22, latitude) * (1.0 - smoothstep(0.45, 0.58, latitude));
-		float spotField = snoise(p * 2.4 + vec3(uTime * 0.004, 7.3, -uTime * 0.003)) * belts;
-		float spot = smoothstep(0.80, 0.90, spotField);
-		float penumbra = smoothstep(0.72, 0.84, spotField) - spot;
-		color *= brightness;
-		color = mix(color, color * vec3(0.6, 0.38, 0.24), penumbra * 0.55);
-		color = mix(color, vec3(0.32, 0.1, 0.04), spot * 0.7);
+		// Active regions flicker: the brightest parts brighten and dim over a few seconds.
+		float activeRegion = smoothstep(0.62, 0.9, x); // ("active" is a reserved word in GLSL)
+		x += activeRegion * 0.14 * snoise(vec3(uv * 18.0, uTime * 0.5));
 
-		// Flares: a brief white-hot flash near the edge. vNormal is in view space, so its
-		// x/y point the same way as the screen; the target sits just inside the edge.
-		vec3 n = normalize(vNormal);
+		vec3 color = palette(clamp(x, 0.0, 1.0));
+		// A touch of limb darkening keeps the sphere reading as round.
+		color *= mix(0.7, 1.0, smoothstep(0.0, 0.35, mu));
+
+		// Flares: a brief white-hot flash near the edge.
 		for (int i = 0; i < ${FLARE_COUNT}; i++) {
 			vec3 target = normalize(vec3(cos(uFlareAngle[i]) * 0.92, sin(uFlareAngle[i]) * 0.92, 0.39));
 			float d = distance(n, target);
@@ -123,7 +126,7 @@ const coronaFragment = /* glsl */ `
 		burst *= smoothstep(0.98, 1.02, r);
 
 		float intensity = falloff * shimmer + burst * (0.7 + 0.3 * streaks);
-		vec3 color = mix(vec3(1.0, 0.45, 0.12), vec3(1.0, 0.75, 0.4), falloff);
+		vec3 color = mix(vec3(0.9, 0.22, 0.04), vec3(1.0, 0.5, 0.16), falloff);
 		gl_FragColor = vec4(color * intensity, intensity);
 	}
 `;
@@ -135,10 +138,10 @@ function glowTexture(): THREE.CanvasTexture {
 	canvas.width = canvas.height = size;
 	const ctx = canvas.getContext('2d')!;
 	const g = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
-	g.addColorStop(0, 'rgba(255, 190, 90, 0.9)');
-	g.addColorStop(0.3, 'rgba(255, 150, 60, 0.45)');
-	g.addColorStop(0.6, 'rgba(255, 110, 40, 0.12)');
-	g.addColorStop(1, 'rgba(255, 90, 30, 0)');
+	g.addColorStop(0, 'rgba(255, 140, 50, 0.9)');
+	g.addColorStop(0.3, 'rgba(240, 80, 25, 0.45)');
+	g.addColorStop(0.6, 'rgba(200, 50, 15, 0.12)');
+	g.addColorStop(1, 'rgba(180, 40, 10, 0)');
 	ctx.fillStyle = g;
 	ctx.fillRect(0, 0, size, size);
 	const texture = new THREE.CanvasTexture(canvas);
@@ -146,7 +149,10 @@ function glowTexture(): THREE.CanvasTexture {
 	return texture;
 }
 
-export function createSun() {
+/** Where the solar disc sits in the prepared texture (see docs/credits.md). */
+const SDO_DISC_RADIUS = 0.4465;
+
+export function createSun(surfaceMap: THREE.Texture) {
 	const group = new THREE.Group();
 	const time = { value: 0 };
 	// Shared by the surface and corona shaders; updated from the activity schedule.
@@ -169,7 +175,13 @@ export function createSun() {
 		new THREE.ShaderMaterial({
 			vertexShader: surfaceVertex,
 			fragmentShader: surfaceFragment,
-			uniforms: { uTime: time, uFlareAngle: flareAngle, uFlareStrength: flareStrength },
+			uniforms: {
+				uTime: time,
+				uMap: { value: surfaceMap },
+				uDiscRadius: { value: SDO_DISC_RADIUS },
+				uFlareAngle: flareAngle,
+				uFlareStrength: flareStrength,
+			},
 		}),
 	);
 	group.add(surface);

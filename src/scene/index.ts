@@ -41,7 +41,10 @@ export async function startScene(canvas: HTMLCanvasElement) {
 	// Lightspeed streaks live inside the deep-space group, so they drift with it.
 	const streaks = createStreaks({ small, bounds: BOUNDS });
 	deepSpace.object.add(streaks.object);
-	const sun = createSun();
+	// The sun's face: a real SDO image, loaded before the first frame.
+	const sunMap = await new THREE.TextureLoader().loadAsync(`${import.meta.env.BASE_URL}textures/sun-sdo-304.webp`);
+	sunMap.anisotropy = renderer.capabilities.getMaxAnisotropy();
+	const sun = createSun(sunMap);
 	scene.add(sun.object);
 
 	// Where the CSS sun is drawn (in px, as if the hero were at the top of the page).

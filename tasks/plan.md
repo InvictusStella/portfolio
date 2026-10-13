@@ -95,7 +95,7 @@ The owner wants to **drop performance restrictions in favour of realism** for sp
 
 ## Phase 7 — Realism polish (spec §12)
 - [x] P1: Star chart as Scorpius (real coordinates, segments)
-- [ ] P2: Sun surface from a real SDO image, animated
+- [x] P2: Sun surface from a real SDO image, animated
 - [ ] P3: Bloom post-processing
 - [ ] P4: Prominences v2: varied, moving, more of them
 - [ ] P5: Real photography: star field + nebula layers; brighter procedural stars

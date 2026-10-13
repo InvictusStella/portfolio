@@ -350,9 +350,9 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 
 ### Task P2: Sun surface from a real SDO image
 **Acceptance criteria:**
-- [ ] A licence-checked SDO image textures the sun's face; credited (P7)
-- [ ] Animated: slow flow distortion, flickering active regions; never looks like a still photo
-- [ ] Hero text ≥ 4.5:1 contrast (re-measured)
+- [x] A licence-checked SDO image textures the sun's face; credited (P7)
+- [x] Animated: slow flow distortion, flickering active regions; never looks like a still photo
+- [x] Hero text ≥ 4.5:1 contrast (re-measured)
 **Files:** `public/textures/`, `src/scene/chapters/sun.ts`, `src/components/Hero.astro`
 
 ### Task P3: Bloom

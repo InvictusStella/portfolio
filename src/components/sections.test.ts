@@ -248,6 +248,15 @@ describe('Footer', () => {
     expect(html).toContain('href="https://github.com/ada"');
   });
 
+  it('credits the imagery with the exact required wording, on both language pages', async () => {
+    for (const lang of ['en', 'tr'] as const) {
+      const html = await container.renderToString(Footer, { props: { profile, lang } });
+      expect(html).toContain('Courtesy of NASA/SDO and the AIA, EVE, and HMI science teams.');
+    }
+    const tr = await container.renderToString(Footer, { props: { profile, lang: 'tr' } });
+    expect(tr).toContain('Güneş');
+  });
+
   it('omits LinkedIn when no URL is set', async () => {
     const html = await container.renderToString(Footer, { props: { profile, lang: 'en' } });
     expect(html).not.toContain('LinkedIn');

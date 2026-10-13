@@ -69,14 +69,14 @@ const { profile, lang } = Astro.props;
 		height: var(--size);
 		translate: -50% -50%;
 		border-radius: 50%;
-		/* Bright centre, darker redder edge ("limb darkening") so it reads as a sphere. */
+		/* Same palette as the WebGL sun (red-orange, like the SDO 304 Å image), so the swap is seamless. */
 		background: radial-gradient(
 			circle,
-			#ffcc73 0%,
-			var(--sun-core) 35%,
-			#ff9a3c 62%,
-			#d9541a 82%,
-			#a33212 100%
+			#ffb04a 0%,
+			#ff8a24 35%,
+			#e8601a 62%,
+			#b8340b 82%,
+			#7a1c06 100%
 		);
 		box-shadow:
 			0 0 calc(var(--size) * 0.12) calc(var(--size) * 0.04) rgba(255, 170, 70, 0.55),
