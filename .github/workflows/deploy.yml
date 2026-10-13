@@ -45,6 +45,20 @@ jobs:
       - name: Unit tests
         run: npm test
 
+      # End-to-end smoke test in a real browser, against a build that uses sample
+      # projects (so there are always stars to test, whatever is tagged on GitHub).
+      - name: Install browser for end-to-end tests
+        run: npx playwright install --with-deps chromium
+
+      - name: Build with sample projects
+        run: npm run build
+        env:
+          PROJECTS: sample
+
+      - name: End-to-end smoke test
+        run: npm run test:e2e
+
+      # The real build, with your projects from GitHub. This is what gets deployed.
       - name: Build
         run: npm run build
         env:

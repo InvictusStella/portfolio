@@ -67,7 +67,7 @@ T10 needs only T3 (sections to observe), so the sun (T10–T11b) runs before the
 - [x] T6: Fetch tagged repos at build time → plain project list; daily cron
 - [x] T7: Journey constellation with star links and cards
 - [x] T8: Turkish project description overrides
-- [ ] T9: Playwright smoke test in CI
+- [x] T9: Playwright smoke test in CI
 
 ### Checkpoint 4
 - [ ] Tag/untag a repo → site updates after "Run workflow"; all tests green in CI

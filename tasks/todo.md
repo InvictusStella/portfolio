@@ -229,11 +229,11 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 **Description:** One Playwright spec against the built site (`astro preview`): both languages load; toggle keeps the section; Tab reaches a star and its card shows; CV link targets `cv.pdf`. Add it as a step in the workflow before deploy.
 
 **Acceptance criteria:**
-- [ ] `npm run test:e2e` passes locally against sample data
-- [ ] The CI run includes the e2e step; a failing e2e blocks the deploy
+- [x] `npm run test:e2e` passes locally against sample data
+- [x] The CI run includes the e2e step; a failing e2e blocks the deploy
 
 **Verification:**
-- [ ] Local run + green Actions run
+- [x] Local run + green Actions run
 
 **Dependencies:** T5, T7
 **Files likely touched:** `playwright.config.ts`, `e2e/smoke.spec.ts`, `package.json`, `.github/workflows/deploy.yml`
