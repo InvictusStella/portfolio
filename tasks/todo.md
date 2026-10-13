@@ -375,9 +375,9 @@ Plan: [tasks/plan.md](plan.md) · Spec: [docs/superpowers/specs/2026-10-13-portf
 
 ### Task P6: Warp jumps, triggered
 **Acceptance criteria:**
-- [ ] Crossing the departure point (down) plays a ~1.6 s warp; entering the chart plays a ~0.9 s one — at any scroll speed
-- [ ] Anticipation stretch → outward blue-white streak burst → flash → settle (Star Wars / Mass Effect feel)
-- [ ] Off with reduced motion; trigger and timing logic unit-tested
+- [x] Crossing the departure point (down) plays a ~1.6 s warp; entering the chart plays a ~0.9 s one — at any scroll speed
+- [x] Anticipation stretch → outward blue-white streak burst → flash → settle (Star Wars / Mass Effect feel)
+- [x] Off with reduced motion; trigger and timing logic unit-tested
 **Files:** `src/scene/warp.ts` (+test), `src/scene/effects/streaks.ts`, `src/scene/index.ts`
 
 ### Task P7: Credits

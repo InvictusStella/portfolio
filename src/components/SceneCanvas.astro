@@ -6,6 +6,8 @@
 <canvas class="scene-canvas" aria-hidden="true"></canvas>
 <!-- Warm light from the sun once it has risen off the top of the screen. -->
 <div class="sunlight" aria-hidden="true"></div>
+<!-- Brief blue-white flash at the height of a warp jump (strength set by the scene). -->
+<div class="warp-flash" aria-hidden="true"></div>
 
 <script>
 	const root = document.documentElement;
@@ -42,6 +44,23 @@
 
 	:global(.webgl) .scene-canvas {
 		display: block;
+	}
+
+	/* Behind the page content, so text stays readable through the flash. */
+	.warp-flash {
+		position: fixed;
+		inset: 0;
+		z-index: -1;
+		pointer-events: none;
+		background: radial-gradient(
+			circle at 50% 50%,
+			rgba(225, 238, 255, 0.95),
+			rgba(130, 175, 255, 0.45) 35%,
+			rgba(60, 100, 220, 0.12) 65%,
+			transparent 85%
+		);
+		mix-blend-mode: screen;
+		opacity: var(--warp-flash, 0);
 	}
 
 	/* Its strength (--sunlight, 0–1) is set by the scene as you scroll. */

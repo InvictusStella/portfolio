@@ -19,7 +19,7 @@ import {
 } from './director';
 import { createStreaks } from './effects/streaks';
 import { INTRO_PLAYED_KEY, introState } from './intro';
-import { lightspeed } from './lightspeed';
+import { crossedDown, warpState, type WarpKind, type WarpState } from './warp';
 
 const FOV = 45;
 /** How quickly the scene catches up with the scroll position (higher = snappier). */
@@ -74,9 +74,14 @@ export async function startScene(canvas: HTMLCanvasElement) {
 	let progress = 0;
 	/** Page scroll in px, eased like the departure so the star field glides. */
 	let scrolled = 0;
-	/** Scroll speed in px/s (eased), for the lightspeed streaks. */
-	let velocity = 0;
-	let lastScroll = scrollY;
+	// Warp jumps: triggered when you scroll past a point (downward), whatever your speed.
+	const IDLE: WarpState = { stretch: 0, fov: 0, flash: 0, done: true };
+	let warp: { kind: WarpKind; start: number } | null = null;
+	let warpNow = IDLE;
+	/** How far the projects section has come up the screen (0 = at the bottom edge). */
+	const chartEntry = () => (projects ? (innerHeight - projects.getBoundingClientRect().top) / innerHeight : 0);
+	let lastDeparture = 0;
+	let lastChartEntry = 0;
 
 	function layout() {
 		const width = canvas.clientWidth;
@@ -111,9 +116,8 @@ export async function startScene(canvas: HTMLCanvasElement) {
 		// Flying away: the camera backs off so the sun appears sunScale() times its start size.
 		// Where the projects section is at the eased scroll position (not the raw one).
 		const projectsTop = projects ? projects.getBoundingClientRect().top + (scrollY - scrolled) : Infinity;
-		const jump = lightspeed({ departure: progress, projectsTop, viewport: height, velocity });
-		// The view widens a little during a jump.
-		const fov = FOV + 6 * jump.strength;
+		// The view tightens, then widens sharply, during a warp.
+		const fov = FOV + warpNow.fov;
 		camera.fov = fov;
 		camera.updateProjectionMatrix();
 
@@ -132,7 +136,8 @@ export async function startScene(canvas: HTMLCanvasElement) {
 		const pageProgress = scrollY / Math.max(1, root.scrollHeight - innerHeight);
 		root.style.setProperty('--sunlight', String(sunlightOpacity(progress, pageProgress)));
 		deepSpace.update(scrolled, deepSpaceOpacity(progress), chartCalm(projectsTop, height), performance.now() / 1000);
-		streaks.update(jump.strength, jump.radial, velocity, deepSpaceOpacity(progress));
+		streaks.update(warpNow.stretch, Math.max(0.6, deepSpaceOpacity(progress)));
+		root.style.setProperty('--warp-flash', String(warpNow.flash));
 
 		composer.render();
 	}
@@ -185,14 +190,21 @@ export async function startScene(canvas: HTMLCanvasElement) {
 		progress = damp(progress, target, EASE, dt);
 		if (Math.abs(progress - target) < 1e-4) progress = target;
 		scrolled = damp(scrolled, scrollY, EASE, dt);
-		velocity = damp(velocity, (scrollY - lastScroll) / Math.max(dt, 1e-3), 8, dt);
-		lastScroll = scrollY;
-		if (Math.abs(velocity) < 5) velocity = 0;
+		// Start a warp when a trigger point is crossed going down (one at a time).
+		const entry = chartEntry();
+		if (!reducedMotion && !warp) {
+			if (crossedDown(lastDeparture, target, 0.5)) warp = { kind: 'big', start: now };
+			else if (crossedDown(lastChartEntry, entry, 0.4)) warp = { kind: 'small', start: now };
+		}
+		lastDeparture = target;
+		lastChartEntry = entry;
+		warpNow = warp ? warpState(warp.kind, (now - warp.start) / 1000) : IDLE;
+		if (warpNow.done) warp = null;
 		if (Math.abs(scrolled - scrollY) < 0.5) scrolled = scrollY;
 		updateIntro(now);
 		sun.update(now / 1000);
-		const settling = (progress !== target || scrolled !== scrollY || velocity !== 0) && !document.hidden;
-		const busy = settling || animating();
+		const settling = (progress !== target || scrolled !== scrollY) && !document.hidden;
+		const busy = settling || animating() || warp !== null;
 		const twinkle = twinkling();
 		if (busy || (twinkle && ++twinkleFrame % 2 === 0)) draw();
 		frame = busy || twinkle ? requestAnimationFrame(tick) : 0;
@@ -209,6 +221,9 @@ export async function startScene(canvas: HTMLCanvasElement) {
 	await renderer.compileAsync(scene, camera);
 	introStart = performance.now(); // the intro starts when the sun can actually be drawn
 	progress = reducedMotion ? 0 : targetProgress();
+	// Start from where the page is, so loading mid-page never fires a warp.
+	lastDeparture = targetProgress();
+	lastChartEntry = chartEntry();
 	scrolled = reducedMotion ? 0 : scrollY;
 	sun.update(reducedMotion ? 30 : performance.now() / 1000);
 	draw();
